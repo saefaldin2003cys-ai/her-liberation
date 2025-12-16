@@ -12,12 +12,51 @@
     <meta property="og:description" content="اكتشف كيف يحدد القانون حقوق الطفل ومخاطر الزواج المبكر">
     <meta property="og:type" content="website">
 
-    <!-- Fonts -->
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="preload" href="js/script.js" as="script">
+    
+    <!-- Fonts - with display swap for faster rendering -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <!-- Fallback for fonts -->
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    </noscript>
 
-    <!-- Styles -->
+    <!-- Critical CSS inline for faster first paint -->
+    <style>
+        /* Critical CSS for initial render */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0C0A1D; 
+            color: #F9FAFB; 
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        .hidden { display: none !important; }
+        .start-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .start-content { text-align: center; max-width: 600px; }
+        .hero-logo { width: 130px; height: 130px; border-radius: 50%; }
+        .hero-title { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 900; margin: 1rem 0; }
+        .title-line { 
+            background: linear-gradient(135deg, #E91E8C, #7C3AED); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+    </style>
+
+    <!-- Main Styles - loaded async -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -412,11 +451,11 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts - defer for non-blocking load -->
     <!-- i18n System (must load before main script) -->
-    <script src="js/i18n.js"></script>
-    <script src="js/i18n-integration.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/i18n.js" defer></script>
+    <script src="js/i18n-integration.js" defer></script>
+    <script src="js/script.js" defer></script>
 </body>
 
 </html>

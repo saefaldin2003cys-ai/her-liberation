@@ -936,16 +936,29 @@ function initScrollReveal() {
 }
 
 // ============================================
-// Initialize
+// Deferred Content Loading - For better performance
 // ============================================
-document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
+function loadDeferredContent() {
+    // Load API content after initial render
     loadStats();
-    loadComments();
     loadArticles();
     incrementViews();
-    initParticles();
     initScrollReveal();
+    
+    // Load comments with slight delay (less critical)
+    setTimeout(loadComments, 300);
+}
+
+// ============================================
+// Initialize - Optimized for fast loading
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Critical: Initialize theme and UI immediately
+    initTheme();
+    initParticles();
+    
+    // Defer non-critical API calls
+    requestIdleCallback ? requestIdleCallback(loadDeferredContent) : setTimeout(loadDeferredContent, 100);
 
     if (hasLiked) {
         const likeBtn = $('#likeBtn');
