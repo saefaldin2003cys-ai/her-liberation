@@ -136,24 +136,28 @@
 
     <!-- Page 3: Main Experience -->
     <main id="mainExperience" class="main-experience hidden">
-        <!-- Header -->
+        <!-- Header Card with everything inside -->
         <header class="header">
-            <div class="header-content">
-                <img src="assets/images/1_20251127_202518.png" alt="تحريرها" class="header-logo">
-
+            <div class="header-card glass-card">
+                <!-- Top row: Language, Logo, Theme -->
+                <div class="header-top-row">
+                    <button class="header-toggle-btn" id="headerLangToggle" aria-label="تبديل اللغة">
+                        <span class="lang-icon">EN</span>
+                    </button>
+                    
+                    <img src="assets/images/1_20251127_202518.png" alt="تحريرها" class="header-logo">
+                    
+                    <button class="header-toggle-btn" id="headerThemeToggle" aria-label="تبديل الوضع">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+                
                 <!-- Section Navigation -->
                 <nav class="section-nav">
                     <a href="#rights-section" class="section-link" data-i18n="navigation.rights">الحقوق</a>
                     <a href="#map-section" class="section-link" data-i18n="navigation.map">الخريطة</a>
                     <a href="#articles-section" class="section-link" data-i18n="navigation.articles">المدونة</a>
                     <a href="#comments-section" class="section-link" data-i18n="navigation.comments">التعليقات</a>
-                </nav>
-
-                <nav class="header-nav">
-                    <button class="nav-btn like-btn" id="likeBtn">
-                        <span class="heart-icon">🤍</span>
-                        <span id="headerLikeCount">0</span>
-                    </button>
                 </nav>
             </div>
         </header>

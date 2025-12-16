@@ -956,6 +956,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     $('#themeToggle')?.addEventListener('click', toggleTheme);
+    // Also handle header theme toggle
+    $('#headerThemeToggle')?.addEventListener('click', toggleTheme);
+    
     $('#startBtn')?.addEventListener('click', startExperience);
 
     const ageSlider = $('#ageSlider');
@@ -1006,29 +1009,30 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#statsBtn')?.addEventListener('click', goToMainExperience);
 
     // ============================================
-    // Language Toggle - Single Button
+    // Language Toggle - Single Button (handles both global and header toggles)
     // ============================================
     function setupLanguageToggle() {
-        console.log('🔧 Setting up language toggle button...');
+        console.log('🔧 Setting up language toggle buttons...');
 
         const toggleBtn = document.getElementById('languageToggle');
         const langIcon = document.getElementById('langIcon');
+        const headerToggleBtn = document.getElementById('headerLangToggle');
 
-        if (!toggleBtn || !langIcon) {
-            console.warn('⚠️ Language toggle button not found');
-            return;
-        }
-
-        // Update button text based on current language
-        function updateToggleButton() {
+        // Update all button texts based on current language
+        function updateToggleButtons() {
             const currentLang = window.i18n?.getCurrentLanguage() || 'ar';
             // Show the OTHER language (the one we'll switch TO)
-            langIcon.textContent = currentLang === 'ar' ? 'EN' : 'ع';
-            console.log(`🔄 Toggle button updated to show: ${langIcon.textContent}`);
+            const newText = currentLang === 'ar' ? 'EN' : 'ع';
+            
+            if (langIcon) langIcon.textContent = newText;
+            if (headerToggleBtn) {
+                headerToggleBtn.querySelector('.lang-icon').textContent = newText;
+            }
+            console.log(`🔄 Toggle buttons updated to show: ${newText}`);
         }
 
-        // Toggle language on click
-        toggleBtn.addEventListener('click', async function () {
+        // Toggle language function
+        async function handleLanguageToggle() {
             if (!window.i18n) {
                 console.warn('⚠️ i18n not available');
                 return;
@@ -1041,22 +1045,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 await window.i18n.setLanguage(newLang);
-                updateToggleButton();
+                updateToggleButtons();
                 console.log(`✅ Language toggled to: ${newLang}`);
             } catch (error) {
                 console.error('❌ Error toggling language:', error);
             }
-        });
+        }
+
+        // Add click listeners to both buttons
+        toggleBtn?.addEventListener('click', handleLanguageToggle);
+        headerToggleBtn?.addEventListener('click', handleLanguageToggle);
 
         // Listen for language changes from other sources
         document.addEventListener('languageChanged', function (e) {
             console.log('📢 Language changed event received:', e.detail);
-            updateToggleButton();
+            updateToggleButtons();
         });
 
         // Set initial state
         setTimeout(() => {
-            updateToggleButton();
+            updateToggleButtons();
             console.log('✅ Language toggle initialized');
         }, 100);
     }

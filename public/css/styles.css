@@ -183,7 +183,7 @@ body {
 }
 
 /* ============================================
-   Theme Toggle - Top Right
+   Theme Toggle - Fixed (for start/stats pages)
    ============================================ */
 .theme-toggle {
     position: fixed;
@@ -212,7 +212,7 @@ body {
 }
 
 /* ============================================
-   Language Toggle - Top Left
+   Language Toggle - Fixed (for start/stats pages)
    ============================================ */
 .language-toggle {
     position: fixed;
@@ -241,6 +241,14 @@ body {
     transform: scale(1.1);
     box-shadow: var(--shadow-glow);
     border-color: var(--accent-primary);
+}
+
+/* Hide fixed toggles when main experience is visible */
+.main-experience:not(.hidden) ~ .theme-toggle,
+.main-experience:not(.hidden) ~ .language-toggle,
+body:has(.main-experience:not(.hidden)) .theme-toggle,
+body:has(.main-experience:not(.hidden)) .language-toggle {
+    display: none;
 }
 
 .lang-icon {
@@ -524,99 +532,117 @@ body {
     padding: var(--space-lg);
 }
 
-/* Header */
+/* ============================================
+   Header Card - Unified Design
+   ============================================ */
 .header {
     position: sticky;
     top: 0;
     z-index: 100;
-    padding: var(--space-md) 0;
-    margin-bottom: var(--space-xl);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
 }
 
-.header-content {
+.header-card {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.header-top-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--space-md) var(--space-lg);
-    background: var(--bg-glass);
-    backdrop-filter: blur(20px);
-    border-radius: var(--radius-lg);
+    width: 100%;
+}
+
+.header-toggle-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--bg-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    transition: all var(--transition-base);
     border: 1px solid var(--border-color);
 }
 
-.header-title {
-    font-size: 1.5rem;
-    font-weight: 800;
+.header-toggle-btn:hover {
+    transform: scale(1.1);
     background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: white;
+    border-color: transparent;
 }
 
 .header-logo {
-    height: 75px;
+    height: 50px;
     width: auto;
     object-fit: contain;
 }
 
-/* Section Navigation */
+/* Section Navigation - Inside Header */
 .section-nav {
     display: flex;
-    gap: var(--space-xs);
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border-color);
 }
 
 .section-link {
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-xs) var(--space-md);
     border-radius: var(--radius-md);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-secondary);
     text-decoration: none;
-    border: 1px solid transparent;
     transition: all var(--transition-base);
 }
 
 .section-link:hover {
     color: var(--accent-primary);
-    background: rgba(233, 30, 140, 0.1);
-    border-color: var(--accent-primary);
 }
 
+/* Mobile: Keep section-nav inside header card, not fixed at bottom */
 @media (max-width: 768px) {
+    .header-card {
+        max-width: 100%;
+        margin: 0 var(--space-sm);
+        padding: var(--space-md);
+    }
+
+    .header-logo {
+        height: 40px;
+    }
+
+    .header-toggle-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
+
     .section-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: space-around;
-        background: var(--bg-primary);
-        border-top: 1px solid var(--border-color);
-        padding: var(--space-sm) 0;
-        z-index: 999;
-        gap: 0;
+        gap: var(--space-xs);
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-top: var(--space-sm);
+        -webkit-overflow-scrolling: touch;
     }
 
     .section-link {
-        flex: 1;
-        text-align: center;
-        padding: var(--space-sm) var(--space-xs);
+        padding: var(--space-xs) var(--space-sm);
         font-size: 0.7rem;
-        font-weight: 600;
-        border-radius: 0;
         white-space: nowrap;
-        color: var(--text-secondary);
-        background: transparent;
-        border: none;
-        transition: all var(--transition-base);
-    }
-
-    .section-link:hover,
-    .section-link:active {
-        color: var(--accent-primary);
-        background: transparent;
     }
 
     /* Add padding to body to prevent content from hiding behind nav */
