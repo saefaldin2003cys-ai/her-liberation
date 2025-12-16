@@ -562,7 +562,7 @@ function renderArticleCard(article) {
 
     const { title, author, content } = getArticleContent(article);
     const excerpt = content.substring(0, 100) + '...';
-    const isLiked = articleLikes[article.id];
+    const isLiked = articleLikes[article._id];
     const commentsCount = (article.comments || []).length;
     const readMoreText = lang === 'en' ? 'Read More' : 'قراءة المزيد';
 
@@ -580,15 +580,15 @@ function renderArticleCard(article) {
                 <hr class="article-divider">
                 
                 <div class="article-actions">
-                    <button class="article-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleArticleLike('${article.id}')">
+                    <button class="article-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleArticleLike('${article._id}')">
                         <span class="action-icon emoji-icon">${isLiked ? '❤️' : '🤍'}</span>
                         <span>${article.likes || 0}</span>
                     </button>
-                    <button class="article-action-btn" onclick="openArticle('${article.id}')">
+                    <button class="article-action-btn" onclick="openArticle('${article._id}')">
                         <span class="action-icon emoji-icon">💬</span>
                         <span>${commentsCount}</span>
                     </button>
-                    <button class="read-more-btn" onclick="openArticle('${article.id}')">${readMoreText}</button>
+                    <button class="read-more-btn" onclick="openArticle('${article._id}')">${readMoreText}</button>
                 </div>
             </div>
         </article>
@@ -608,7 +608,7 @@ function toggleArticleLike(articleId) {
 }
 
 function openArticle(articleId) {
-    const article = articles.find(a => a.id === articleId);
+    const article = articles.find(a => a._id === articleId);
     if (!article) return;
 
     const modal = $('#detailsModal');
@@ -649,15 +649,15 @@ function openArticle(articleId) {
             <div class="article-modal-body">${escapeHTML(content).replace(/\n/g, '<br>')}</div>
             
             <div class="article-modal-actions">
-                <button class="article-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleArticleLike('${article.id}'); openArticle('${article.id}');">
+                <button class="article-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleArticleLike('${article._id}'); openArticle('${article._id}');">
                     <span class="action-icon">${isLiked ? '❤️' : '🤍'}</span>
                     <span>${likeText}</span>
                 </button>
-                <button class="article-action-btn" onclick="shareArticle('${article.id}')">
+                <button class="article-action-btn" onclick="shareArticle('${article._id}')">
                     <span class="action-icon">📤</span>
                     <span>${shareText}</span>
                 </button>
-                ${isAdmin ? `<button class="article-action-btn danger" onclick="deleteArticle('${article.id}')">
+                ${isAdmin ? `<button class="article-action-btn danger" onclick="deleteArticle('${article._id}')">
                     <span class="action-icon">🗑️</span>
                     <span>حذف</span>
                 </button>` : ''}
@@ -677,7 +677,7 @@ function openArticle(articleId) {
                     `).join('') : `<p class="no-comments">${noCommentsText}</p>`}
                 </div>
                 
-                <form class="comment-form" onsubmit="submitArticleComment(event, '${article.id}')">
+                <form class="comment-form" onsubmit="submitArticleComment(event, '${article._id}')">
                     <input type="text" id="articleCommentName" placeholder="${namePlaceholder}" class="details-input" required>
                     <textarea id="articleCommentText" placeholder="${writeCommentPlaceholder}" class="details-input" required></textarea>
                     <button type="submit" class="details-btn">${sendText}</button>
@@ -709,9 +709,10 @@ function submitArticleComment(e, articleId) {
 }
 
 function shareArticle(articleId) {
-    const article = articles.find(a => a.id === articleId);
+    const article = articles.find(a => a._id === articleId);
     if (!article) return;
-    const text = `${article.title}\n\n${window.location.href}`;
+    const { title } = getArticleContent(article);
+    const text = `${title}\n\n${window.location.href}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
