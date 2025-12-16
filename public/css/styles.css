@@ -183,12 +183,12 @@ body {
 }
 
 /* ============================================
-   Theme Toggle
+   Theme Toggle - Top Right
    ============================================ */
 .theme-toggle {
     position: fixed;
     top: var(--space-md);
-    left: var(--space-md);
+    right: var(--space-md);
     z-index: 1000;
     width: 44px;
     height: 44px;
@@ -212,12 +212,12 @@ body {
 }
 
 /* ============================================
-   Language Toggle - Single Button
+   Language Toggle - Top Left
    ============================================ */
 .language-toggle {
     position: fixed;
     top: var(--space-md);
-    left: calc(var(--space-md) + 54px);
+    left: var(--space-md);
     z-index: 1000;
     width: 44px;
     height: 44px;
@@ -592,40 +592,41 @@ body {
         right: 0;
         display: flex;
         justify-content: space-around;
-        background: linear-gradient(to top, var(--bg-primary) 0%, var(--bg-card) 100%);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-top: 2px solid var(--accent-primary);
-        padding: var(--space-md) var(--space-sm);
+        background: var(--bg-primary);
+        border-top: 1px solid var(--border-color);
+        padding: var(--space-sm) 0;
         z-index: 999;
-        gap: var(--space-xs);
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        gap: 0;
     }
 
     .section-link {
         flex: 1;
         text-align: center;
         padding: var(--space-sm) var(--space-xs);
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
-        border-radius: var(--radius-md);
+        border-radius: 0;
         white-space: nowrap;
         color: var(--text-secondary);
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid transparent;
+        background: transparent;
+        border: none;
         transition: all var(--transition-base);
     }
 
     .section-link:hover,
     .section-link:active {
         color: var(--accent-primary);
-        background: rgba(233, 30, 140, 0.15);
-        border-color: var(--accent-primary);
+        background: transparent;
     }
 
     /* Add padding to body to prevent content from hiding behind nav */
     .main-experience {
-        padding-bottom: 80px;
+        padding-bottom: 60px;
+    }
+
+    /* Hide like button in header on mobile */
+    .header-nav {
+        display: none !important;
     }
 }
 
@@ -829,15 +830,16 @@ html[dir] * {
 .age-slider::-webkit-slider-thumb {
     appearance: none;
     -webkit-appearance: none;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     background: var(--accent-gradient);
     border-radius: var(--radius-full);
     cursor: pointer;
-    box-shadow: 0 0 20px var(--accent-glow);
+    box-shadow: 0 0 15px var(--accent-glow);
     transition: all var(--transition-base);
     border: none;
     outline: none;
+    margin-top: -10px;
 }
 
 .age-slider::-webkit-slider-thumb:focus {
@@ -846,17 +848,17 @@ html[dir] * {
 }
 
 .age-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 .age-slider::-moz-range-thumb {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     background: var(--accent-gradient);
     border: none;
     border-radius: var(--radius-full);
     cursor: pointer;
-    box-shadow: 0 0 20px var(--accent-glow);
+    box-shadow: 0 0 15px var(--accent-glow);
     outline: none;
 }
 
@@ -870,8 +872,8 @@ html[dir] * {
 }
 
 .age-slider::-ms-thumb {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     background: var(--accent-gradient);
     border: none;
     border-radius: var(--radius-full);
@@ -910,9 +912,9 @@ html[dir] * {
    Timeline
    ============================================ */
 .timeline-section {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto var(--space-2xl);
-    padding: 0 var(--space-xl);
+    padding: 0 var(--space-2xl);
 }
 
 .timeline {
@@ -920,15 +922,15 @@ html[dir] * {
     justify-content: space-between;
     align-items: center;
     position: relative;
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--space-xl) var(--space-lg);
 }
 
 .timeline-track {
     position: absolute;
     top: 50%;
-    left: 5%;
-    right: 5%;
-    height: 4px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
     background: var(--bg-secondary);
     border-radius: var(--radius-full);
     transform: translateY(-50%);
@@ -943,12 +945,19 @@ html[dir] * {
     z-index: 1;
     cursor: pointer;
     transition: all var(--transition-base);
-    padding: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.timeline-item:focus {
+    outline: none;
 }
 
 .timeline-dot {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     background: var(--bg-card);
     border: 3px solid var(--text-muted);
     border-radius: var(--radius-full);
@@ -956,15 +965,15 @@ html[dir] * {
 }
 
 .timeline-item.active .timeline-dot {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     background: var(--accent-gradient);
     border-color: transparent;
-    box-shadow: 0 0 20px var(--accent-glow);
+    box-shadow: 0 0 15px var(--accent-glow);
 }
 
 .timeline-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-muted);
     transition: color var(--transition-base);
