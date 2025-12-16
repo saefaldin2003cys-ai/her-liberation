@@ -3,9 +3,6 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
 
 // Import Models
@@ -16,114 +13,9 @@ const Comment = require('./models/Comment');
 const app = express();
 const PORT = process.env.PORT || 5500;
 
-// ============================================
-// SECURITY MIDDLEWARE
-// ============================================
-
-// 1. Helmet - Set security HTTP headers
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            imgSrc: ["'self'", "data:", "https:"],
-            scriptSrc: ["'self'", "'unsafe-inline'"],
-            connectSrc: ["'self'", "https://her-liberation.onrender.com"],
-        },
-    },
-    crossOriginEmbedderPolicy: false,
-}));
-
-// 2. Rate Limiting - Prevent DDoS and brute force attacks
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
-    message: { error: 'Too many requests, please try again later.' },
-    standardHeaders: true,
-    legacyHeaders: false,
-});
-app.use('/api', limiter);
-
-// Stricter rate limit for POST requests
-const strictLimiter = rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    max: 10, // 10 requests per minute for POST
-    message: { error: 'Too many submissions, please wait a moment.' },
-});
-app.use('/api/comments', strictLimiter);
-app.use('/api/articles', strictLimiter);
-
-// 3. CORS - Configure allowed origins
-const allowedOrigins = [
-    'https://her-liberation.onrender.com',
-    'http://localhost:5500',
-    'http://localhost:3000',
-    'http://127.0.0.1:5500'
-];
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (mobile apps, curl, etc.)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(null, true); // Allow for now, but log suspicious origins
-            console.warn(`⚠️ Request from unknown origin: ${origin}`);
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// 4. Body parser with size limit
-app.use(express.json({ limit: '10kb' })); // Limit body size to prevent large payload attacks
-
-// 5. Data Sanitization against NoSQL injection
-app.use(mongoSanitize());
-
-// 6. Custom XSS Protection middleware
-const sanitizeInput = (obj) => {
-    if (typeof obj === 'string') {
-        return obj
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#x27;')
-            .replace(/\//g, '&#x2F;')
-            .trim()
-            .slice(0, 1000); // Limit string length
-    }
-    if (typeof obj === 'object' && obj !== null) {
-        for (let key in obj) {
-            obj[key] = sanitizeInput(obj[key]);
-        }
-    }
-    return obj;
-};
-
-app.use((req, res, next) => {
-    if (req.body) {
-        req.body = sanitizeInput(req.body);
-    }
-    next();
-});
-
-// 7. Prevent HTTP Parameter Pollution
-app.use((req, res, next) => {
-    // Only keep the first value if duplicate query params
-    for (let key in req.query) {
-        if (Array.isArray(req.query[key])) {
-            req.query[key] = req.query[key][0];
-        }
-    }
-    next();
-});
-
-// ============================================
-// STATIC FILES & ROUTES
-// ============================================
+// Middleware
+app.use(cors());
+app.use(express.json());
 
 // Serve static files from 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -264,25 +156,9 @@ app.get('/api/comments', async (req, res) => {
 app.post('/api/comments', async (req, res) => {
     try {
         const { name, text } = req.body;
-        
-        // Validation
-        if (!name || !text) {
-            return res.status(400).json({ error: 'Missing fields' });
-        }
-        
-        // Length validation
-        if (name.length > 50 || text.length > 500) {
-            return res.status(400).json({ error: 'Content too long' });
-        }
-        
-        // Check for spam patterns
-        const spamPatterns = [/http[s]?:\/\//i, /<script/i, /javascript:/i];
-        if (spamPatterns.some(pattern => pattern.test(text) || pattern.test(name))) {
-            console.warn(`⚠️ Spam attempt blocked: ${name}`);
-            return res.status(400).json({ error: 'Invalid content' });
-        }
+        if (!name || !text) return res.status(400).json({ error: 'Missing fields' });
 
-        const newComment = new Comment({ name: name.trim(), text: text.trim() });
+        const newComment = new Comment({ name, text });
         await newComment.save();
         res.json({ success: true, comment: newComment });
     } catch (error) {
@@ -305,34 +181,21 @@ app.get('/api/articles', async (req, res) => {
 app.post('/api/articles', async (req, res) => {
     try {
         const { titleAr, titleEn, authorAr, authorEn, contentAr, contentEn, image } = req.body;
-        
         // Basic validation
-        if (!titleAr || !contentAr) {
-            return res.status(400).json({ error: 'Missing required fields (titleAr, contentAr)' });
-        }
-        
-        // Length validation
-        if (titleAr.length > 200 || contentAr.length > 10000) {
-            return res.status(400).json({ error: 'Content too long' });
-        }
-        
-        // Image URL validation
-        if (image && !image.match(/^(https?:\/\/|data:image\/)/i)) {
-            return res.status(400).json({ error: 'Invalid image URL' });
-        }
+        if (!titleAr || !contentAr) return res.status(400).json({ error: 'Missing required fields (titleAr, contentAr)' });
 
         const newArticle = new Article({
             title: {
-                ar: titleAr.trim(),
-                en: (titleEn || titleAr).trim()
+                ar: titleAr,
+                en: titleEn || titleAr
             },
             author: {
-                ar: (authorAr || '').trim(),
-                en: (authorEn || authorAr || '').trim()
+                ar: authorAr,
+                en: authorEn || authorAr
             },
             content: {
-                ar: contentAr.trim(),
-                en: (contentEn || contentAr).trim()
+                ar: contentAr,
+                en: contentEn || contentAr
             },
             image: image || '',
             likes: 0,
@@ -400,46 +263,15 @@ app.post('/api/articles/:id/comments', async (req, res) => {
     }
 });
 
-// ============================================
-// ERROR HANDLING
-// ============================================
-
-// 404 handler - Must be after all routes
-app.use((req, res) => {
-    res.status(404).json({ error: 'Route not found' });
-});
-
-// Global error handler
-app.use((err, req, res, next) => {
-    console.error('❌ Error:', err.message);
-    
-    // Don't leak error details in production
-    const message = process.env.NODE_ENV === 'production' 
-        ? 'An error occurred' 
-        : err.message;
-    
-    res.status(err.status || 500).json({ 
-        error: message,
-        ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
-    });
-});
-
-// ============================================
-// START SERVER
-// ============================================
+// Start
 connectDB().then(() => {
     app.listen(PORT, () => {
         console.log('');
         console.log('╔════════════════════════════════════════════╗');
         console.log('║     🌸 خادم تحريرها يعمل بنجاح! 🌸         ║');
-        console.log('║     🔒 Security Features Enabled           ║');
         console.log('╠════════════════════════════════════════════╣');
         console.log(`║  🌐 افتح الموقع: http://localhost:${PORT}      ║`);
-        console.log('║  📝 MongoDB Integration Active!           ║');
-        console.log('║  🛡️  Rate Limiting: ✓                      ║');
-        console.log('║  🔐 Helmet Security: ✓                    ║');
-        console.log('║  🧹 XSS Protection: ✓                     ║');
-        console.log('║  💉 NoSQL Injection Protection: ✓         ║');
+        console.log('║  � MongoDB Integration Active!           ║');
         console.log('╚════════════════════════════════════════════╝');
         console.log('');
     });
