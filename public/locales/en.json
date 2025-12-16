@@ -1,0 +1,259 @@
+{
+    "meta": {
+        "title": "HerLiberation | Under 18: A Child, Not a Wife",
+        "description": "Discover how the law defines children's rights between ages 9 and 18, and how early marriage can strip them of these rights",
+        "keywords": "children's rights, child marriage, Iraqi law, childhood protection",
+        "og_title": "HerLiberation - A Wife or a Child?",
+        "og_description": "Discover how the law defines children's rights and the dangers of early marriage"
+    },
+    "header": {
+        "theme_toggle": "Toggle theme"
+    },
+    "campaign": {
+        "slogan_ar": "Before 18: A Child, Not a Wife",
+        "slogan_en": "Under 18: A Child, Not a Wife"
+    },
+    "hero": {
+        "title_word1": "A Wife",
+        "title_word2": "or",
+        "title_word3": "a Child?",
+        "description": "Discover how the law defines children's rights between ages 9 and 18\nand how early marriage can strip them of these rights",
+        "discover_button": "Discover the Contradiction Now"
+    },
+    "stats": {
+        "visitors": "Visitors",
+        "likes": "Likes"
+    },
+    "stats_page": {
+        "title": "Shocking Numbers",
+        "percentage": "28%",
+        "percentage_text": "Rate of child marriage (under 18)",
+        "source": "Source: Central Statistical Organization / UNICEF",
+        "detail1": "1 in 4 Iraqi girls is married as a child",
+        "detail2": "Southern provinces recorded the highest rates",
+        "continue_button": "Understand How the Law Allows This"
+    },
+    "navigation": {
+        "rights": "Rights",
+        "map": "Map",
+        "articles": "Blog",
+        "comments": "Comments"
+    },
+    "age_selector": {
+        "title": "Select the child's age",
+        "years": "years"
+    },
+    "timeline": {
+        "minor": "Minor",
+        "adult": "Adult"
+    },
+    "rights_data": {
+        "9": {
+            "legalCapacity": {
+                "title": "Legal Capacity",
+                "statusLabel": "🔴 Fully Minor",
+                "description": "Cannot sign any official contract. All actions require guardian approval.",
+                "details": "A minor under 15 years cannot sign any official contract. All legal actions require approval from a guardian or custodian.",
+                "law": "Iraqi Minors Welfare Law No. 78"
+            },
+            "economicRights": {
+                "title": "Economic Rights",
+                "statusLabel": "🔴 No Self-Ownership",
+                "description": "No personal bank account. No right to manage money except through a guardian.",
+                "details": "A girl at this age cannot open a bank account or manage her finances independently.",
+                "law": "Iraqi Civil Law"
+            },
+            "civilRights": {
+                "title": "Civil Rights",
+                "statusLabel": "🔴 Restricted Movement",
+                "description": "No passport without both parents' approval. No travel without a male guardian.",
+                "details": "A passport cannot be issued for a minor without both parents' approval. Travel requires accompaniment by a male guardian.",
+                "law": "Iraqi Passport Law"
+            },
+            "marriage": {
+                "title": "Marriage (The Great Paradox)",
+                "statusLabel": "⚠️ Gray Danger Zone",
+                "description": "Reality: Religious marriage - contract before a cleric (not officially registered)",
+                "details": "Lives in a 'legal shadow' without rights, late registration upon pregnancy or childbirth, 'An elementary school child becomes a 'wife' by societal norms!'",
+                "law": "Loophole in Personal Status Law"
+            }
+        },
+        "15": {
+            "legalCapacity": {
+                "title": "Legal Capacity",
+                "statusLabel": "⚠️ Minor Under Supervision",
+                "description": "Signing contracts requires guardian approval and judicial supervision. Juvenile court is the protector.",
+                "details": "A girl can sign some contracts with guardian approval and under judicial supervision from juvenile court.",
+                "law": "Minors Welfare Law"
+            },
+            "economicRights": {
+                "title": "Economic Rights",
+                "statusLabel": "⚠️ Restricted Ownership",
+                "description": "Savings account under guardian supervision. Cannot withdraw money freely.",
+                "details": "Can open a savings account under guardian supervision, but cannot withdraw or manage funds freely.",
+                "law": "Iraqi Civil Law"
+            },
+            "civilRights": {
+                "title": "Civil Rights",
+                "statusLabel": "🔴 Restricted Movement",
+                "description": "No passport without both parents' approval. No travel without a male guardian.",
+                "details": "A passport cannot be issued for a minor without both parents' approval. Travel requires accompaniment by a male guardian.",
+                "law": "Iraqi Passport Law"
+            },
+            "marriage": {
+                "title": "Marriage (The Great Paradox)",
+                "statusLabel": "⚠️ Marriage with Judicial Permission (Article 8)",
+                "description": "\"The judge may authorize marriage for those who have completed fifteen years if necessary...\"",
+                "details": "The problem: Guardian consent may be coercive, and 'necessity' is interpreted loosely.",
+                "law": "Article 8 of Personal Status Law"
+            }
+        },
+        "18": {
+            "legalCapacity": {
+                "title": "Legal Capacity",
+                "statusLabel": "🟢 Full Citizenship",
+                "description": "Complete legal freedom of action.",
+                "details": "At 18 years, a girl becomes legally adult and has full capacity to act.",
+                "law": "Iraqi Civil Law"
+            },
+            "economicRights": {
+                "title": "Economic Rights",
+                "statusLabel": "🟢 Financially Free",
+                "description": "Own, sell, and buy with complete freedom.",
+                "details": "Complete freedom of ownership and financial management without restrictions.",
+                "law": "Iraqi Civil Law"
+            },
+            "civilRights": {
+                "title": "Civil Rights",
+                "statusLabel": "🟢 Free Movement",
+                "description": "Freedom to travel and obtain documents.",
+                "details": "Freedom to travel and obtain passport and documents independently.",
+                "law": "Iraqi Constitution"
+            },
+            "marriage": {
+                "title": "Marriage",
+                "statusLabel": "🟢 Free Decision",
+                "description": "Can marry without anyone's permission. Her personal decision is the law.",
+                "details": "Freedom to marry with her personal consent without needing permission from any other party.",
+                "law": "Personal Status Law"
+            }
+        }
+    },
+    "rights": {
+        "legal_reference": "Legal Reference",
+        "view_details": "View Details"
+    },
+    "impact_section": {
+        "title": "Potential Impacts"
+    },
+    "impact_data": {
+        "9": [
+            {
+                "text": "Early school dropout"
+            },
+            {
+                "text": "Loss of childhood"
+            },
+            {
+                "text": "Inability to make decisions"
+            }
+        ],
+        "15": [
+            {
+                "text": "Risk of early marriage"
+            },
+            {
+                "text": "Education interruption"
+            },
+            {
+                "text": "Early pregnancy"
+            }
+        ],
+        "18": [
+            {
+                "text": "Complete legal independence"
+            },
+            {
+                "text": "Freedom to make decisions"
+            },
+            {
+                "text": "Full economic rights"
+            }
+        ]
+    },
+    "map": {
+        "title": "Map of Pain Across Provinces",
+        "select_province": "Click on a province name to view the reality",
+        "type_label": "Pattern:",
+        "consequences_title": "⚠️ What Does This Reality Mean for Girls?",
+        "consequence1": "🔴 Increased sexual and physical violence",
+        "consequence2": "🔴 Significant health risks during pregnancy and childbirth",
+        "consequence3": "🔴 Deprivation of education and sharp decline in future job opportunities"
+    },
+    "provinces": [
+        {
+            "name": "Maysan",
+            "rate": "35%",
+            "type": "Highest rate",
+            "story": "Warda (13 years old) was married after her mother's death, forced into early pregnancy despite her young age, causing health complications"
+        },
+        {
+            "name": "Basra",
+            "rate": "31.5%",
+            "type": "Tribal",
+            "story": "Sara (12 years old) was forced into marriage due to family pressure and economic conditions, forced to leave school before adolescence"
+        },
+        {
+            "name": "Karbala",
+            "rate": "31.2%",
+            "type": "Social",
+            "story": "Hala (14 years old) was married to ease the family's financial burden, separated from school friends and her normal life"
+        },
+        {
+            "name": "Duhok",
+            "rate": "18.3%",
+            "type": "Legal/Social",
+            "story": "Noor (16 years old) obtained judicial permission for marriage, but regrets losing her freedom of choice and surrounding social pressures"
+        },
+        {
+            "name": "Kirkuk",
+            "rate": "15.9%",
+            "type": "Traditions",
+            "story": "Samar (15 years old) was married by her father to an older man with an unregistered contract, and the marriage ended quickly for her to enter a legal struggle to prove her rights and the rights of her child."
+        }
+    ],
+    "articles": {
+        "title": "Our Blog ✨",
+        "loading": "Loading blog...",
+        "no_articles": "No articles currently available",
+        "read_more": "Read More",
+        "likes": "Likes",
+        "comments": "Comments",
+        "comments_count": "Comments"
+    },
+    "comments": {
+        "title": "💬 Share Your Opinion",
+        "name_placeholder": "Your name (optional)",
+        "text_placeholder": "Write your comment here...",
+        "submit": "Submit Comment",
+        "visitor": "Visitor",
+        "now": "Now",
+        "minutes_ago": "{count} minutes ago",
+        "hours_ago": "{count} hours ago",
+        "days_ago": "{count} days ago"
+    },
+    "cta": {
+        "title": "Help Spread Awareness",
+        "description": "Share this website to raise community awareness about the dangers of child marriage",
+        "copy_link": "Copy Link",
+        "link_copied": "Copied!",
+        "whatsapp": "WhatsApp"
+    },
+    "footer": {
+        "follow_us": "Follow Us"
+    },
+    "share": {
+        "twitter_text": "Discover children's rights under the law and the dangers of early marriage 💔\n\n#HerLiberation #ChildhoodProtection",
+        "whatsapp_text": "Discover children's rights under the law and the dangers of early marriage"
+    }
+}

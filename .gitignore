@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Environment Variables
+.env
+
+# Database Fallbacks (Optional to ignore)
+database/
+
+# IDE files
+.vscode/

@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحريرها | قبل الـ 18 عامًا: طفلة لا زوجة</title>
+    <meta name="description"
+        content="اكتشف كيف يحدد القانون حقوق الطفل بين 9 و18 سنة، وكيف يمكن للزواج المبكر أن يسلبه هذه الحقوق">
+    <meta name="keywords" content="حقوق الطفل, زواج الأطفال, القانون العراقي, حماية الطفولة">
+    <meta property="og:title" content="تحريرها - زوجة أم طفلة؟">
+    <meta property="og:description" content="اكتشف كيف يحدد القانون حقوق الطفل ومخاطر الزواج المبكر">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع">
+        <span class="theme-icon">🌙</span>
+    </button>
+
+    <!-- Language Switcher - Global (appears on all pages) -->
+    <button class="language-toggle" id="languageToggle" aria-label="تبديل اللغة">
+        <span class="lang-icon" id="langIcon">EN</span>
+    </button>
+
+    <!-- Falling Particles Background -->
+    <div id="particles" class="particles-container"></div>
+
+    <!-- Page 1: Start Screen -->
+    <section id="startScreen" class="start-screen">
+        <div class="start-content">
+            <div class="logo-glow">
+                <img src="assets/images/1_20251127_202518.png" alt="HerLiberation Logo" class="hero-logo">
+            </div>
+
+            <!-- شعار الحملة -->
+            <div class="campaign-slogan">
+                <p class="slogan-ar">قبل الـ18 عامًا: طفلة لا زوجة</p>
+                <p class="slogan-en">Under 18: A Child, Not a Wife</p>
+            </div>
+
+            <h1 class="hero-title hero-title-small">
+                <span class="title-line" data-i18n="hero.title_word1">زوجة</span>
+                <span class="title-accent" data-i18n="hero.title_word2">أم</span>
+                <span class="title-line" data-i18n="hero.title_word3">طفلة؟</span>
+            </h1>
+            <p class="hero-description" data-i18n="hero.description">
+                اكتشف كيف يحدد القانون حقوق الطفل بين 9 و18 سنة
+                <br>وكيف يمكن للزواج المبكر أن يسلبه هذه الحقوق
+            </p>
+            <!-- زر الانتقال -->
+            <button class="discover-btn" id="startBtn">
+                <span data-i18n="hero.discover_button">اكتشف التناقض الآن</span>
+                <svg class="play-icon" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                    <polygon points="10,8 16,12 10,16" fill="currentColor" />
+                </svg>
+            </button>
+
+            <!-- Stats Counter -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-number" id="viewCount">0</span>
+                    <span class="stat-label" data-i18n="stats.visitors">زائر</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" id="likeCount">0</span>
+                    <span class="stat-label" data-i18n="stats.likes">إعجاب</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Elements -->
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </section>
+
+    <!-- Page 2: Stats Overlay (Shocking Statistics) -->
+    <section id="statsOverlay" class="stats-overlay hidden">
+        <div class="stats-overlay-content">
+            <!-- تأثير إضاءة خلفي -->
+            <div class="stats-glow"></div>
+
+            <h2 class="stats-title">
+                <span class="stats-icon">⚠️</span>
+                <span data-i18n="stats_page.title">أرقام صادمة</span>
+            </h2>
+
+            <div class="stats-boxes">
+                <!-- الرقم الرئيسي 28% -->
+                <div class="stats-main-box">
+                    <div class="stats-percentage">28%</div>
+                    <div class="stats-text">
+                        <p data-i18n="stats_page.percentage_text">نسبة زواج القاصرات (دون 18)</p>
+                        <span class="stats-source" data-i18n="stats_page.source">المصدر: الجهاز المركزي للإحصاء /
+                            اليونيسف</span>
+                    </div>
+                </div>
+
+                <!-- تفاصيل إضافية -->
+                <div class="stats-details">
+                    <div class="stats-detail-item">
+                        <span class="stats-bullet"></span>
+                        <p data-i18n="stats_page.detail1">1 من كل 4 فتيات عراقيات تتزوج طفلة</p>
+                    </div>
+                    <div class="stats-detail-item">
+                        <span class="stats-bullet"></span>
+                        <p data-i18n="stats_page.detail2">سجلت المحافظات الجنوبية أعلى النسب </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- زر الانتقال -->
+            <button class="stats-continue-btn" id="statsBtn">
+                <span data-i18n="stats_page.continue_button">افهم كيف يسمح القانون بهذا</span>
+                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none">
+                    <path d="M19 12H5M5 12L12 5M5 12L12 19" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Page 3: Main Experience -->
+    <main id="mainExperience" class="main-experience hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <img src="assets/images/1_20251127_202518.png" alt="تحريرها" class="header-logo">
+
+                <!-- Section Navigation -->
+                <nav class="section-nav">
+                    <a href="#rights-section" class="section-link" data-i18n="navigation.rights">الحقوق</a>
+                    <a href="#map-section" class="section-link" data-i18n="navigation.map">الخريطة</a>
+                    <a href="#articles-section" class="section-link" data-i18n="navigation.articles">المدونة</a>
+                    <a href="#comments-section" class="section-link" data-i18n="navigation.comments">التعليقات</a>
+                </nav>
+
+                <nav class="header-nav">
+                    <button class="nav-btn like-btn" id="likeBtn">
+                        <span class="heart-icon">🤍</span>
+                        <span id="headerLikeCount">0</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Age Selection -->
+        <section class="age-section">
+            <div class="age-card glass-card">
+                <h3 class="section-title" data-i18n="age_selector.title">اختر عمر الطفلة</h3>
+                <div class="age-slider-container">
+                    <input type="range" id="ageSlider" min="9" max="18" value="9" class="age-slider">
+                    <div class="age-labels">
+                        <span>9</span>
+                        <span>12</span>
+                        <span>15</span>
+                        <span>18</span>
+                    </div>
+                </div>
+                <div class="age-display">
+                    <div class="age-number" id="ageNumber">9</div>
+                    <span class="age-unit" data-i18n="age_selector.years">سنة</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="timeline-section">
+            <div class="timeline">
+                <div class="timeline-track"></div>
+                <div class="timeline-item" data-age="9-12">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-label" data-i18n="timeline.minor">قاصر</span>
+                </div>
+                <div class="timeline-item" data-age="13-15">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-label" data-i18n="timeline.minor">قاصر</span>
+                </div>
+                <div class="timeline-item" data-age="16-17">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-label" data-i18n="timeline.minor">قاصر</span>
+                </div>
+                <div class="timeline-item" data-age="18">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-label" data-i18n="timeline.adult">بالغة</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rights Cards -->
+        <section id="rights-section" class="rights-section">
+            <div class="rights-grid" id="rightsContainer">
+                <!-- Cards will be generated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Impact Section -->
+        <section class="impact-section">
+            <h3 class="section-title" data-i18n="impact_section.title">التأثيرات المحتملة</h3>
+            <div class="impact-grid" id="impactGrid">
+                <!-- Impact items will be generated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Map Section -->
+        <section id="map-section" class="map-section">
+            <div class="map-card glass-card">
+                <div class="map-header">
+                    <span class="map-icon">📍</span>
+                    <h3 class="section-title" style="margin-bottom: 0;" data-i18n="map.title">خريطة الألم في المحافظات
+                    </h3>
+                </div>
+
+                <!-- Provinces Grid -->
+                <div class="provinces-grid" id="provincesGrid">
+                    <!-- Buttons will be generated by JS -->
+                </div>
+
+                <!-- Selected Province Details -->
+                <div id="provinceDetails" class="province-details hidden">
+                    <div class="province-header">
+                        <h4 id="provinceName" class="province-name"></h4>
+                        <span id="provinceRate" class="province-rate"></span>
+                    </div>
+                    <div class="province-info">
+                        <p><span class="label" data-i18n="map.type_label">النمط:</span> <span id="provinceType"></span>
+                        </p>
+                        <p id="provinceStory" class="province-story"></p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="mapEmptyState" class="map-empty-state" data-i18n="map.select_province">
+                    اضغط على اسم محافظة لعرض الواقع
+                </div>
+
+                <!-- Consequences Section -->
+                <div id="mapConsequences" class="map-consequences hidden">
+                    <h4 class="consequences-title" data-i18n="map.consequences_title">⚠️ ما الذي يعنيه هذا الواقع
+                        للفتيات؟</h4>
+                    <ul class="consequences-list">
+                        <li data-i18n="map.consequence1">🔴 ارتفاع العنف الجنسي والجسدي</li>
+                        <li data-i18n="map.consequence2">🔴 مخاطر صحية كبيرة أثناء الحمل والولادة</li>
+                        <li data-i18n="map.consequence3">🔴 حرمان من التعليم وتراجع حاد في فرص العمل مستقبلاً</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Articles Section -->
+        <section id="articles-section" class="articles-section">
+            <div class="articles-header">
+                <h3 class="section-title" data-i18n="articles.title"> مدونتنا ✨</h3>
+            </div>
+
+            <!-- Admin Panel (Hidden by default) -->
+            <div id="adminPanel" class="admin-panel hidden">
+                <div class="admin-card glass-card">
+                    <h4 class="admin-title">✍️ كتابة مقال جديد</h4>
+                    <form id="articleForm" class="article-form">
+                        <input type="text" id="articleTitle" placeholder="عنوان المقال" class="input-field" required>
+                        <input type="text" id="articleAuthor" placeholder="اسم الكاتب" class="input-field" required>
+                        <textarea id="articleContent" placeholder="محتوى المقال..."
+                            class="textarea-field article-textarea" required></textarea>
+                        <input type="text" id="articleImage" placeholder="رابط الصورة (اختياري)" class="input-field">
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">نشر المقال</button>
+                            <button type="button" class="cancel-btn" id="cancelAdmin">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Articles Grid -->
+            <div class="articles-grid" id="articlesGrid">
+                <div class="loading-articles">
+                    <div class="loading-spinner"></div>
+                    <p>جاري تحميل المدونة...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comments Section -->
+        <section id="comments-section" class="comments-section">
+            <div class="comments-container glass-card">
+                <h3 class="section-title" data-i18n="comments.title">💬 شاركي رأيك</h3>
+
+                <!-- Comment Form -->
+                <form id="commentForm" class="comment-form">
+                    <input type="text" id="commentName" placeholder="اسمك (اختياري)" class="input-field"
+                        data-i18n-attr="placeholder" data-i18n="comments.name_placeholder">
+                    <textarea id="commentText" placeholder="اكتبي تعليقك هنا..." class="textarea-field" required
+                        data-i18n-attr="placeholder" data-i18n="comments.text_placeholder"></textarea>
+                    <button type="submit" class="submit-btn">
+                        <span data-i18n="comments.submit">إرسال التعليق</span>
+                    </button>
+                </form>
+
+                <!-- Comments List -->
+                <div class="comments-list" id="commentsList">
+                    <!-- Comments will be loaded -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta-section">
+            <div class="cta-card glass-card">
+                <h3 class="cta-title" data-i18n="cta.title">ساعد في نشر الوعي</h3>
+                <p class="cta-description" data-i18n="cta.description">شاركي هذا الموقع لتوعية المجتمع بمخاطر زواج
+                    الأطفال</p>
+                <div class="cta-buttons">
+                    <button class="cta-btn twitter-btn" onclick="shareTwitter()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </button>
+                    <button class="cta-btn whatsapp-btn" onclick="shareWhatsapp()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                    </button>
+                    <button class="cta-btn copy-btn" id="copyLink" onclick="copyLink()">
+                        <span>🔗</span> <span id="copyLinkText" data-i18n="cta.copy_link">نسخ الرابط</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <!-- Social Media Links -->
+            <div class="social-links">
+                <h4 class="social-title" data-i18n="footer.follow_us">تابعونا على</h4>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/profile.php?id=61584357966361" target="_blank"
+                        class="social-link facebook" title="Facebook">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                    </a>
+                    <a href="https://x.com/Herliberation1" target="_blank" class="social-link twitter"
+                        title="X (Twitter)">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/herliberation1/" target="_blank" class="social-link instagram"
+                        title="Instagram">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.threads.com/@herliberation1" target="_blank" class="social-link threads"
+                        title="Threads">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.96-.065-1.182.408-2.256 1.332-3.023.85-.706 2.024-1.129 3.394-1.226 1.12-.079 2.158.009 3.09.262-.052-1.104-.344-1.947-.874-2.51-.602-.64-1.515-.974-2.715-.997l-.089-.002c-1.048 0-2.321.246-3.028 1.025l-1.458-1.363c1.087-1.196 2.837-1.784 4.486-1.784l.128.001c1.743.032 3.133.558 4.132 1.564.93.937 1.456 2.227 1.564 3.838.672.204 1.29.486 1.841.844 1.114.723 1.937 1.728 2.379 2.907.603 1.606.596 4.063-1.534 6.148-1.855 1.815-4.125 2.61-7.346 2.634z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@herliberation1" target="_blank" class="social-link tiktok"
+                        title="TikTok">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <!-- Partner Logos -->
+            <div class="partners-section">
+                <div class="partners-grid">
+                    <img src="assets/images/Untitled (Facebook Post)_20251216_000924_0000.png" alt="Partner 1">
+                    <img src="assets/images/20251216_001029_0000.png" alt="Partner 2">
+                    <img src="assets/images/2.png" alt="Partner 3">
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content glass-card">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be generated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- i18n System (must load before main script) -->
+    <script src="js/i18n.js"></script>
+    <script src="js/i18n-integration.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

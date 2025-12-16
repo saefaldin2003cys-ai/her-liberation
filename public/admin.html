@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة | تحريرها</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0C0A1D;
+            --bg-secondary: #1A1730;
+            --bg-card: rgba(26, 23, 48, 0.9);
+            --accent-primary: #E91E8C;
+            --accent-secondary: #7C3AED;
+            --accent-gradient: linear-gradient(135deg, #E91E8C 0%, #7C3AED 100%);
+            --text-primary: #F9FAFB;
+            --text-secondary: #D1D5DB;
+            --text-muted: #6B7280;
+            --border-color: rgba(244, 114, 182, 0.2);
+            --success: #10B981;
+            --danger: #EF4444;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* Admin Dashboard */
+        .admin-dashboard {
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .back-link,
+        .logout-btn {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: all 0.3s;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--accent-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .textarea-field {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 9999px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(233, 30, 140, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .article-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .article-info h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .article-info p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-screen">
+            <div class="login-card">
+                <div class="login-icon">🔐</div>
+                <h1 class="login-title">لوحة الإدارة</h1>
+                <p class="login-subtitle">أدخل رمز الدخول للمتابعة</p>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <input type="password" id="adminPassword" class="input-field" placeholder="رمز الدخول" required>
+                    </div>
+                    <div id="loginError" class="login-error">رمز الدخول غير صحيح</div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">دخول</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="admin-dashboard">
+            <header class="header">
+                <h1>🔐 لوحة الإدارة</h1>
+                <div class="header-actions">
+                    <a href="/" class="back-link">← العودة للموقع</a>
+                    <button class="logout-btn" onclick="logout()">خروج</button>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="articlesCount">0</div>
+                    <div class="stat-label">مقالات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="viewsCount">0</div>
+                    <div class="stat-label">زيارات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="likesCount">0</div>
+                    <div class="stat-label">إعجابات</div>
+                </div>
+            </div>
+
+            <!-- Message -->
+            <div id="message" class="message" style="display: none;"></div>
+
+            <!-- New Article Form -->
+            <div class="card">
+                <h3 class="card-title">✍️ كتابة مقال جديد</h3>
+                <form id="articleForm">
+                    <!-- Title Fields -->
+                    <div class="row" style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="titleAr">عنوان المقال (بالعربية) *</label>
+                            <input type="text" id="titleAr" class="input-field" dir="rtl" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="titleEn">Article Title (English)</label>
+                            <input type="text" id="titleEn" class="input-field" dir="ltr">
+                        </div>
+                    </div>
+
+                    <!-- Author Fields -->
+                    <div class="row" style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="authorAr">اسم الكاتب (بالعربية) *</label>
+                            <input type="text" id="authorAr" class="input-field" dir="rtl" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="authorEn">Author Name (English)</label>
+                            <input type="text" id="authorEn" class="input-field" dir="ltr">
+                        </div>
+                    </div>
+
+                    <!-- Content Fields -->
+                    <div class="form-group">
+                        <label for="contentAr">محتوى المقال (بالعربية) *</label>
+                        <textarea id="contentAr" class="input-field textarea-field" dir="rtl" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contentEn">Article Content (English)</label>
+                        <textarea id="contentEn" class="input-field textarea-field" dir="ltr"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">رابط الصورة (اختياري)</label>
+                        <input type="text" id="image" class="input-field" placeholder="https://...">
+                    </div>
+                    <button type="submit" class="btn btn-primary">نشر المقال</button>
+                </form>
+            </div>
+
+            <!-- Articles List -->
+            <div class="card">
+                <h3 class="card-title">📚 المقالات المنشورة</h3>
+                <div id="articlesList" class="articles-list">
+                    <div class="empty-state">جاري التحميل...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        const ADMIN_PASSWORD = 'TahrirAdmin@2025';
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                showDashboard();
+            }
+        });
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+
+            if (password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showDashboard();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+            }
+        });
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            loadArticles();
+            loadStats();
+        }
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        // Load stats
+        function loadStats() {
+            fetch(`${API_URL}/stats`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('viewsCount').textContent = data.views || 0;
+                    document.getElementById('likesCount').textContent = data.likes || 0;
+                })
+                .catch(() => { });
+        }
+
+        // Load articles
+        function loadArticles() {
+            fetch(`${API_URL}/articles`)
+                .then(res => res.json())
+                .then(articles => {
+                    document.getElementById('articlesCount').textContent = articles.length;
+                    const container = document.getElementById('articlesList');
+
+                    if (articles.length === 0) {
+                        container.innerHTML = '<div class="empty-state">لا توجد مقالات بعد</div>';
+                        return;
+                    }
+
+                    container.innerHTML = articles.map(article => `
+                        <div class="article-item">
+                            <div class="article-info">
+                                <h4>${escapeHtml(article.title.ar || article.title)}</h4>
+                                <p>✍️ ${escapeHtml(article.author.ar || article.author)} • ❤️ ${article.likes || 0} إعجاب • 💬 ${(article.comments || []).length} تعليق</p>
+                            </div>
+                            <div class="article-actions">
+                                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">🗑️ حذف</button>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(() => {
+                    document.getElementById('articlesList').innerHTML = '<div class="empty-state">خطأ في تحميل المقالات</div>';
+                });
+        }
+
+        // Submit new article
+        document.getElementById('articleForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const titleAr = document.getElementById('titleAr').value.trim();
+            const titleEn = document.getElementById('titleEn').value.trim();
+            const authorAr = document.getElementById('authorAr').value.trim();
+            const authorEn = document.getElementById('authorEn').value.trim();
+            const contentAr = document.getElementById('contentAr').value.trim();
+            const contentEn = document.getElementById('contentEn').value.trim();
+            const image = document.getElementById('image').value.trim();
+
+            if (!titleAr || !authorAr || !contentAr) {
+                showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+
+            fetch(`${API_URL}/articles`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ titleAr, titleEn, authorAr, authorEn, contentAr, contentEn, image })
+            })
+                .then(res => res.json())
+                .then(() => {
+                    showMessage('تم نشر المقال بنجاح! ✅', 'success');
+                    document.getElementById('articleForm').reset();
+                    loadArticles();
+                })
+                .catch(() => {
+                    showMessage('حدث خطأ أثناء النشر', 'error');
+                });
+        });
+
+        // Delete article
+        function deleteArticle(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا المقال؟')) return;
+
+            fetch(`${API_URL}/articles/${id}`, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(() => {
+                    showMessage('تم حذف المقال ✅', 'success');
+                    loadArticles();
+                })
+                .catch(() => {
+                    showMessage('حدث خطأ أثناء الحذف', 'error');
+                });
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = `message ${type}`;
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 3000);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+
+</html>
