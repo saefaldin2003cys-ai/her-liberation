@@ -1,12 +1,12 @@
 /* ============================================
    تحريرها - JavaScript Application
-   Local Server API Integration
+   Production Ready API Integration
    ============================================ */
 
 // ============================================
 // API Configuration
 // ============================================
-const API_URL = 'http://localhost:5500/api';
+const API_URL = '/api';
 
 // ============================================
 // Rights Data
