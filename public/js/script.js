@@ -813,7 +813,8 @@ function submitArticle(e) {
             $('#articleAuthor').value = '';
             $('#articleContent').value = '';
             $('#articleImage').value = '';
-            $('#adminPanel')?.classList.add('hidden');
+            const adminPanel = $('#adminPanel');
+            if (adminPanel) adminPanel.classList.add('hidden');
             alert('تم نشر المقال بنجاح! ✅');
         })
         .catch(console.error);
@@ -875,7 +876,8 @@ function selectProvince(id) {
     details.classList.remove('hidden');
 
     // Show consequences section
-    $('#mapConsequences')?.classList.remove('hidden');
+    const mapConsequences = $('#mapConsequences');
+    if (mapConsequences) mapConsequences.classList.remove('hidden');
 
     activeProvinceId = id;
 
@@ -968,11 +970,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    $('#themeToggle')?.addEventListener('click', toggleTheme);
-    // Also handle header theme toggle
-    $('#headerThemeToggle')?.addEventListener('click', toggleTheme);
+    // Theme toggle - with iOS touch support
+    const themeToggle = $('#themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+        themeToggle.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            toggleTheme();
+        });
+    }
+    // Header theme toggle - with iOS touch support
+    const headerThemeToggle = $('#headerThemeToggle');
+    if (headerThemeToggle) {
+        headerThemeToggle.addEventListener('click', toggleTheme);
+        headerThemeToggle.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            toggleTheme();
+        });
+    }
     
-    $('#startBtn')?.addEventListener('click', startExperience);
+    // Start button - with iOS touch support
+    const startBtn = $('#startBtn');
+    if (startBtn) {
+        startBtn.addEventListener('click', startExperience);
+        startBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            startExperience();
+        });
+    }
 
     const ageSlider = $('#ageSlider');
     if (ageSlider) {
@@ -989,37 +1014,62 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    $('#likeBtn')?.addEventListener('click', toggleLike);
-    $('#shareBtn')?.addEventListener('click', () => {
-        const modal = $('#detailsModal');
-        const modalBody = $('#modalBody');
-        modalBody.innerHTML = `
-            <h3 class="modal-title">📤 شارك الموقع</h3>
-            <div class="share-buttons">
-                <button class="share-btn twitter" onclick="shareTwitter()">𝕏 تويتر</button>
-                <button class="share-btn whatsapp" onclick="shareWhatsapp()">واتساب</button>
-                <button class="share-btn copy" id="copyLink" onclick="copyLink()">📋 نسخ الرابط</button>
-            </div>
-        `;
-        modal.classList.add('show');
-    });
+    const likeBtn = $('#likeBtn');
+    if (likeBtn) likeBtn.addEventListener('click', toggleLike);
+    
+    const shareBtn = $('#shareBtn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+            const modal = $('#detailsModal');
+            const modalBody = $('#modalBody');
+            modalBody.innerHTML = `
+                <h3 class="modal-title">📤 شارك الموقع</h3>
+                <div class="share-buttons">
+                    <button class="share-btn twitter" onclick="shareTwitter()">𝕏 تويتر</button>
+                    <button class="share-btn whatsapp" onclick="shareWhatsapp()">واتساب</button>
+                    <button class="share-btn copy" id="copyLink" onclick="copyLink()">📋 نسخ الرابط</button>
+                </div>
+            `;
+            modal.classList.add('show');
+        });
+    }
 
-    $('#modalClose')?.addEventListener('click', closeModal);
-    $('#detailsModal')?.addEventListener('click', (e) => {
-        // Close when clicking outside the modal content (on overlay or modal background)
-        if (e.target.id === 'detailsModal' || e.target.classList.contains('modal-overlay')) {
-            closeModal();
-        }
-    });
+    const modalClose = $('#modalClose');
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    
+    const detailsModal = $('#detailsModal');
+    if (detailsModal) {
+        detailsModal.addEventListener('click', function(e) {
+            // Close when clicking outside the modal content (on overlay or modal background)
+            if (e.target.id === 'detailsModal' || e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+    }
 
-    $('#commentForm')?.addEventListener('submit', submitComment);
-    $('#cancelAdmin')?.addEventListener('click', () => {
-        $('#adminPanel')?.classList.add('hidden');
-    });
-    $('#articleForm')?.addEventListener('submit', submitArticle);
+    const commentForm = $('#commentForm');
+    if (commentForm) commentForm.addEventListener('submit', submitComment);
+    
+    const cancelAdmin = $('#cancelAdmin');
+    if (cancelAdmin) {
+        cancelAdmin.addEventListener('click', function() {
+            const adminPanel = $('#adminPanel');
+            if (adminPanel) adminPanel.classList.add('hidden');
+        });
+    }
+    
+    const articleForm = $('#articleForm');
+    if (articleForm) articleForm.addEventListener('submit', submitArticle);
 
-    // Stats Overlay Button
-    $('#statsBtn')?.addEventListener('click', goToMainExperience);
+    // Stats Overlay Button - with iOS touch support
+    const statsBtn = $('#statsBtn');
+    if (statsBtn) {
+        statsBtn.addEventListener('click', goToMainExperience);
+        statsBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            goToMainExperience();
+        });
+    }
 
     // ============================================
     // Language Toggle - Single Button (handles both global and header toggles)
@@ -1033,7 +1083,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update all button texts based on current language
         function updateToggleButtons() {
-            const currentLang = window.i18n?.getCurrentLanguage() || 'ar';
+            const currentLang = window.i18n && window.i18n.getCurrentLanguage ? window.i18n.getCurrentLanguage() : 'ar';
             // Show the OTHER language (the one we'll switch TO)
             const newText = currentLang === 'ar' ? 'EN' : 'ع';
             
@@ -1065,9 +1115,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Add click listeners to both buttons
-        toggleBtn?.addEventListener('click', handleLanguageToggle);
-        headerToggleBtn?.addEventListener('click', handleLanguageToggle);
+        // Add click listeners to both buttons - with iOS touch support
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', handleLanguageToggle);
+            toggleBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                handleLanguageToggle();
+            });
+        }
+        if (headerToggleBtn) {
+            headerToggleBtn.addEventListener('click', handleLanguageToggle);
+            headerToggleBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                handleLanguageToggle();
+            });
+        }
 
         // Listen for language changes from other sources
         document.addEventListener('languageChanged', function (e) {

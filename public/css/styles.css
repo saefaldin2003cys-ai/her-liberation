@@ -196,6 +196,7 @@ body {
     border-radius: var(--radius-full);
     background: var(--bg-card);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 2px solid var(--border-color);
     cursor: pointer;
     display: flex;
@@ -204,6 +205,10 @@ body {
     font-size: 1.2rem;
     transition: all var(--transition-base);
     box-shadow: var(--shadow-sm);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .theme-toggle:hover {
@@ -225,6 +230,7 @@ body {
     border-radius: var(--radius-full);
     background: var(--bg-card);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 2px solid var(--border-color);
     cursor: pointer;
     display: flex;
@@ -235,6 +241,10 @@ body {
     color: var(--text-primary);
     transition: all var(--transition-base);
     box-shadow: var(--shadow-sm);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .language-toggle:hover {
@@ -574,6 +584,10 @@ body:has(.main-experience:not(.hidden)) .language-toggle {
     color: var(--text-primary);
     transition: all var(--transition-base);
     border: 1px solid var(--border-color);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .header-toggle-btn:hover {
@@ -2933,6 +2947,10 @@ html[dir="ltr"] .modal-close {
     cursor: pointer;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     transition: all 0.3s ease;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .discover-btn:hover {
