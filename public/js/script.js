@@ -552,29 +552,39 @@ document.addEventListener('keydown', (e) => {
 // Articles State
 // ============================================
 let articles = [];
-let articleLikes = JSON.parse(localStorage.getItem('articleLikes') || '{}');
+var articleLikes = JSON.parse(localStorage.getItem('articleLikes') || '{}');
 
 // ============================================
 // Articles Functions (API)
 // ============================================
 function loadArticles() {
-    const grid = $('#articlesGrid');
-    if (!grid) return;
+    console.log('📚 Loading articles...');
+    var grid = document.getElementById('articlesGrid');
+    if (!grid) {
+        console.log('⚠️ Articles grid not found, retrying...');
+        setTimeout(loadArticles, 500);
+        return;
+    }
 
-    fetch(`${API_URL}/articles`)
-        .then(res => res.json())
-        .then(data => {
+    fetch(API_URL + '/articles')
+        .then(function(res) { 
+            if (!res.ok) throw new Error('API Error');
+            return res.json(); 
+        })
+        .then(function(data) {
+            console.log('✅ Articles loaded:', data.length);
             articles = data;
             renderArticles();
         })
-        .catch(() => {
+        .catch(function(err) {
+            console.warn('⚠️ Articles API failed:', err);
             articles = [];
             renderArticles();
         });
 }
 
 function renderArticles() {
-    const grid = $('#articlesGrid');
+    var grid = document.getElementById('articlesGrid');
     if (!grid) return;
 
     if (articles.length === 0) {
@@ -582,63 +592,69 @@ function renderArticles() {
         return;
     }
 
-    grid.innerHTML = articles.map(article => renderArticleCard(article)).join('');
+    var html = '';
+    for (var i = 0; i < articles.length; i++) {
+        html += renderArticleCard(articles[i]);
+    }
+    grid.innerHTML = html;
 }
 
 // Helper to get translated article content
 function getArticleContent(article) {
-    const lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+    var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
 
     // Handle both old string format and new object format
-    const title = typeof article.title === 'object' ? (article.title[lang] || article.title.ar) : article.title;
-    const author = typeof article.author === 'object' ? (article.author[lang] || article.author.ar) : article.author;
-    const content = typeof article.content === 'object' ? (article.content[lang] || article.content.ar) : article.content;
+    var title = typeof article.title === 'object' ? (article.title[lang] || article.title.ar) : article.title;
+    var author = typeof article.author === 'object' ? (article.author[lang] || article.author.ar) : article.author;
+    var content = typeof article.content === 'object' ? (article.content[lang] || article.content.ar) : article.content;
 
-    return { title, author, content };
+    return { title: title, author: author, content: content };
 }
 
 function renderArticleCard(article) {
-    const date = new Date(article.timestamp);
-    const lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
-    const formattedDate = date.toLocaleDateString(lang === 'en' ? 'en-US' : 'ar-IQ', {
+    var date = new Date(article.timestamp);
+    var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+    var formattedDate = date.toLocaleDateString(lang === 'en' ? 'en-US' : 'ar-IQ', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
 
-    const { title, author, content } = getArticleContent(article);
-    const excerpt = content.substring(0, 100) + '...';
-    const isLiked = articleLikes[article._id];
-    const commentsCount = (article.comments || []).length;
-    const readMoreText = lang === 'en' ? 'Read More' : 'قراءة المزيد';
+    var articleContent = getArticleContent(article);
+    var title = articleContent.title;
+    var author = articleContent.author;
+    var content = articleContent.content;
+    var excerpt = content.substring(0, 100) + '...';
+    var isLiked = articleLikes[article._id];
+    var commentsCount = (article.comments || []).length;
+    var readMoreText = lang === 'en' ? 'Read More' : 'قراءة المزيد';
 
-    return `
-        <article class="article-card">
-            ${article.image
-            ? `<img src="${escapeHTML(article.image)}" alt="${escapeHTML(title)}" class="article-image">`
-            : `<div class="article-image-placeholder"><span class="emoji-icon">📰</span></div>`
-        }
-            <div class="article-body">
-                <h4 class="article-title">${escapeHTML(title)}</h4>
-                <p class="article-date"><span class="emoji-icon">📅</span> ${formattedDate} ${author ? `• <span class="emoji-icon">✍️</span> ${escapeHTML(author)}` : ''}</p>
-                <p class="article-excerpt">${escapeHTML(excerpt)}</p>
-                
-                <hr class="article-divider">
-                
-                <div class="article-actions">
-                    <button class="article-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleArticleLike('${article._id}')">
-                        <span class="action-icon emoji-icon">${isLiked ? '❤️' : '🤍'}</span>
-                        <span>${article.likes || 0}</span>
-                    </button>
-                    <button class="article-action-btn" onclick="openArticle('${article._id}')">
-                        <span class="action-icon emoji-icon">💬</span>
-                        <span>${commentsCount}</span>
-                    </button>
-                    <button class="read-more-btn" onclick="openArticle('${article._id}')">${readMoreText}</button>
-                </div>
-            </div>
-        </article>
-    `;
+    var imageHtml = article.image
+        ? '<img src="' + escapeHTML(article.image) + '" alt="' + escapeHTML(title) + '" class="article-image">'
+        : '<div class="article-image-placeholder"><span class="emoji-icon">📰</span></div>';
+    
+    var authorHtml = author ? ' • <span class="emoji-icon">✍️</span> ' + escapeHTML(author) : '';
+
+    return '<article class="article-card">' +
+        imageHtml +
+        '<div class="article-body">' +
+            '<h4 class="article-title">' + escapeHTML(title) + '</h4>' +
+            '<p class="article-date"><span class="emoji-icon">📅</span> ' + formattedDate + authorHtml + '</p>' +
+            '<p class="article-excerpt">' + escapeHTML(excerpt) + '</p>' +
+            '<hr class="article-divider">' +
+            '<div class="article-actions">' +
+                '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\')">' +
+                    '<span class="action-icon emoji-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
+                    '<span>' + (article.likes || 0) + '</span>' +
+                '</button>' +
+                '<button class="article-action-btn" onclick="openArticle(\'' + article._id + '\')">' +
+                    '<span class="action-icon emoji-icon">💬</span>' +
+                    '<span>' + commentsCount + '</span>' +
+                '</button>' +
+                '<button class="read-more-btn" onclick="openArticle(\'' + article._id + '\')">' + readMoreText + '</button>' +
+            '</div>' +
+        '</div>' +
+    '</article>';
 }
 
 function toggleArticleLike(articleId) {
@@ -647,90 +663,103 @@ function toggleArticleLike(articleId) {
     articleLikes[articleId] = true;
     localStorage.setItem('articleLikes', JSON.stringify(articleLikes));
 
-    fetch(`${API_URL}/articles/${articleId}/like`, { method: 'POST' })
-        .then(res => res.json())
-        .then(() => loadArticles())
-        .catch(console.error);
+    fetch(API_URL + '/articles/' + articleId + '/like', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function() { loadArticles(); })
+        .catch(function(err) { console.error(err); });
 }
 
 function openArticle(articleId) {
-    const article = articles.find(a => a._id === articleId);
+    var article = null;
+    for (var i = 0; i < articles.length; i++) {
+        if (articles[i]._id === articleId) {
+            article = articles[i];
+            break;
+        }
+    }
     if (!article) return;
 
-    const modal = $('#detailsModal');
-    const modalBody = $('#modalBody');
-    const lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
-    const { title, author, content } = getArticleContent(article);
+    var modal = document.getElementById('detailsModal');
+    var modalBody = document.getElementById('modalBody');
+    var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+    var articleContent = getArticleContent(article);
+    var title = articleContent.title;
+    var author = articleContent.author;
+    var content = articleContent.content;
 
-    const date = new Date(article.timestamp);
-    const formattedDate = date.toLocaleDateString(lang === 'en' ? 'en-US' : 'ar-IQ', {
+    var date = new Date(article.timestamp);
+    var formattedDate = date.toLocaleDateString(lang === 'en' ? 'en-US' : 'ar-IQ', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
-    const isLiked = articleLikes[articleId];
-    const comments = article.comments || [];
+    var isLiked = articleLikes[articleId];
+    var comments = article.comments || [];
 
     // Translation constants
-    const likeText = lang === 'en' ? 'Like' : 'إعجاب';
-    const shareText = lang === 'en' ? 'Share' : 'مشاركة';
-    const commentsTitle = lang === 'en' ? 'Comments' : 'التعليقات';
-    const noCommentsText = lang === 'en' ? 'No comments yet' : 'لا توجد تعليقات بعد';
-    const writeCommentPlaceholder = lang === 'en' ? 'Write a comment...' : 'اكتب تعليقاً...';
-    const namePlaceholder = lang === 'en' ? 'Your Name' : 'اسمك';
-    const sendText = lang === 'en' ? 'Send' : 'إرسال';
-    const likesLabel = lang === 'en' ? 'Likes' : 'إعجاب';
-    const commentsLabel = lang === 'en' ? 'Comments' : 'تعليق';
+    var likeText = lang === 'en' ? 'Like' : 'إعجاب';
+    var shareText = lang === 'en' ? 'Share' : 'مشاركة';
+    var commentsTitle = lang === 'en' ? 'Comments' : 'التعليقات';
+    var noCommentsText = lang === 'en' ? 'No comments yet' : 'لا توجد تعليقات بعد';
+    var writeCommentPlaceholder = lang === 'en' ? 'Write a comment...' : 'اكتب تعليقاً...';
+    var namePlaceholder = lang === 'en' ? 'Your Name' : 'اسمك';
+    var sendText = lang === 'en' ? 'Send' : 'إرسال';
+    var likesLabel = lang === 'en' ? 'Likes' : 'إعجاب';
+    var commentsLabel = lang === 'en' ? 'Comments' : 'تعليق';
 
-    modalBody.innerHTML = `
-        <div class="article-modal-content">
-            ${article.image ? `<img src="${escapeHTML(article.image)}" alt="" class="article-modal-image">` : ''}
-            <h3 class="article-modal-title">${escapeHTML(title)}</h3>
-            <div class="article-modal-meta">
-                <span>📅 ${formattedDate}</span>
-                ${author ? `<span>✍️ ${escapeHTML(author)}</span>` : ''}
-                <span>❤️ ${article.likes || 0} ${likesLabel}</span>
-                <span>💬 ${comments.length} ${commentsLabel}</span>
-            </div>
-            <div class="article-modal-body">${escapeHTML(content).replace(/\n/g, '<br>')}</div>
-            
-            <div class="article-modal-actions">
-                <button class="article-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleArticleLike('${article._id}'); openArticle('${article._id}');">
-                    <span class="action-icon">${isLiked ? '❤️' : '🤍'}</span>
-                    <span>${likeText}</span>
-                </button>
-                <button class="article-action-btn" onclick="shareArticle('${article._id}')">
-                    <span class="action-icon">📤</span>
-                    <span>${shareText}</span>
-                </button>
-                ${isAdmin ? `<button class="article-action-btn danger" onclick="deleteArticle('${article._id}')">
-                    <span class="action-icon">🗑️</span>
-                    <span>حذف</span>
-                </button>` : ''}
-            </div>
+    // Build comments HTML
+    var commentsHtml = '';
+    if (comments.length > 0) {
+        for (var i = 0; i < comments.length; i++) {
+            var c = comments[i];
+            commentsHtml += '<div class="comment-item">' +
+                '<div class="comment-header">' +
+                    '<strong>' + escapeHTML(c.name) + '</strong>' +
+                    '<span class="comment-date">' + new Date(c.timestamp).toLocaleDateString() + '</span>' +
+                '</div>' +
+                '<p>' + escapeHTML(c.text) + '</p>' +
+            '</div>';
+        }
+    } else {
+        commentsHtml = '<p class="no-comments">' + noCommentsText + '</p>';
+    }
 
-            <div class="article-comments-section">
-                <h4>${commentsTitle}</h4>
-                <div class="comments-list">
-                    ${comments.length ? comments.map(c => `
-                        <div class="comment-item">
-                            <div class="comment-header">
-                                <strong>${escapeHTML(c.name)}</strong>
-                                <span class="comment-date">${new Date(c.timestamp).toLocaleDateString()}</span>
-                            </div>
-                            <p>${escapeHTML(c.text)}</p>
-                        </div>
-                    `).join('') : `<p class="no-comments">${noCommentsText}</p>`}
-                </div>
-                
-                <form class="comment-form" onsubmit="submitArticleComment(event, '${article._id}')">
-                    <input type="text" id="articleCommentName" placeholder="${namePlaceholder}" class="details-input" required>
-                    <textarea id="articleCommentText" placeholder="${writeCommentPlaceholder}" class="details-input" required></textarea>
-                    <button type="submit" class="details-btn">${sendText}</button>
-                </form>
-            </div>
-        </div>
-    `;
+    var imageHtml = article.image ? '<img src="' + escapeHTML(article.image) + '" alt="" class="article-modal-image">' : '';
+    var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
+    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" onclick="deleteArticle(\'' + article._id + '\')"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
+
+    modalBody.innerHTML = '<div class="article-modal-content">' +
+        imageHtml +
+        '<h3 class="article-modal-title">' + escapeHTML(title) + '</h3>' +
+        '<div class="article-modal-meta">' +
+            '<span>📅 ' + formattedDate + '</span>' +
+            authorHtml +
+            '<span>❤️ ' + (article.likes || 0) + ' ' + likesLabel + '</span>' +
+            '<span>💬 ' + comments.length + ' ' + commentsLabel + '</span>' +
+        '</div>' +
+        '<div class="article-modal-body">' + escapeHTML(content).replace(/\n/g, '<br>') + '</div>' +
+        '<div class="article-modal-actions">' +
+            '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\'); openArticle(\'' + article._id + '\');">' +
+                '<span class="action-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
+                '<span>' + likeText + '</span>' +
+            '</button>' +
+            '<button class="article-action-btn" onclick="shareArticle(\'' + article._id + '\')">' +
+                '<span class="action-icon">📤</span>' +
+                '<span>' + shareText + '</span>' +
+            '</button>' +
+            deleteBtn +
+        '</div>' +
+        '<div class="article-comments-section">' +
+            '<h4>' + commentsTitle + '</h4>' +
+            '<div class="comments-list">' + commentsHtml + '</div>' +
+            '<form class="comment-form" onsubmit="submitArticleComment(event, \'' + article._id + '\')">' +
+                '<input type="text" id="articleCommentName" placeholder="' + namePlaceholder + '" class="details-input" required>' +
+                '<textarea id="articleCommentText" placeholder="' + writeCommentPlaceholder + '" class="details-input" required></textarea>' +
+                '<button type="submit" class="details-btn">' + sendText + '</button>' +
+            '</form>' +
+        '</div>' +
+    '</div>';
+
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
