@@ -122,6 +122,31 @@ body {
     display: none !important;
 }
 
+/* ============================================
+   Global Touch/Mobile Button Compatibility
+   Applies to ALL buttons for iOS & Android
+   ============================================ */
+button,
+[role="button"],
+.btn,
+input[type="button"],
+input[type="submit"],
+a,
+label[for],
+[onclick] {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* All clickable elements with pointer cursor */
+[style*="cursor: pointer"],
+.clickable {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+}
+
 .glass-card {
     background: var(--bg-glass);
     backdrop-filter: blur(20px);
@@ -416,6 +441,10 @@ body:has(.main-experience:not(.hidden)) .language-toggle {
     cursor: pointer;
     transition: all var(--transition-base);
     box-shadow: var(--shadow-md), 0 0 30px var(--accent-glow);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .start-btn:hover {
@@ -697,6 +726,10 @@ body:has(.main-experience:not(.hidden)) .language-toggle {
     border-radius: var(--radius-full);
     cursor: pointer;
     transition: all var(--transition-base);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .nav-btn:hover {
@@ -753,6 +786,10 @@ body:has(.main-experience:not(.hidden)) .language-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .lang-btn-circle:hover {
@@ -989,6 +1026,10 @@ html[dir] * {
     background: transparent;
     border: none;
     outline: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .timeline-item:focus {
@@ -1049,6 +1090,8 @@ html[dir] * {
     transition: all var(--transition-base);
     position: relative;
     overflow: hidden;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
 }
 
 .right-card::before {
@@ -1160,6 +1203,10 @@ html[dir] * {
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all var(--transition-base);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .details-btn:hover {
@@ -1277,6 +1324,10 @@ html[dir] * {
     border-radius: var(--radius-full);
     cursor: pointer;
     transition: all var(--transition-base);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .submit-btn:hover {
@@ -1351,6 +1402,10 @@ html[dir] * {
     border-radius: var(--radius-full);
     cursor: pointer;
     transition: all var(--transition-base);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .admin-btn:hover {
@@ -1407,6 +1462,10 @@ html[dir] * {
     border-radius: var(--radius-full);
     cursor: pointer;
     transition: all var(--transition-base);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .cancel-btn:hover {
@@ -1534,6 +1593,10 @@ html[dir] * {
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all var(--transition-base);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .article-action-btn:hover {
@@ -1700,6 +1763,10 @@ html[dir] * {
     border-radius: var(--radius-full);
     cursor: pointer;
     transition: all var(--transition-base);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .cta-btn:hover {
