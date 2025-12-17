@@ -451,6 +451,80 @@
     <script src="js/i18n.js"></script>
     <script src="js/i18n-integration.js"></script>
     <script src="js/script.js"></script>
+    
+    <!-- iOS Safari Fallback - Direct Event Binding -->
+    <script>
+    (function() {
+        'use strict';
+        
+        // Wait for DOM
+        function onReady(fn) {
+            if (document.readyState !== 'loading') {
+                fn();
+            } else {
+                document.addEventListener('DOMContentLoaded', fn);
+            }
+        }
+        
+        onReady(function() {
+            console.log('iOS Fallback: Binding events...');
+            
+            // Discover Button
+            var startBtn = document.getElementById('startBtn');
+            if (startBtn) {
+                startBtn.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('Start button clicked!');
+                    if (typeof startExperience === 'function') {
+                        startExperience();
+                    }
+                };
+            }
+            
+            // Theme Toggle
+            var themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('Theme toggle clicked!');
+                    if (typeof toggleTheme === 'function') {
+                        toggleTheme();
+                    }
+                };
+            }
+            
+            // Language Toggle
+            var langToggle = document.getElementById('languageToggle');
+            if (langToggle) {
+                langToggle.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('Language toggle clicked!');
+                    if (window.i18n) {
+                        var currentLang = window.i18n.getCurrentLanguage();
+                        var newLang = currentLang === 'ar' ? 'en' : 'ar';
+                        window.i18n.setLanguage(newLang);
+                        var icon = document.getElementById('langIcon');
+                        if (icon) icon.textContent = newLang === 'ar' ? 'EN' : 'ع';
+                    }
+                };
+            }
+            
+            // Stats Button
+            var statsBtn = document.getElementById('statsBtn');
+            if (statsBtn) {
+                statsBtn.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('Stats button clicked!');
+                    if (typeof goToMainExperience === 'function') {
+                        goToMainExperience();
+                    }
+                };
+            }
+            
+            console.log('iOS Fallback: Events bound successfully!');
+        });
+    })();
+    </script>
 </body>
 
 </html>
