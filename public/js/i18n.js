@@ -232,7 +232,7 @@ window.i18n = new I18n();
 
 // Auto-initialize on DOM ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', function() {
         window.i18n.init();
     });
 } else {

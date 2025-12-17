@@ -1,7 +1,23 @@
 /* ============================================
    تحريرها - JavaScript Application
    Production Ready API Integration
+   iOS & Android Compatible
    ============================================ */
+
+// ============================================
+// Safari/iOS Polyfills
+// ============================================
+// requestIdleCallback polyfill for Safari
+if (typeof window.requestIdleCallback !== 'function') {
+    window.requestIdleCallback = function(callback) {
+        return setTimeout(function() {
+            callback({
+                didTimeout: false,
+                timeRemaining: function() { return 50; }
+            });
+        }, 1);
+    };
+}
 
 // ============================================
 // API Configuration
@@ -954,13 +970,19 @@ function loadDeferredContent() {
 // ============================================
 // Initialize - Optimized for fast loading
 // ============================================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM Content Loaded - Initializing...');
+    
     // Critical: Initialize theme and UI immediately
     initTheme();
     initParticles();
     
-    // Defer non-critical API calls
-    requestIdleCallback ? requestIdleCallback(loadDeferredContent) : setTimeout(loadDeferredContent, 100);
+    // Defer non-critical API calls - Safari compatible
+    if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(loadDeferredContent);
+    } else {
+        setTimeout(loadDeferredContent, 100);
+    }
 
     if (hasLiked) {
         const likeBtn = $('#likeBtn');
