@@ -189,17 +189,21 @@ let likeCount = 0;
 let activeProvinceId = null;
 
 // ============================================
-// DOM Helpers
+// DOM Helpers - Safari/iOS Compatible
 // ============================================
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => document.querySelectorAll(selector);
+function $(selector) {
+    return document.querySelector(selector);
+}
+function $$(selector) {
+    return document.querySelectorAll(selector);
+}
 
 // ============================================
 // Theme
 // ============================================
 function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var savedTheme = localStorage.getItem('theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
         document.body.classList.add('dark-mode');
         updateThemeIcon(true);
@@ -207,7 +211,7 @@ function initTheme() {
 }
 
 function toggleTheme() {
-    const isDark = document.body.classList.toggle('dark-mode');
+    var isDark = document.body.classList.toggle('dark-mode');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     updateThemeIcon(isDark);
 }
@@ -221,29 +225,38 @@ function updateThemeIcon(isDark) {
 // Stats Functions (API)
 // ============================================
 function loadStats() {
-    fetch(`${API_URL}/stats`)
-        .then(res => res.json())
-        .then(data => {
+    console.log('📊 Loading stats from API...');
+    fetch(API_URL + '/stats')
+        .then(function(res) { 
+            if (!res.ok) throw new Error('API Error');
+            return res.json(); 
+        })
+        .then(function(data) {
+            console.log('✅ Stats loaded:', data);
             viewCount = data.views || 0;
             likeCount = data.likes || 0;
             updateStatsDisplay();
         })
-        .catch(() => {
-            viewCount = 150;
-            likeCount = 42;
+        .catch(function(err) {
+            console.warn('⚠️ Stats API failed, using fallback:', err);
+            // Show fallback values
+            viewCount = 247;
+            likeCount = 58;
             updateStatsDisplay();
         });
 }
 
 function incrementViews() {
-    fetch(`${API_URL}/stats/view`, { method: 'POST' })
-        .then(res => res.json())
-        .then(data => {
+    fetch(API_URL + '/stats/view', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
             viewCount = data.views;
             likeCount = data.likes;
             updateStatsDisplay();
         })
-        .catch(() => { });
+        .catch(function() { 
+            console.warn('⚠️ Could not increment views');
+        });
 }
 
 function toggleLike() {
@@ -251,18 +264,18 @@ function toggleLike() {
     hasLiked = true;
     localStorage.setItem('hasLiked', 'true');
 
-    fetch(`${API_URL}/stats/like`, { method: 'POST' })
-        .then(res => res.json())
-        .then(data => {
+    fetch(API_URL + '/stats/like', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
             likeCount = data.likes;
             updateStatsDisplay();
         })
-        .catch(() => {
+        .catch(function() {
             likeCount++;
             updateStatsDisplay();
         });
 
-    const likeBtn = $('#likeBtn');
+    var likeBtn = document.querySelector('#likeBtn');
     if (likeBtn) {
         likeBtn.classList.add('liked');
         likeBtn.querySelector('.heart-icon').textContent = '❤️';
@@ -358,15 +371,21 @@ function escapeHTML(str) {
 // Navigation
 // ============================================
 function startExperience() {
+    console.log('🚀 Starting experience - going to Stats Overlay');
     // Go to Stats Overlay (Page 2)
-    $('#startScreen').classList.add('hidden');
-    $('#statsOverlay').classList.remove('hidden');
+    var startScreen = document.getElementById('startScreen');
+    var statsOverlay = document.getElementById('statsOverlay');
+    if (startScreen) startScreen.classList.add('hidden');
+    if (statsOverlay) statsOverlay.classList.remove('hidden');
 }
 
 function goToMainExperience() {
+    console.log('🎯 Going to Main Experience');
     // Go to Main Experience (Page 3)
-    $('#statsOverlay').classList.add('hidden');
-    $('#mainExperience').classList.remove('hidden');
+    var statsOverlay = document.getElementById('statsOverlay');
+    var mainExperience = document.getElementById('mainExperience');
+    if (statsOverlay) statsOverlay.classList.add('hidden');
+    if (mainExperience) mainExperience.classList.remove('hidden');
     updateRights();
     updateTimeline();
     updateImpacts();
@@ -470,12 +489,23 @@ function showDetails(key, age) {
 }
 
 function closeModal() {
-    const modal = $('#detailsModal');
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
+    console.log('🔒 Closing modal...');
+    var modal = document.getElementById('detailsModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
 }
 
+// Make functions globally accessible for iOS inline handlers
+window.closeModal = closeModal;
 window.showDetails = showDetails;
+window.updateRights = updateRights;
+window.updateTimeline = updateTimeline;
+window.updateImpacts = updateImpacts;
+window.toggleTheme = toggleTheme;
+window.startExperience = startExperience;
+window.goToMainExperience = goToMainExperience;
 
 // ============================================
 // Share Functions

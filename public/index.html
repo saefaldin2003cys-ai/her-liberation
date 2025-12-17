@@ -521,6 +521,68 @@
                 };
             }
             
+            // Age Slider - iOS fix
+            var ageSlider = document.getElementById('ageSlider');
+            if (ageSlider) {
+                ageSlider.oninput = function(e) {
+                    var age = parseInt(e.target.value);
+                    console.log('Age changed to: ' + age);
+                    
+                    // Update age display
+                    var ageNumber = document.getElementById('ageNumber');
+                    var ageValue = document.getElementById('ageValue');
+                    if (ageNumber) ageNumber.textContent = age;
+                    if (ageValue) ageValue.textContent = age;
+                    
+                    // Update rights and impacts
+                    if (typeof updateRights === 'function') updateRights();
+                    if (typeof updateTimeline === 'function') updateTimeline();
+                    if (typeof updateImpacts === 'function') updateImpacts();
+                };
+            }
+            
+            // Modal Close Button
+            var modalClose = document.getElementById('modalClose');
+            if (modalClose) {
+                modalClose.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('Modal close clicked!');
+                    if (typeof closeModal === 'function') {
+                        closeModal();
+                    } else {
+                        var modal = document.getElementById('detailsModal');
+                        if (modal) modal.classList.remove('show');
+                    }
+                };
+            }
+            
+            // Details Modal - close on overlay click
+            var detailsModal = document.getElementById('detailsModal');
+            if (detailsModal) {
+                detailsModal.onclick = function(e) {
+                    if (e.target.id === 'detailsModal' || e.target.classList.contains('modal-overlay')) {
+                        console.log('Modal overlay clicked!');
+                        if (typeof closeModal === 'function') {
+                            closeModal();
+                        } else {
+                            detailsModal.classList.remove('show');
+                        }
+                    }
+                };
+            }
+            
+            // Right Cards - click to show details
+            var rightCards = document.querySelectorAll('.right-card');
+            for (var i = 0; i < rightCards.length; i++) {
+                rightCards[i].onclick = function(e) {
+                    var key = this.getAttribute('data-right');
+                    console.log('Right card clicked: ' + key);
+                    if (typeof showRightDetails === 'function') {
+                        showRightDetails(key);
+                    }
+                };
+            }
+            
             console.log('iOS Fallback: Events bound successfully!');
         });
     })();
