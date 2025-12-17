@@ -2,6 +2,7 @@
  * ============================================
  * i18n Integration - Simplified Direct Approach
  * Translates dynamic content directly
+ * ES5 Compatible for iOS Safari
  * ============================================
  */
 
@@ -10,12 +11,13 @@ function waitForI18n(callback) {
     if (window.i18n && window.i18n.isInitialized()) {
         callback();
     } else {
-        setTimeout(() => waitForI18n(callback), 100);
+        setTimeout(function() { waitForI18n(callback); }, 100);
     }
 }
 
 // Helper to get translated text
-function t(key, fallback = '') {
+function t(key, fallback) {
+    fallback = fallback || '';
     if (window.i18n && window.i18n.isInitialized()) {
         return window.i18n.t(key, fallback);
     }

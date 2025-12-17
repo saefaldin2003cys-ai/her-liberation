@@ -22,12 +22,12 @@ if (typeof window.requestIdleCallback !== 'function') {
 // ============================================
 // API Configuration
 // ============================================
-const API_URL = '/api';
+var API_URL = '/api';
 
 // ============================================
 // Rights Data
 // ============================================
-const rightsData = {
+var rightsData = {
     9: {
         legalCapacity: {
             status: 'forbidden',
@@ -144,7 +144,7 @@ const rightsData = {
     }
 };
 
-const impactData = {
+var impactData = {
     9: [
         { type: 'danger', icon: '🚫', text: 'انقطاع التعليم المبكر' },
         { type: 'danger', icon: '💔', text: 'فقدان الطفولة' },
@@ -165,7 +165,7 @@ const impactData = {
 // ============================================
 // Provinces Data (Map)
 // ============================================
-const provincesData = [
+var provincesData = [
     { id: 1, name: 'ميسان', rate: '35%', type: 'أعلى نسبة', story: 'وردة (13 سنة) تزوجت بعد وفاة والدتها، وأجبرت على الحمل المبكر رغم صغر سنها، ما سبب لها مضاعفات صحية' },
     { id: 2, name: 'البصرة', rate: '31.5%', type: 'عشائري', story: '   سارة (12 سنة) أُجبرت على الزواج بسبب ضغوط العائلة والحالة الاقتصادية، واضطرت لترك المدرسة قبل بداية المراهقة' },
     { id: 3, name: 'كربلاء', rate: '31.2%', type: 'اجتماعي', story: 'هالة (14 سنة) زُوّجت لتخفيف أعباء العائلة المالية، وأُبعدت عن أصدقاء المدرسة وحياتها الطبيعية' },
@@ -173,7 +173,7 @@ const provincesData = [
     { id: 5, name: 'كركوك', rate: '15.9%', type: 'تقاليد', story: 'سمر (15 سنة) زوّجها والدها لرجل أكبر منها بعقد غير مسجّل، وانتهى الزواج سريعًا لتدخل في صراع قانوني لإثبات حقوقها وحقوق طفلها.' }
 ];
 
-const statusLabels = {
+var statusLabels = {
     forbidden: 'ممنوع',
     conditional: 'مشروط',
     allowed: 'مسموح'
@@ -182,11 +182,11 @@ const statusLabels = {
 // ============================================
 // State
 // ============================================
-let currentAge = 9;
-let hasLiked = localStorage.getItem('hasLiked') === 'true';
-let viewCount = 0;
-let likeCount = 0;
-let activeProvinceId = null;
+var currentAge = 9;
+var hasLiked = localStorage.getItem('hasLiked') === 'true';
+var viewCount = 0;
+var likeCount = 0;
+var activeProvinceId = null;
 
 // ============================================
 // DOM Helpers - Safari/iOS Compatible
@@ -217,7 +217,7 @@ function toggleTheme() {
 }
 
 function updateThemeIcon(isDark) {
-    const icon = $('.theme-icon');
+    var icon = document.querySelector('.theme-icon');
     if (icon) icon.textContent = isDark ? '☀️' : '🌙';
 }
 
@@ -283,9 +283,9 @@ function toggleLike() {
 }
 
 function updateStatsDisplay() {
-    const viewEl = $('#viewCount');
-    const likeEl = $('#likeCount');
-    const headerLikeEl = $('#headerLikeCount');
+    var viewEl = document.getElementById('viewCount');
+    var likeEl = document.getElementById('likeCount');
+    var headerLikeEl = document.getElementById('headerLikeCount');
 
     if (viewEl) viewEl.textContent = formatNumber(viewCount);
     if (likeEl) likeEl.textContent = formatNumber(likeCount);
@@ -301,68 +301,82 @@ function formatNumber(num) {
 // Comments Functions (API)
 // ============================================
 function loadComments() {
-    const list = $('#commentsList');
+    console.log('💬 Loading comments...');
+    var list = document.getElementById('commentsList');
     if (!list) {
+        console.log('⚠️ Comments list not found, retrying...');
         setTimeout(loadComments, 500);
         return;
     }
 
-    fetch(`${API_URL}/comments`)
-        .then(res => res.json())
-        .then(comments => renderComments(comments))
-        .catch(() => renderComments([]));
+    fetch(API_URL + '/comments')
+        .then(function(res) { 
+            if (!res.ok) throw new Error('API Error');
+            return res.json(); 
+        })
+        .then(function(comments) {
+            console.log('✅ Comments loaded:', comments.length);
+            renderComments(comments);
+        })
+        .catch(function(err) {
+            console.warn('⚠️ Comments API failed:', err);
+            renderComments([]);
+        });
 }
 
 function submitComment(e) {
     e.preventDefault();
-    const nameInput = $('#commentName');
-    const textInput = $('#commentText');
-    const name = nameInput.value.trim() || 'زائر';
-    const text = textInput.value.trim();
+    var nameInput = document.getElementById('commentName');
+    var textInput = document.getElementById('commentText');
+    var name = nameInput.value.trim() || 'زائر';
+    var text = textInput.value.trim();
     if (!text) return;
 
-    fetch(`${API_URL}/comments`, {
+    fetch(API_URL + '/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, text })
+        body: JSON.stringify({ name: name, text: text })
     })
-        .then(res => res.json())
-        .then(() => loadComments())
-        .catch(console.error);
+        .then(function(res) { return res.json(); })
+        .then(function() { loadComments(); })
+        .catch(function(err) { console.error(err); });
 
     nameInput.value = '';
     textInput.value = '';
 }
 
 function renderComments(comments) {
-    const list = $('#commentsList');
+    var list = document.getElementById('commentsList');
     if (!list) return;
-    list.innerHTML = comments.map(createCommentHTML).join('');
+    
+    var html = '';
+    for (var i = 0; i < comments.length; i++) {
+        html += createCommentHTML(comments[i]);
+    }
+    list.innerHTML = html;
 }
 
 function createCommentHTML(comment) {
-    const timeAgo = getTimeAgo(new Date(comment.timestamp));
-    return `
-        <div class="comment-item">
-            <div class="comment-header">
-                <span class="comment-author">${escapeHTML(comment.name)}</span>
-                <span class="comment-date">${timeAgo}</span>
-            </div>
-            <p class="comment-text">${escapeHTML(comment.text)}</p>
-        </div>
-    `;
+    var timeAgo = getTimeAgo(new Date(comment.timestamp));
+    return '<div class="comment-item">' +
+        '<div class="comment-header">' +
+            '<span class="comment-author">' + escapeHTML(comment.name) + '</span>' +
+            '<span class="comment-date">' + timeAgo + '</span>' +
+        '</div>' +
+        '<p class="comment-text">' + escapeHTML(comment.text) + '</p>' +
+    '</div>';
 }
 
 function getTimeAgo(date) {
-    const seconds = Math.floor((Date.now() - date) / 1000);
+    var seconds = Math.floor((Date.now() - date) / 1000);
     if (seconds < 60) return 'الآن';
-    if (seconds < 3600) return `منذ ${Math.floor(seconds / 60)} دقيقة`;
-    if (seconds < 86400) return `منذ ${Math.floor(seconds / 3600)} ساعة`;
-    return `منذ ${Math.floor(seconds / 86400)} يوم`;
+    if (seconds < 3600) return 'منذ ' + Math.floor(seconds / 60) + ' دقيقة';
+    if (seconds < 86400) return 'منذ ' + Math.floor(seconds / 3600) + ' ساعة';
+    return 'منذ ' + Math.floor(seconds / 86400) + ' يوم';
 }
 
 function escapeHTML(str) {
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
 }
@@ -402,88 +416,95 @@ function getClosestAge(age) {
 }
 
 function updateRights() {
-    const container = $('#rightsContainer');
+    var container = document.getElementById('rightsContainer');
     if (!container) return;
-    const closestAge = getClosestAge(currentAge);
-    const rights = rightsData[closestAge];
-
-    container.innerHTML = Object.entries(rights).map(([key, right]) => {
+    var closestAge = getClosestAge(currentAge);
+    var rights = rightsData[closestAge];
+    var keys = Object.keys(rights);
+    var html = '';
+    
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var right = rights[key];
         // Get translated text
-        const title = window.i18n ? window.i18n.t(`rights_data.${closestAge}.${key}.title`, right.title) : right.title;
-        const statusLabel = window.i18n ? window.i18n.t(`rights_data.${closestAge}.${key}.statusLabel`, right.statusLabel) : right.statusLabel;
-        const description = window.i18n ? window.i18n.t(`rights_data.${closestAge}.${key}.description`, right.description) : right.description;
-        const detailsBtn = window.i18n ? window.i18n.t('rights.view_details', 'عرض التفاصيل') : 'عرض التفاصيل';
+        var title = window.i18n ? window.i18n.t('rights_data.' + closestAge + '.' + key + '.title', right.title) : right.title;
+        var statusLabel = window.i18n ? window.i18n.t('rights_data.' + closestAge + '.' + key + '.statusLabel', right.statusLabel) : right.statusLabel;
+        var description = window.i18n ? window.i18n.t('rights_data.' + closestAge + '.' + key + '.description', right.description) : right.description;
+        var detailsBtn = window.i18n ? window.i18n.t('rights.view_details', 'عرض التفاصيل') : 'عرض التفاصيل';
 
-        return `
-            <div class="right-card ${right.status}" onclick="showDetails('${key}', ${closestAge})">
-                <div class="right-header">
-                    <span class="right-icon">${right.icon}</span>
-                    <div class="right-info">
-                        <h4 class="right-title">${title}</h4>
-                        <span class="right-status status-${right.status}">${statusLabel}</span>
-                    </div>
-                </div>
-                <p class="right-description">${description}</p>
-                <button class="details-btn">${detailsBtn}</button>
-            </div>
-        `;
-    }).join('');
+        html += '<div class="right-card ' + right.status + '" onclick="showDetails(\'' + key + '\', ' + closestAge + ')">' +
+            '<div class="right-header">' +
+                '<span class="right-icon">' + right.icon + '</span>' +
+                '<div class="right-info">' +
+                    '<h4 class="right-title">' + title + '</h4>' +
+                    '<span class="right-status status-' + right.status + '">' + statusLabel + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<p class="right-description">' + description + '</p>' +
+            '<button class="details-btn">' + detailsBtn + '</button>' +
+        '</div>';
+    }
+    container.innerHTML = html;
 }
 
 function updateTimeline() {
-    const items = $$('.timeline-item');
-    items.forEach(item => {
-        const ageRange = item.dataset.age;
-        let isActive = false;
+    var items = document.querySelectorAll('.timeline-item');
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var ageRange = item.dataset.age;
+        var isActive = false;
         if (ageRange === '9-12' && currentAge >= 9 && currentAge <= 12) isActive = true;
         if (ageRange === '13-15' && currentAge >= 13 && currentAge <= 15) isActive = true;
         if (ageRange === '16-17' && currentAge >= 16 && currentAge <= 17) isActive = true;
         if (ageRange === '18' && currentAge >= 18) isActive = true;
-        item.classList.toggle('active', isActive);
-    });
+        if (isActive) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    }
 }
 
 function updateImpacts() {
-    const container = $('#impactGrid');
+    var container = document.getElementById('impactGrid');
     if (!container) return;
-    const closestAge = getClosestAge(currentAge);
-    const impacts = impactData[closestAge] || [];
+    var closestAge = getClosestAge(currentAge);
+    var impacts = impactData[closestAge] || [];
+    var html = '';
 
-    container.innerHTML = impacts.map((impact, index) => {
+    for (var i = 0; i < impacts.length; i++) {
+        var impact = impacts[i];
         // Get translated text
-        const text = window.i18n ? window.i18n.t(`impact_data.${closestAge}.${index}.text`, impact.text) : impact.text;
+        var text = window.i18n ? window.i18n.t('impact_data.' + closestAge + '.' + i + '.text', impact.text) : impact.text;
 
-        return `
-            <div class="impact-item ${impact.type}">
-                <span class="impact-icon">${impact.icon}</span>
-                <span class="impact-text">${text}</span>
-            </div>
-        `;
-    }).join('');
+        html += '<div class="impact-item ' + impact.type + '">' +
+            '<span class="impact-icon">' + impact.icon + '</span>' +
+            '<span class="impact-text">' + text + '</span>' +
+        '</div>';
+    }
+    container.innerHTML = html;
 }
 
 // ============================================
 // Modal Functions
 // ============================================
 function showDetails(key, age) {
-    const modal = $('#detailsModal');
-    const modalBody = $('#modalBody');
-    const right = rightsData[age][key];
+    var modal = document.getElementById('detailsModal');
+    var modalBody = document.getElementById('modalBody');
+    var right = rightsData[age][key];
 
     // Get translated text
-    const title = window.i18n ? window.i18n.t(`rights_data.${age}.${key}.title`, right.title) : right.title;
-    const details = window.i18n ? window.i18n.t(`rights_data.${age}.${key}.details`, right.details) : right.details;
-    const law = window.i18n ? window.i18n.t(`rights_data.${age}.${key}.law`, right.law) : right.law;
-    const legalRefLabel = window.i18n ? window.i18n.t('rights.legal_reference', 'المرجع القانوني') : 'المرجع القانوني';
+    var title = window.i18n ? window.i18n.t('rights_data.' + age + '.' + key + '.title', right.title) : right.title;
+    var details = window.i18n ? window.i18n.t('rights_data.' + age + '.' + key + '.details', right.details) : right.details;
+    var law = window.i18n ? window.i18n.t('rights_data.' + age + '.' + key + '.law', right.law) : right.law;
+    var legalRefLabel = window.i18n ? window.i18n.t('rights.legal_reference', 'المرجع القانوني') : 'المرجع القانوني';
 
-    modalBody.innerHTML = `
-        <h3 class="modal-title">${right.icon} ${title}</h3>
-        <p class="modal-description">${details}</p>
-        <div class="modal-law">
-            <div class="law-title">📜 ${legalRefLabel}</div>
-            <div class="law-text">${law}</div>
-        </div>
-    `;
+    modalBody.innerHTML = '<h3 class="modal-title">' + right.icon + ' ' + title + '</h3>' +
+        '<p class="modal-description">' + details + '</p>' +
+        '<div class="modal-law">' +
+            '<div class="law-title">📜 ' + legalRefLabel + '</div>' +
+            '<div class="law-text">' + law + '</div>' +
+        '</div>';
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
@@ -511,26 +532,27 @@ window.goToMainExperience = goToMainExperience;
 // Share Functions
 // ============================================
 function shareTwitter() {
-    const text = window.i18n ? window.i18n.t('share.twitter_text', 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة') : 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة';
-    const url = window.location.href;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    var text = window.i18n ? window.i18n.t('share.twitter_text', 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة') : 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة';
+    var url = window.location.href;
+    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
 }
 
 function shareWhatsapp() {
-    const text = window.i18n ? window.i18n.t('share.whatsapp_text', `اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر\n\n${window.location.href}`) : `اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر\n\n${window.location.href}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    var defaultText = 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر\n\n' + window.location.href;
+    var text = window.i18n ? window.i18n.t('share.whatsapp_text', defaultText) : defaultText;
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 
 function copyLink() {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-        const btn = $('#copyLink');
+    navigator.clipboard.writeText(window.location.href).then(function() {
+        var btn = document.getElementById('copyLink');
         if (!btn) return;
 
-        const originalText = btn.innerHTML;
-        const copiedText = window.i18n ? window.i18n.t('cta.link_copied', 'تم النسخ!') : 'تم النسخ!';
+        var originalText = btn.innerHTML;
+        var copiedText = window.i18n ? window.i18n.t('cta.link_copied', 'تم النسخ!') : 'تم النسخ!';
 
-        btn.innerHTML = `<span>✓</span> ${copiedText}`;
-        setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        btn.innerHTML = '<span>✓</span> ' + copiedText;
+        setTimeout(function() { btn.innerHTML = originalText; }, 2000);
     });
 }
 
@@ -538,10 +560,10 @@ function copyLink() {
 // Admin Password - SECRET ACCESS
 // Press Ctrl+Shift+K to open admin login
 // ============================================
-const ADMIN_PASSWORD = 'TahrirAdmin@2025';
-let isAdmin = localStorage.getItem('isAdmin') === 'true';
+var ADMIN_PASSWORD = 'TahrirAdmin@2025';
+var isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.shiftKey && e.key === 'K') {
         e.preventDefault();
         showAdminLogin();
@@ -551,7 +573,7 @@ document.addEventListener('keydown', (e) => {
 // ============================================
 // Articles State
 // ============================================
-let articles = [];
+var articles = [];
 var articleLikes = JSON.parse(localStorage.getItem('articleLikes') || '{}');
 
 // ============================================
@@ -766,68 +788,73 @@ function openArticle(articleId) {
 
 function submitArticleComment(e, articleId) {
     e.preventDefault();
-    const name = document.getElementById('articleCommentName').value.trim() || 'زائر';
-    const text = document.getElementById('articleCommentText').value.trim();
+    var nameInput = document.getElementById('articleCommentName');
+    var textInput = document.getElementById('articleCommentText');
+    var name = nameInput.value.trim() || 'زائر';
+    var text = textInput.value.trim();
     if (!text) return;
 
-    fetch(`${API_URL}/articles/${articleId}/comments`, {
+    fetch(API_URL + '/articles/' + articleId + '/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, text })
+        body: JSON.stringify({ name: name, text: text })
     })
-        .then(res => res.json())
-        .then(() => {
+        .then(function(res) { return res.json(); })
+        .then(function() {
             loadArticles();
             openArticle(articleId);
         })
-        .catch(console.error);
+        .catch(function(err) { console.error(err); });
 }
 
 function shareArticle(articleId) {
-    const article = articles.find(a => a._id === articleId);
+    var article = null;
+    for (var i = 0; i < articles.length; i++) {
+        if (articles[i]._id === articleId) {
+            article = articles[i];
+            break;
+        }
+    }
     if (!article) return;
-    const { title } = getArticleContent(article);
-    const text = `${title}\n\n${window.location.href}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    var articleContent = getArticleContent(article);
+    var title = articleContent.title;
+    var text = title + '\n\n' + window.location.href;
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 
 function deleteArticle(articleId) {
     if (!isAdmin) return;
     if (!confirm('هل أنت متأكد من حذف هذا المقال؟')) return;
 
-    fetch(`${API_URL}/articles/${articleId}`, { method: 'DELETE' })
-        .then(() => {
+    fetch(API_URL + '/articles/' + articleId, { method: 'DELETE' })
+        .then(function() {
             closeModal();
             loadArticles();
         })
-        .catch(console.error);
+        .catch(function(err) { console.error(err); });
 }
 
 // ============================================
 // Admin Functions
 // ============================================
 function showAdminLogin() {
-    const modal = $('#detailsModal');
-    const modalBody = $('#modalBody');
+    var modal = document.getElementById('detailsModal');
+    var modalBody = document.getElementById('modalBody');
 
     if (isAdmin) {
-        modalBody.innerHTML = `
-            <div class="admin-login-form">
-                <h3>👋 مرحباً أيها المدير!</h3>
-                <p>أنت مسجل الدخول كمدير</p>
-                <button class="submit-btn" onclick="toggleAdminPanel()">✍️ كتابة مقال جديد</button>
-                <button class="cancel-btn" onclick="logoutAdmin()">🚪 تسجيل الخروج</button>
-            </div>
-        `;
+        modalBody.innerHTML = '<div class="admin-login-form">' +
+            '<h3>👋 مرحباً أيها المدير!</h3>' +
+            '<p>أنت مسجل الدخول كمدير</p>' +
+            '<button class="submit-btn" onclick="toggleAdminPanel()">✍️ كتابة مقال جديد</button>' +
+            '<button class="cancel-btn" onclick="logoutAdmin()">🚪 تسجيل الخروج</button>' +
+            '</div>';
     } else {
-        modalBody.innerHTML = `
-            <div class="admin-login-form">
-                <h3>🔐 دخول لوحة الإدارة</h3>
-                <input type="password" id="adminPassword" placeholder="كلمة المرور" class="input-field">
-                <button class="submit-btn" onclick="loginAdmin()">دخول</button>
-                <button class="cancel-btn" onclick="closeModal()">إلغاء</button>
-            </div>
-        `;
+        modalBody.innerHTML = '<div class="admin-login-form">' +
+            '<h3>🔐 دخول لوحة الإدارة</h3>' +
+            '<input type="password" id="adminPassword" placeholder="كلمة المرور" class="input-field">' +
+            '<button class="submit-btn" onclick="loginAdmin()">دخول</button>' +
+            '<button class="cancel-btn" onclick="closeModal()">إلغاء</button>' +
+            '</div>';
     }
 
     modal.classList.add('show');
@@ -835,7 +862,8 @@ function showAdminLogin() {
 }
 
 function loginAdmin() {
-    const password = $('#adminPassword').value;
+    var passwordEl = document.getElementById('adminPassword');
+    var password = passwordEl ? passwordEl.value : '';
     if (password === ADMIN_PASSWORD) {
         isAdmin = true;
         localStorage.setItem('isAdmin', 'true');
@@ -856,9 +884,13 @@ function logoutAdmin() {
 
 function toggleAdminPanel() {
     closeModal();
-    const panel = $('#adminPanel');
+    var panel = document.getElementById('adminPanel');
     if (panel) {
-        panel.classList.toggle('hidden');
+        if (panel.classList.contains('hidden')) {
+            panel.classList.remove('hidden');
+        } else {
+            panel.classList.add('hidden');
+        }
         if (!panel.classList.contains('hidden')) {
             panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -869,30 +901,30 @@ function submitArticle(e) {
     e.preventDefault();
     if (!isAdmin) return;
 
-    const title = $('#articleTitle').value.trim();
-    const author = $('#articleAuthor').value.trim();
-    const content = $('#articleContent').value.trim();
-    const image = $('#articleImage').value.trim();
+    var title = document.getElementById('articleTitle').value.trim();
+    var author = document.getElementById('articleAuthor').value.trim();
+    var content = document.getElementById('articleContent').value.trim();
+    var image = document.getElementById('articleImage').value.trim();
 
     if (!title || !content || !author) return;
 
-    fetch(`${API_URL}/articles`, {
+    fetch(API_URL + '/articles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, author, content, image })
+        body: JSON.stringify({ title: title, author: author, content: content, image: image })
     })
-        .then(res => res.json())
-        .then(() => {
+        .then(function(res) { return res.json(); })
+        .then(function() {
             loadArticles();
-            $('#articleTitle').value = '';
-            $('#articleAuthor').value = '';
-            $('#articleContent').value = '';
-            $('#articleImage').value = '';
-            const adminPanel = $('#adminPanel');
+            document.getElementById('articleTitle').value = '';
+            document.getElementById('articleAuthor').value = '';
+            document.getElementById('articleContent').value = '';
+            document.getElementById('articleImage').value = '';
+            var adminPanel = document.getElementById('adminPanel');
             if (adminPanel) adminPanel.classList.add('hidden');
             alert('تم نشر المقال بنجاح! ✅');
         })
-        .catch(console.error);
+        .catch(function(err) { console.error(err); });
 }
 
 // ============================================
@@ -911,55 +943,68 @@ window.toggleAdminPanel = toggleAdminPanel;
 // Map Functions
 // ============================================
 function initMap() {
-    const grid = $('#provincesGrid');
+    var grid = document.getElementById('provincesGrid');
     if (!grid) return;
 
-    grid.innerHTML = provincesData.map((prov, index) => {
-        // Get translated name
-        const name = window.i18n ? window.i18n.t(`provinces.${index}.name`, prov.name) : prov.name;
-
-        return `
-            <button class="province-btn" onclick="selectProvince(${prov.id})">
-                ${name}
-            </button>
-        `;
-    }).join('');
+    var html = '';
+    for (var i = 0; i < provincesData.length; i++) {
+        var prov = provincesData[i];
+        var name = window.i18n ? window.i18n.t('provinces.' + i + '.name', prov.name) : prov.name;
+        html += '<button class="province-btn" onclick="selectProvince(' + prov.id + ')">' + name + '</button>';
+    }
+    grid.innerHTML = html;
 }
 
 function selectProvince(id) {
-    const index = provincesData.findIndex(p => p.id === id);
+    var index = -1;
+    for (var i = 0; i < provincesData.length; i++) {
+        if (provincesData[i].id === id) {
+            index = i;
+            break;
+        }
+    }
     if (index === -1) return;
-    const province = provincesData[index];
+    var province = provincesData[index];
 
     // Get translations
-    const name = window.i18n ? window.i18n.t(`provinces.${index}.name`, province.name) : province.name;
-    const rate = window.i18n ? window.i18n.t(`provinces.${index}.rate`, province.rate) : province.rate;
-    const type = window.i18n ? window.i18n.t(`provinces.${index}.type`, province.type) : province.type;
-    const story = window.i18n ? window.i18n.t(`provinces.${index}.story`, province.story) : province.story;
-    const childMarriageText = window.i18n ? window.i18n.t('stats_page.percentage_text', 'زواج قاصرات') : 'زواج قاصرات';
+    var name = window.i18n ? window.i18n.t('provinces.' + index + '.name', province.name) : province.name;
+    var rate = window.i18n ? window.i18n.t('provinces.' + index + '.rate', province.rate) : province.rate;
+    var type = window.i18n ? window.i18n.t('provinces.' + index + '.type', province.type) : province.type;
+    var story = window.i18n ? window.i18n.t('provinces.' + index + '.story', province.story) : province.story;
+    var childMarriageText = window.i18n ? window.i18n.t('stats_page.percentage_text', 'زواج قاصرات') : 'زواج قاصرات';
 
     // Update active state
-    $$('.province-btn').forEach((btn, i) => {
-        // Re-fetch translated name for comparison to be safe, or just check index if we had it attached to DOM
-        // Simpler: just check if the button text matches the current translated name
-        btn.classList.toggle('active', btn.textContent.trim() === name);
-    });
+    var buttons = document.querySelectorAll('.province-btn');
+    for (var j = 0; j < buttons.length; j++) {
+        var btn = buttons[j];
+        if (btn.textContent.trim() === name) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    }
 
     // Show details
-    $('#mapEmptyState').classList.add('hidden');
-    const details = $('#provinceDetails');
-    details.classList.remove('hidden');
+    var emptyState = document.getElementById('mapEmptyState');
+    if (emptyState) emptyState.classList.add('hidden');
+    var details = document.getElementById('provinceDetails');
+    if (details) details.classList.remove('hidden');
 
     // Show consequences section
-    const mapConsequences = $('#mapConsequences');
+    var mapConsequences = document.getElementById('mapConsequences');
     if (mapConsequences) mapConsequences.classList.remove('hidden');
 
     activeProvinceId = id;
 
-    $('#provinceName').textContent = name;
-    $('#provinceRate').textContent = `${rate} ${childMarriageText}`;
-    $('#provinceType').textContent = type;
-    $('#provinceStory').textContent = `"${story}"`;
+    var provinceNameEl = document.getElementById('provinceName');
+    var provinceRateEl = document.getElementById('provinceRate');
+    var provinceTypeEl = document.getElementById('provinceType');
+    var provinceStoryEl = document.getElementById('provinceStory');
+    
+    if (provinceNameEl) provinceNameEl.textContent = name;
+    if (provinceRateEl) provinceRateEl.textContent = rate + ' ' + childMarriageText;
+    if (provinceTypeEl) provinceTypeEl.textContent = type;
+    if (provinceStoryEl) provinceStoryEl.textContent = '"' + story + '"';
 }
 
 window.selectProvince = selectProvince;
@@ -968,20 +1013,20 @@ window.selectProvince = selectProvince;
 // Particles Effect
 // ============================================
 function initParticles() {
-    const container = $('#particles');
+    var container = document.getElementById('particles');
     if (!container) return;
 
-    const particleCount = 30;
+    var particleCount = 30;
 
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
+    for (var i = 0; i < particleCount; i++) {
+        var particle = document.createElement('div');
         particle.className = 'particle';
 
         // Random position
         particle.style.left = Math.random() * 100 + '%';
 
         // Random animation duration (5-15 seconds)
-        const duration = 5 + Math.random() * 10;
+        var duration = 5 + Math.random() * 10;
         particle.style.animationDuration = duration + 's';
 
         // Random delay
@@ -995,18 +1040,19 @@ function initParticles() {
 // Scroll Reveal Animations
 // ============================================
 function initScrollReveal() {
-    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
 
-    const revealOnScroll = () => {
-        revealElements.forEach(el => {
-            const elementTop = el.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
+    function revealOnScroll() {
+        for (var i = 0; i < revealElements.length; i++) {
+            var el = revealElements[i];
+            var elementTop = el.getBoundingClientRect().top;
+            var windowHeight = window.innerHeight;
 
             if (elementTop < windowHeight - 100) {
                 el.classList.add('active');
             }
-        });
-    };
+        }
+    }
 
     window.addEventListener('scroll', revealOnScroll);
     revealOnScroll(); // Initial check
@@ -1044,15 +1090,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (hasLiked) {
-        const likeBtn = $('#likeBtn');
-        if (likeBtn) {
-            likeBtn.classList.add('liked');
-            likeBtn.querySelector('.heart-icon').textContent = '❤️';
+        var likeBtnInit = document.getElementById('likeBtn');
+        if (likeBtnInit) {
+            likeBtnInit.classList.add('liked');
+            var heartIcon = likeBtnInit.querySelector('.heart-icon');
+            if (heartIcon) heartIcon.textContent = '❤️';
         }
     }
 
     // Theme toggle - with iOS touch support
-    const themeToggle = $('#themeToggle');
+    var themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
         themeToggle.addEventListener('touchend', function(e) {
@@ -1061,7 +1108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     // Header theme toggle - with iOS touch support
-    const headerThemeToggle = $('#headerThemeToggle');
+    var headerThemeToggle = document.getElementById('headerThemeToggle');
     if (headerThemeToggle) {
         headerThemeToggle.addEventListener('click', toggleTheme);
         headerThemeToggle.addEventListener('touchend', function(e) {
@@ -1071,23 +1118,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Start button - with iOS touch support
-    const startBtn = $('#startBtn');
-    if (startBtn) {
-        startBtn.addEventListener('click', startExperience);
-        startBtn.addEventListener('touchend', function(e) {
+    var startBtnInit = document.getElementById('startBtn');
+    if (startBtnInit) {
+        startBtnInit.addEventListener('click', startExperience);
+        startBtnInit.addEventListener('touchend', function(e) {
             e.preventDefault();
             startExperience();
         });
     }
 
-    const ageSlider = $('#ageSlider');
+    var ageSlider = document.getElementById('ageSlider');
     if (ageSlider) {
-        ageSlider.addEventListener('input', (e) => {
+        ageSlider.addEventListener('input', function(e) {
             currentAge = parseInt(e.target.value);
-            const ageNumberEl = $('#ageNumber');
+            var ageNumberEl = document.getElementById('ageNumber');
             if (ageNumberEl) ageNumberEl.textContent = currentAge;
             // Also looking for ageValue in case it wasn't renamed in HTML yet
-            const ageValueEl = $('#ageValue');
+            var ageValueEl = document.getElementById('ageValue');
             if (ageValueEl) ageValueEl.textContent = currentAge;
             updateRights();
             updateTimeline();
@@ -1095,30 +1142,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const likeBtn = $('#likeBtn');
+    var likeBtn = document.getElementById('likeBtn');
     if (likeBtn) likeBtn.addEventListener('click', toggleLike);
     
-    const shareBtn = $('#shareBtn');
+    var shareBtn = document.getElementById('shareBtn');
     if (shareBtn) {
         shareBtn.addEventListener('click', function() {
-            const modal = $('#detailsModal');
-            const modalBody = $('#modalBody');
-            modalBody.innerHTML = `
-                <h3 class="modal-title">📤 شارك الموقع</h3>
-                <div class="share-buttons">
-                    <button class="share-btn twitter" onclick="shareTwitter()">𝕏 تويتر</button>
-                    <button class="share-btn whatsapp" onclick="shareWhatsapp()">واتساب</button>
-                    <button class="share-btn copy" id="copyLink" onclick="copyLink()">📋 نسخ الرابط</button>
-                </div>
-            `;
+            var modal = document.getElementById('detailsModal');
+            var modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = '<h3 class="modal-title">📤 شارك الموقع</h3>' +
+                '<div class="share-buttons">' +
+                '<button class="share-btn twitter" onclick="shareTwitter()">𝕏 تويتر</button>' +
+                '<button class="share-btn whatsapp" onclick="shareWhatsapp()">واتساب</button>' +
+                '<button class="share-btn copy" id="copyLink" onclick="copyLink()">📋 نسخ الرابط</button>' +
+                '</div>';
             modal.classList.add('show');
         });
     }
 
-    const modalClose = $('#modalClose');
+    var modalClose = document.getElementById('modalClose');
     if (modalClose) modalClose.addEventListener('click', closeModal);
     
-    const detailsModal = $('#detailsModal');
+    var detailsModal = document.getElementById('detailsModal');
     if (detailsModal) {
         detailsModal.addEventListener('click', function(e) {
             // Close when clicking outside the modal content (on overlay or modal background)
@@ -1128,22 +1173,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const commentForm = $('#commentForm');
+    var commentForm = document.getElementById('commentForm');
     if (commentForm) commentForm.addEventListener('submit', submitComment);
     
-    const cancelAdmin = $('#cancelAdmin');
+    var cancelAdmin = document.getElementById('cancelAdmin');
     if (cancelAdmin) {
         cancelAdmin.addEventListener('click', function() {
-            const adminPanel = $('#adminPanel');
+            var adminPanel = document.getElementById('adminPanel');
             if (adminPanel) adminPanel.classList.add('hidden');
         });
     }
     
-    const articleForm = $('#articleForm');
+    var articleForm = document.getElementById('articleForm');
     if (articleForm) articleForm.addEventListener('submit', submitArticle);
 
     // Stats Overlay Button - with iOS touch support
-    const statsBtn = $('#statsBtn');
+    var statsBtn = document.getElementById('statsBtn');
     if (statsBtn) {
         statsBtn.addEventListener('click', goToMainExperience);
         statsBtn.addEventListener('touchend', function(e) {
@@ -1158,42 +1203,42 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupLanguageToggle() {
         console.log('🔧 Setting up language toggle buttons...');
 
-        const toggleBtn = document.getElementById('languageToggle');
-        const langIcon = document.getElementById('langIcon');
-        const headerToggleBtn = document.getElementById('headerLangToggle');
+        var toggleBtn = document.getElementById('languageToggle');
+        var langIcon = document.getElementById('langIcon');
+        var headerToggleBtn = document.getElementById('headerLangToggle');
 
         // Update all button texts based on current language
         function updateToggleButtons() {
-            const currentLang = window.i18n && window.i18n.getCurrentLanguage ? window.i18n.getCurrentLanguage() : 'ar';
+            var currentLang = window.i18n && window.i18n.getCurrentLanguage ? window.i18n.getCurrentLanguage() : 'ar';
             // Show the OTHER language (the one we'll switch TO)
-            const newText = currentLang === 'ar' ? 'EN' : 'ع';
+            var newText = currentLang === 'ar' ? 'EN' : 'ع';
             
             if (langIcon) langIcon.textContent = newText;
             if (headerToggleBtn) {
-                headerToggleBtn.querySelector('.lang-icon').textContent = newText;
+                var headerLangIcon = headerToggleBtn.querySelector('.lang-icon');
+                if (headerLangIcon) headerLangIcon.textContent = newText;
             }
-            console.log(`🔄 Toggle buttons updated to show: ${newText}`);
+            console.log('🔄 Toggle buttons updated to show: ' + newText);
         }
 
         // Toggle language function
-        async function handleLanguageToggle() {
+        function handleLanguageToggle() {
             if (!window.i18n) {
                 console.warn('⚠️ i18n not available');
                 return;
             }
 
-            const currentLang = window.i18n.getCurrentLanguage();
-            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            var currentLang = window.i18n.getCurrentLanguage();
+            var newLang = currentLang === 'ar' ? 'en' : 'ar';
 
-            console.log(`🌐 Toggling language from ${currentLang} to ${newLang}`);
+            console.log('🌐 Toggling language from ' + currentLang + ' to ' + newLang);
 
-            try {
-                await window.i18n.setLanguage(newLang);
+            window.i18n.setLanguage(newLang).then(function() {
                 updateToggleButtons();
-                console.log(`✅ Language toggled to: ${newLang}`);
-            } catch (error) {
+                console.log('✅ Language toggled to: ' + newLang);
+            }).catch(function(error) {
                 console.error('❌ Error toggling language:', error);
-            }
+            });
         }
 
         // Add click listeners to both buttons - with iOS touch support
@@ -1219,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Set initial state
-        setTimeout(() => {
+        setTimeout(function() {
             updateToggleButtons();
             console.log('✅ Language toggle initialized');
         }, 100);
