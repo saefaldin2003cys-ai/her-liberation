@@ -140,21 +140,24 @@ var allowedOrigins = [
 
 var corsOptions = {
     origin: function(origin, callback) {
-        // Allow requests with no origin (mobile apps, curl, etc) in dev
-        if (!origin && process.env.NODE_ENV !== 'production') {
+        // Allow requests with no origin (same-origin requests from the app itself)
+        if (!origin) {
             return callback(null, true);
         }
+        // In development, allow all origins
         if (process.env.NODE_ENV !== 'production') {
             return callback(null, true);
         }
+        // In production, check allowed origins
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            console.warn('🚨 CORS blocked origin:', origin);
+            callback(null, false); // Don't throw error, just reject
         }
     },
-    methods: ['GET', 'POST', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
     credentials: true,
     maxAge: 86400, // 24 hours
     optionsSuccessStatus: 200
