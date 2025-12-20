@@ -1893,16 +1893,15 @@ html[dir] * {
 }
 
 .law-text-link {
-    color: var(--accent-primary);
+    color: var(--text-muted);
     text-decoration: underline;
-    font-weight: 600;
     transition: all 0.3s ease;
     cursor: pointer;
     display: block;
 }
 
 .law-text-link:hover {
-    color: var(--accent-secondary);
+    color: var(--text-primary);
     text-decoration: none;
 }
 
