@@ -68,35 +68,13 @@ app.set('trust proxy', 1);
 // Security Middleware
 // ==========================================
 
-// 1. Helmet - Set security HTTP headers (Enhanced)
+// 1. Helmet - Basic security headers only (CSP disabled for now)
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-            imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", "https://api.github.com", "https://her-liberation.onrender.com"],
-            frameSrc: ["'none'"],
-            objectSrc: ["'none'"],
-            baseUri: ["'self'"],
-            formAction: ["'self'"]
-        }
-    },
+    contentSecurityPolicy: false, // Disabled - will enable later
     crossOriginEmbedderPolicy: false,
     crossOriginOpenerPolicy: false,
     crossOriginResourcePolicy: false,
-    dnsPrefetchControl: { allow: false },
-    frameguard: { action: "deny" },
-    hidePoweredBy: true,
-    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
-    ieNoOpen: true,
-    noSniff: true,
-    originAgentCluster: true,
-    permittedCrossDomainPolicies: { permittedPolicies: "none" },
-    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
-    xssFilter: true
+    hidePoweredBy: true
 }));
 
 // 2. Rate Limiting - Prevent DDoS and brute force attacks
