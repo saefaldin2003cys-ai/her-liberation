@@ -1892,6 +1892,23 @@ html[dir] * {
     color: var(--text-muted);
 }
 
+.law-link-btn {
+    display: inline-block;
+    margin-top: var(--space-md);
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--accent-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.law-link-btn:hover {
+    background: var(--accent-secondary);
+    transform: translateY(-2px);
+}
+
 /* ============================================
    Footer
    ============================================ */
