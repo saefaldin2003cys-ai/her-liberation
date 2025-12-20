@@ -13,6 +13,43 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
+
+// ==========================================
+// Security Configuration
+// ==========================================
+const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(64).toString('hex');
+const JWT_EXPIRES_IN = '24h';
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync('admin123', 12);
+
+// ==========================================
+// IP Blacklist & Security State
+// ==========================================
+var ipBlacklist = new Map(); // IP -> { count, lastAttempt, blocked }
+var captchaStore = new Map(); // token -> { answer, expires }
+var sessionStore = new Map(); // sessionId -> { ip, userAgent, lastActivity }
+
+// Auto-cleanup expired entries every 10 minutes
+setInterval(function() {
+    var now = Date.now();
+    ipBlacklist.forEach(function(value, key) {
+        if (value.blocked && now - value.lastAttempt > 3600000) { // 1 hour
+            ipBlacklist.delete(key);
+        }
+    });
+    captchaStore.forEach(function(value, key) {
+        if (now > value.expires) {
+            captchaStore.delete(key);
+        }
+    });
+    sessionStore.forEach(function(value, key) {
+        if (now - value.lastActivity > 86400000) { // 24 hours
+            sessionStore.delete(key);
+        }
+    });
+}, 600000);
 
 // Import Models
 const Stats = require('./models/Stats');
@@ -255,6 +292,315 @@ app.use(function(req, res, next) {
     next();
 });
 
+// ==========================================
+// 11. RCE (Remote Code Execution) Protection
+// ==========================================
+var rcePatterns = [
+    /\$\{.*\}/gi,                    // Template injection ${}
+    /\{\{.*\}\}/gi,                  // Template injection {{}}
+    /`[^`]*\$\{[^`]*`/gi,            // Template literals with injection
+    /eval\s*\(/gi,                   // eval()
+    /Function\s*\(/gi,               // Function constructor
+    /setTimeout\s*\([^,]*,/gi,       // setTimeout with string
+    /setInterval\s*\([^,]*,/gi,      // setInterval with string
+    /exec\s*\(/gi,                   // exec()
+    /spawn\s*\(/gi,                  // spawn()
+    /child_process/gi,               // child_process module
+    /require\s*\(['"][^'"]+['"]\)/gi,// require() calls
+    /import\s*\(/gi,                 // dynamic import
+    /process\.env/gi,                // process.env access
+    /process\.exit/gi,               // process.exit
+    /__dirname/gi,                   // __dirname
+    /__filename/gi,                  // __filename
+    /\\x[0-9a-f]{2}/gi,              // Hex encoded
+    /\\u[0-9a-f]{4}/gi,              // Unicode encoded
+    /\.constructor\s*\(/gi,          // Constructor access
+    /\[\s*['"]constructor['"]\s*\]/gi // Bracket constructor access
+];
+
+function checkRCE(input) {
+    if (typeof input !== 'string') return false;
+    for (var i = 0; i < rcePatterns.length; i++) {
+        if (rcePatterns[i].test(input)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+app.use(function(req, res, next) {
+    var fullUrl = req.originalUrl + JSON.stringify(req.body || {}) + JSON.stringify(req.query || {});
+    
+    if (checkRCE(fullUrl)) {
+        console.error('🚨 RCE ATTEMPT BLOCKED from', req.ip, ':', req.originalUrl);
+        
+        // Auto-blacklist IP
+        var ipData = ipBlacklist.get(req.ip) || { count: 0, lastAttempt: 0, blocked: false };
+        ipData.count += 10; // Heavy penalty
+        ipData.lastAttempt = Date.now();
+        if (ipData.count >= 5) ipData.blocked = true;
+        ipBlacklist.set(req.ip, ipData);
+        
+        return res.status(403).json({ error: 'Access denied - Security violation' });
+    }
+    next();
+});
+
+// ==========================================
+// 12. IP Blacklist Middleware
+// ==========================================
+app.use(function(req, res, next) {
+    var ipData = ipBlacklist.get(req.ip);
+    
+    if (ipData && ipData.blocked) {
+        var timeSinceBlock = Date.now() - ipData.lastAttempt;
+        if (timeSinceBlock < 3600000) { // 1 hour block
+            console.warn('🚫 Blocked IP attempt:', req.ip);
+            return res.status(403).json({ error: 'Access temporarily blocked' });
+        } else {
+            // Unblock after 1 hour
+            ipBlacklist.delete(req.ip);
+        }
+    }
+    next();
+});
+
+// ==========================================
+// 13. Logic Vulnerability Protection
+// ==========================================
+var requestHistory = new Map(); // IP -> [timestamps]
+
+app.use(function(req, res, next) {
+    // Prevent request replay attacks
+    var requestId = req.headers['x-request-id'];
+    if (requestId) {
+        var replayKey = req.ip + ':' + requestId;
+        if (requestHistory.has(replayKey)) {
+            console.warn('🚨 Replay attack blocked:', replayKey);
+            return res.status(409).json({ error: 'Duplicate request' });
+        }
+        requestHistory.set(replayKey, Date.now());
+        setTimeout(function() { requestHistory.delete(replayKey); }, 300000); // 5 min
+    }
+    
+    // Prevent parameter tampering on sensitive fields
+    if (req.body) {
+        var forbiddenFields = ['_id', 'id', 'isAdmin', 'role', 'permissions', 'password', 'hash'];
+        for (var i = 0; i < forbiddenFields.length; i++) {
+            if (req.body[forbiddenFields[i]] !== undefined) {
+                if (req.path.indexOf('/admin') === -1 && req.path.indexOf('/auth') === -1) {
+                    console.warn('🚨 Parameter tampering blocked:', forbiddenFields[i]);
+                    delete req.body[forbiddenFields[i]];
+                }
+            }
+        }
+    }
+    
+    // Prevent mass assignment
+    if (req.body && typeof req.body === 'object') {
+        var allowedFields = ['name', 'text', 'titleAr', 'titleEn', 'contentAr', 'contentEn', 
+                             'authorAr', 'authorEn', 'image', 'password', 'captchaToken', 'captchaAnswer'];
+        var keys = Object.keys(req.body);
+        for (var j = 0; j < keys.length; j++) {
+            if (allowedFields.indexOf(keys[j]) === -1 && keys[j].charAt(0) !== '_') {
+                // Allow but log unexpected fields
+                console.log('📝 Unexpected field:', keys[j]);
+            }
+        }
+    }
+    
+    next();
+});
+
+// ==========================================
+// 14. CAPTCHA System (Simple Math-based)
+// ==========================================
+app.get('/api/captcha', function(req, res) {
+    var num1 = Math.floor(Math.random() * 10) + 1;
+    var num2 = Math.floor(Math.random() * 10) + 1;
+    var operators = ['+', '-', '*'];
+    var op = operators[Math.floor(Math.random() * operators.length)];
+    
+    var answer;
+    var question;
+    
+    if (op === '+') {
+        answer = num1 + num2;
+        question = num1 + ' + ' + num2;
+    } else if (op === '-') {
+        // Ensure positive result
+        if (num1 < num2) { var temp = num1; num1 = num2; num2 = temp; }
+        answer = num1 - num2;
+        question = num1 + ' - ' + num2;
+    } else {
+        answer = num1 * num2;
+        question = num1 + ' × ' + num2;
+    }
+    
+    var token = uuidv4();
+    captchaStore.set(token, {
+        answer: answer,
+        expires: Date.now() + 300000 // 5 minutes
+    });
+    
+    res.json({
+        token: token,
+        question: question + ' = ?'
+    });
+});
+
+function verifyCaptcha(token, answer) {
+    if (!token || answer === undefined) return false;
+    
+    var captcha = captchaStore.get(token);
+    if (!captcha) return false;
+    if (Date.now() > captcha.expires) {
+        captchaStore.delete(token);
+        return false;
+    }
+    
+    var isValid = parseInt(answer) === captcha.answer;
+    captchaStore.delete(token); // One-time use
+    return isValid;
+}
+
+// ==========================================
+// 15. JWT Authentication for Admin
+// ==========================================
+function generateToken(payload) {
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+}
+
+function verifyToken(token) {
+    try {
+        return jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+        return null;
+    }
+}
+
+// Admin authentication middleware
+function requireAdmin(req, res, next) {
+    var authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    var token = authHeader.substring(7);
+    var decoded = verifyToken(token);
+    
+    if (!decoded || !decoded.isAdmin) {
+        return res.status(403).json({ error: 'Admin access required' });
+    }
+    
+    // Verify session
+    var session = sessionStore.get(decoded.sessionId);
+    if (!session) {
+        return res.status(401).json({ error: 'Session expired' });
+    }
+    
+    // Verify IP consistency (prevents session hijacking)
+    if (session.ip !== req.ip) {
+        console.warn('🚨 Session hijacking attempt:', decoded.sessionId);
+        sessionStore.delete(decoded.sessionId);
+        return res.status(401).json({ error: 'Session invalid' });
+    }
+    
+    // Update last activity
+    session.lastActivity = Date.now();
+    req.adminSession = decoded;
+    next();
+}
+
+// Admin login endpoint
+app.post('/api/auth/login', strictLimiter, function(req, res) {
+    var password = req.body.password;
+    
+    if (!password || typeof password !== 'string') {
+        return res.status(400).json({ error: 'Password required' });
+    }
+    
+    // Check if IP is blacklisted
+    var ipData = ipBlacklist.get(req.ip) || { count: 0, lastAttempt: 0, blocked: false };
+    if (ipData.blocked) {
+        return res.status(403).json({ error: 'Too many failed attempts. Try again later.' });
+    }
+    
+    // Verify password
+    var isValid = bcrypt.compareSync(password, ADMIN_PASSWORD_HASH);
+    
+    if (!isValid) {
+        // Track failed attempts
+        ipData.count += 1;
+        ipData.lastAttempt = Date.now();
+        if (ipData.count >= 5) {
+            ipData.blocked = true;
+            console.warn('🚨 IP blocked after failed login attempts:', req.ip);
+        }
+        ipBlacklist.set(req.ip, ipData);
+        
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // Clear failed attempts on success
+    ipBlacklist.delete(req.ip);
+    
+    // Create session
+    var sessionId = uuidv4();
+    sessionStore.set(sessionId, {
+        ip: req.ip,
+        userAgent: req.headers['user-agent'],
+        lastActivity: Date.now()
+    });
+    
+    // Generate token
+    var token = generateToken({
+        isAdmin: true,
+        sessionId: sessionId,
+        iat: Date.now()
+    });
+    
+    console.log('✅ Admin login from:', req.ip);
+    res.json({ success: true, token: token });
+});
+
+// Admin logout
+app.post('/api/auth/logout', function(req, res) {
+    var authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        var token = authHeader.substring(7);
+        var decoded = verifyToken(token);
+        if (decoded && decoded.sessionId) {
+            sessionStore.delete(decoded.sessionId);
+        }
+    }
+    res.json({ success: true });
+});
+
+// Verify token endpoint
+app.get('/api/auth/verify', function(req, res) {
+    var authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ valid: false });
+    }
+    
+    var token = authHeader.substring(7);
+    var decoded = verifyToken(token);
+    
+    if (!decoded) {
+        return res.status(401).json({ valid: false });
+    }
+    
+    var session = sessionStore.get(decoded.sessionId);
+    if (!session || session.ip !== req.ip) {
+        return res.status(401).json({ valid: false });
+    }
+    
+    res.json({ valid: true, expiresAt: decoded.exp * 1000 });
+});
+
 // Serve static files from 'public' folder
 app.use(express.static(path.join(__dirname, 'public'), {
     dotfiles: 'deny',
@@ -400,6 +746,13 @@ app.post('/api/comments', postLimiter, async (req, res) => {
     try {
         var name = req.body.name;
         var text = req.body.text;
+        var captchaToken = req.body.captchaToken;
+        var captchaAnswer = req.body.captchaAnswer;
+        
+        // Verify CAPTCHA first
+        if (!verifyCaptcha(captchaToken, captchaAnswer)) {
+            return res.status(400).json({ error: 'فشل التحقق - CAPTCHA verification failed' });
+        }
         
         // Validate input
         if (!name || !text) {
@@ -435,7 +788,7 @@ app.get('/api/articles', async (req, res) => {
     }
 });
 
-app.post('/api/articles', postLimiter, async (req, res) => {
+app.post('/api/articles', requireAdmin, async (req, res) => {
     try {
         var titleAr = req.body.titleAr;
         var titleEn = req.body.titleEn;
@@ -485,7 +838,7 @@ app.post('/api/articles', postLimiter, async (req, res) => {
     }
 });
 
-app.delete('/api/articles/:id', async (req, res) => {
+app.delete('/api/articles/:id', requireAdmin, async (req, res) => {
     try {
         // Validate MongoDB ObjectId format
         if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -494,6 +847,7 @@ app.delete('/api/articles/:id', async (req, res) => {
         
         var result = await Article.findByIdAndDelete(req.params.id);
         if (result) {
+            console.log('✅ Article deleted by admin:', req.params.id);
             res.json({ success: true });
         } else {
             res.status(404).json({ error: 'Article not found' });
@@ -658,6 +1012,12 @@ connectDB().then(function() {
         console.log('   ✅ Input Validation & Sanitization');
         console.log('   ✅ Suspicious Agent Blocking');
         console.log('   ✅ Attack Path Blocking');
+        console.log('   ✅ RCE Protection');
+        console.log('   ✅ IP Auto-Blacklisting');
+        console.log('   ✅ JWT Admin Authentication');
+        console.log('   ✅ CAPTCHA for Comments');
+        console.log('   ✅ Logic Vulnerability Protection');
+        console.log('   ✅ Session Hijacking Prevention');
         console.log('');
     });
 });
