@@ -1892,19 +1892,6 @@ html[dir] * {
     color: var(--text-muted);
 }
 
-.law-text-link {
-    color: var(--text-muted);
-    text-decoration: underline;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    display: block;
-}
-
-.law-text-link:hover {
-    color: var(--text-primary);
-    text-decoration: none;
-}
-
 /* ============================================
    Footer
    ============================================ */
