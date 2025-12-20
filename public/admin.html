@@ -412,27 +412,65 @@
 
     <script>
         const API_URL = '/api';
-        const ADMIN_PASSWORD = 'TahrirAdmin@2025!';
+        let authToken = null;
 
-        // Check if already logged in
+        // Check if already logged in (verify with server)
         document.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-                showDashboard();
+            const savedToken = sessionStorage.getItem('adminToken');
+            if (savedToken) {
+                // Verify token with server
+                fetch(`${API_URL}/auth/verify`, {
+                    headers: { 'Authorization': 'Bearer ' + savedToken }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.valid) {
+                        authToken = savedToken;
+                        showDashboard();
+                    } else {
+                        sessionStorage.removeItem('adminToken');
+                    }
+                })
+                .catch(() => sessionStorage.removeItem('adminToken'));
             }
         });
 
-        // Login form
+        // Login form - sends password to server for verification
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const password = document.getElementById('adminPassword').value;
+            const loginError = document.getElementById('loginError');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري التحقق...';
+            loginError.style.display = 'none';
 
-            if (password === ADMIN_PASSWORD) {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                showDashboard();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-                document.getElementById('adminPassword').value = '';
-            }
+            fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.token) {
+                    authToken = data.token;
+                    sessionStorage.setItem('adminToken', authToken);
+                    showDashboard();
+                } else {
+                    loginError.textContent = data.error || 'رمز الدخول غير صحيح';
+                    loginError.style.display = 'block';
+                    document.getElementById('adminPassword').value = '';
+                }
+            })
+            .catch(() => {
+                loginError.textContent = 'خطأ في الاتصال بالخادم';
+                loginError.style.display = 'block';
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'دخول';
+            });
         });
 
         // Show dashboard
@@ -443,9 +481,15 @@
             loadStats();
         }
 
-        // Logout
+        // Logout - invalidate token on server
         function logout() {
-            sessionStorage.removeItem('adminLoggedIn');
+            fetch(`${API_URL}/auth/logout`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + authToken }
+            }).catch(() => {});
+            
+            authToken = null;
+            sessionStorage.removeItem('adminToken');
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('adminPassword').value = '';
@@ -483,7 +527,7 @@
                                 <p>✍️ ${escapeHtml(article.author.ar || article.author)} • ❤️ ${article.likes || 0} إعجاب • 💬 ${(article.comments || []).length} تعليق</p>
                             </div>
                             <div class="article-actions">
-                                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article.id}')">🗑️ حذف</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article._id}')">🗑️ حذف</button>
                             </div>
                         </div>
                     `).join('');
@@ -493,7 +537,7 @@
                 });
         }
 
-        // Submit new article
+        // Submit new article - requires authentication
         document.getElementById('articleForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -512,32 +556,58 @@
 
             fetch(`${API_URL}/articles`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + authToken
+                },
                 body: JSON.stringify({ titleAr, titleEn, authorAr, authorEn, contentAr, contentEn, image })
             })
-                .then(res => res.json())
-                .then(() => {
-                    showMessage('تم نشر المقال بنجاح! ✅', 'success');
-                    document.getElementById('articleForm').reset();
-                    loadArticles();
+                .then(res => {
+                    if (res.status === 401 || res.status === 403) {
+                        logout();
+                        throw new Error('انتهت الجلسة');
+                    }
+                    return res.json();
                 })
-                .catch(() => {
-                    showMessage('حدث خطأ أثناء النشر', 'error');
+                .then(data => {
+                    if (data.error) {
+                        showMessage(data.error, 'error');
+                    } else {
+                        showMessage('تم نشر المقال بنجاح! ✅', 'success');
+                        document.getElementById('articleForm').reset();
+                        loadArticles();
+                    }
+                })
+                .catch((err) => {
+                    showMessage(err.message || 'حدث خطأ أثناء النشر', 'error');
                 });
         });
 
-        // Delete article
+        // Delete article - requires authentication
         function deleteArticle(id) {
             if (!confirm('هل أنت متأكد من حذف هذا المقال؟')) return;
 
-            fetch(`${API_URL}/articles/${id}`, { method: 'DELETE' })
-                .then(res => res.json())
-                .then(() => {
-                    showMessage('تم حذف المقال ✅', 'success');
-                    loadArticles();
+            fetch(`${API_URL}/articles/${id}`, { 
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + authToken }
+            })
+                .then(res => {
+                    if (res.status === 401 || res.status === 403) {
+                        logout();
+                        throw new Error('انتهت الجلسة');
+                    }
+                    return res.json();
                 })
-                .catch(() => {
-                    showMessage('حدث خطأ أثناء الحذف', 'error');
+                .then(data => {
+                    if (data.error) {
+                        showMessage(data.error, 'error');
+                    } else {
+                        showMessage('تم حذف المقال ✅', 'success');
+                        loadArticles();
+                    }
+                })
+                .catch((err) => {
+                    showMessage(err.message || 'حدث خطأ أثناء الحذف', 'error');
                 });
         }
 
