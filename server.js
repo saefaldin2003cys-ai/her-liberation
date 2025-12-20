@@ -497,6 +497,8 @@ function requireAdmin(req, res, next) {
 app.post('/api/auth/login', strictLimiter, function(req, res) {
     var password = req.body.password;
     
+    console.log('🔐 Login attempt received');
+    
     if (!password || typeof password !== 'string') {
         return res.status(400).json({ error: 'Password required' });
     }
@@ -507,8 +509,17 @@ app.post('/api/auth/login', strictLimiter, function(req, res) {
         return res.status(403).json({ error: 'Too many failed attempts. Try again later.' });
     }
     
+    // Debug: Check if hash is loaded
+    console.log('🔐 Hash loaded:', ADMIN_PASSWORD_HASH ? 'Yes (length: ' + ADMIN_PASSWORD_HASH.length + ')' : 'No');
+    
     // Verify password
-    var isValid = bcrypt.compareSync(password, ADMIN_PASSWORD_HASH);
+    var isValid = false;
+    try {
+        isValid = bcrypt.compareSync(password, ADMIN_PASSWORD_HASH);
+    } catch (err) {
+        console.error('🚨 bcrypt error:', err.message);
+        return res.status(500).json({ error: 'Authentication error' });
+    }
     
     if (!isValid) {
         // Track failed attempts
