@@ -604,17 +604,23 @@ app.use(function(err, req, res, next) {
 // ==========================================
 process.on('SIGTERM', function() {
     console.log('🛑 SIGTERM received. Shutting down gracefully...');
-    mongoose.connection.close(false, function() {
+    mongoose.connection.close().then(function() {
         console.log('📦 MongoDB connection closed.');
         process.exit(0);
+    }).catch(function(err) {
+        console.error('Error closing MongoDB:', err);
+        process.exit(1);
     });
 });
 
 process.on('SIGINT', function() {
     console.log('🛑 SIGINT received. Shutting down gracefully...');
-    mongoose.connection.close(false, function() {
+    mongoose.connection.close().then(function() {
         console.log('📦 MongoDB connection closed.');
         process.exit(0);
+    }).catch(function(err) {
+        console.error('Error closing MongoDB:', err);
+        process.exit(1);
     });
 });
 
