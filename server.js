@@ -112,7 +112,9 @@ var strictLimiter = rateLimit({
 var allowedOrigins = [
     'https://her-liberation.onrender.com',
     'https://herliberation.com',
-    'https://www.herliberation.com'
+    'https://www.herliberation.com',
+    'https://her-liberation.org',
+    'https://www.her-liberation.org'
 ];
 
 var corsOptions = {
