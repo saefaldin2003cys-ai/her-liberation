@@ -59,9 +59,9 @@
             "economicRights": {
                 "title": "Economic Rights",
                 "statusLabel": "🔴 No Self-Ownership",
-                "description": "No personal bank account. No right to manage money except through a guardian or custodian.",
-                "details": "A girl at this age cannot open a bank account or manage her finances independently.",
-                "law": "<a href='https://tasjeel.mot.gov.iq/newtasjeel/%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86%20%D8%A7%D9%84%D9%85%D8%B3%D8%A7%D9%87%D9%85%D8%A9/%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86%20%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A%2040%20%D9%84%D8%B3%D9%86%D8%A9%201951.pdf' target='_blank'>Iraqi Civil Law No. 40 of 1951 – Age of Majority (Article 106) and Article (97)</a>"
+                "description": "A savings account can be opened for a minor under guardian supervision, but she cannot withdraw or manage funds freely.",
+                "details": "A savings account can be opened for a minor under guardian supervision, but she cannot withdraw or manage funds freely, as management remains exclusively in the hands of the guardian.",
+                "law": "<a href='https://tasjeel.mot.gov.iq/newtasjeel/%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86%20%D8%A7%D9%84%D9%85%D8%B3%D8%A7%D9%87%D9%85%D8%A9/%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86%20%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A%2040%20%D9%84%D8%B3%D9%86%D8%A9%201951.pdf' target='_blank'>Articles (97 and 98) of Iraqi Civil Law.</a>"
             },
             "civilRights": {
                 "title": "Civil Rights",
@@ -82,30 +82,30 @@
             "legalCapacity": {
                 "title": "Legal Capacity",
                 "statusLabel": "⚠️ Minor Under Supervision",
-                "description": "Signing contracts requires guardian approval and judicial supervision. Juvenile court is the protector.",
-                "details": "A girl can sign some contracts with guardian approval and under judicial supervision from juvenile court.",
-                "law": "Minors Welfare Law"
+                "description": "A minor does not have the authority to sign official or legal contracts; the \"guardian\" acts on her behalf.",
+                "details": "A minor does not have the authority to sign official or legal contracts; the \"guardian\" acts on her behalf. Important transactions are subject to the oversight and supervision of (Minors Welfare Directorate) to ensure the protection of her rights.",
+                "law": "<a href='https://alimar.moch.gov.iq/pdf/kaser.pdf' target='_blank'>Article (97) of Iraqi Civil Law No. 40 of 1951. Minors Welfare Law No. 78 of 1980.</a>"
             },
             "economicRights": {
                 "title": "Economic Rights",
                 "statusLabel": "⚠️ Restricted Ownership",
-                "description": "Savings account under guardian supervision. Cannot withdraw money freely.",
-                "details": "Can open a savings account under guardian supervision, but cannot withdraw or manage funds freely.",
-                "law": "Iraqi Civil Law"
+                "description": "A savings account can be opened for a minor under guardian supervision, but she cannot withdraw or manage funds freely.",
+                "details": "A savings account can be opened for a minor under guardian supervision, but she cannot withdraw or manage funds freely, as management remains exclusively in the hands of the guardian.",
+                "law": "<a href='https://tasjeel.mot.gov.iq/newtasjeel/%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86%20%D8%A7%D9%84%D9%85%D8%B3%D8%A7%D9%87%D9%85%D8%A9/%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86%20%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A%2040%20%D9%84%D8%B3%D9%86%D8%A9%201951.pdf' target='_blank'>Articles (97 and 98) of Iraqi Civil Law.</a>"
             },
             "civilRights": {
                 "title": "Civil Rights",
                 "statusLabel": "🔴 Restricted Movement",
-                "description": "No passport without both parents' approval. No travel without a male guardian.",
-                "details": "A passport cannot be issued for a minor without both parents' approval. Travel requires accompaniment by a male guardian.",
-                "law": "Iraqi Passport Law"
+                "description": "A passport cannot be issued for a minor or allow her to travel outside Iraq without written consent from the \"guardian\".",
+                "details": "A passport cannot be issued for a minor or allow her to travel outside Iraq without written consent from the \"guardian\" as she lacks the capacity to make this decision alone.",
+                "law": "<a href='https://moj.gov.iq/upload/pdf/قانون%20الجوازات%20-%20Copy.pdf' target='_blank'>Article (6) of Iraqi Passport Law No. 32 of 2015.</a>"
             },
             "marriage": {
                 "title": "Marriage (The Great Paradox)",
                 "statusLabel": "⚠️ Marriage with Judicial Permission (Article 8)",
                 "description": "\"The judge may authorize marriage for those who have completed fifteen years if necessary...\"",
-                "details": "The problem: Guardian consent may be coercive, and 'necessity' is interpreted loosely.",
-                "law": "Article 8 of Personal Status Law"
+                "details": "The problem: Guardian consent may be coercive, and 'necessity' is interpreted loosely.\n\nDespite all the previous restrictions... if a minor gets married, the law suddenly considers her \"fully competent\"!\nThe marriage contract grants her the status of \"adulthood\" immediately, making her legally and financially responsible like adults, as if marriage gave her the mental maturity she lacked moments before.",
+                "law": "<a href='https://iraqipersonalstatuslaw.com/law/law.pdf' target='_blank'>Article 8 of Personal Status Law\nArticle (3 / Paragraph 2) of Personal Status Law No. 188 of 1959.</a>"
             }
         },
         "18": {
