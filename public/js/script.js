@@ -9,11 +9,11 @@
 // ============================================
 // requestIdleCallback polyfill for Safari
 if (typeof window.requestIdleCallback !== 'function') {
-    window.requestIdleCallback = function(callback) {
-        return setTimeout(function() {
+    window.requestIdleCallback = function (callback) {
+        return setTimeout(function () {
             callback({
                 didTimeout: false,
-                timeRemaining: function() { return 50; }
+                timeRemaining: function () { return 50; }
             });
         }, 1);
     };
@@ -43,7 +43,7 @@ var rightsData = {
             title: 'الحقوق الاقتصادية',
             icon: '💰',
             statusLabel: '🔴 لا تملك نفسها',
-            description: 'لا حساب بنكي خاص. لا حق في التصرف بالمال إلا من خلال الوصي.',
+            description: 'لا حساب بنكي خاص. لا حق في التصرف بالمال إلا من خلال ولي الأمر أو الوصي.',
             details: 'لا يمكن للفتاة في هذا العمر فتح حساب بنكي أو التصرف بأموالها بشكل مستقل.',
             law: 'القانون المدني العراقي '
         },
@@ -227,17 +227,17 @@ function updateThemeIcon(isDark) {
 function loadStats() {
     console.log('📊 Loading stats from API...');
     fetch(API_URL + '/stats')
-        .then(function(res) { 
+        .then(function (res) {
             if (!res.ok) throw new Error('API Error');
-            return res.json(); 
+            return res.json();
         })
-        .then(function(data) {
+        .then(function (data) {
             console.log('✅ Stats loaded:', data);
             viewCount = data.views || 0;
             likeCount = data.likes || 0;
             updateStatsDisplay();
         })
-        .catch(function(err) {
+        .catch(function (err) {
             console.warn('⚠️ Stats API failed, using fallback:', err);
             // Show fallback values
             viewCount = 247;
@@ -248,13 +248,13 @@ function loadStats() {
 
 function incrementViews() {
     fetch(API_URL + '/stats/view', { method: 'POST' })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
             viewCount = data.views;
             likeCount = data.likes;
             updateStatsDisplay();
         })
-        .catch(function() { 
+        .catch(function () {
             console.warn('⚠️ Could not increment views');
         });
 }
@@ -265,12 +265,12 @@ function toggleLike() {
     localStorage.setItem('hasLiked', 'true');
 
     fetch(API_URL + '/stats/like', { method: 'POST' })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
             likeCount = data.likes;
             updateStatsDisplay();
         })
-        .catch(function() {
+        .catch(function () {
             likeCount++;
             updateStatsDisplay();
         });
@@ -310,15 +310,15 @@ function loadComments() {
     }
 
     fetch(API_URL + '/comments')
-        .then(function(res) { 
+        .then(function (res) {
             if (!res.ok) throw new Error('API Error');
-            return res.json(); 
+            return res.json();
         })
-        .then(function(comments) {
+        .then(function (comments) {
             console.log('✅ Comments loaded:', comments.length);
             renderComments(comments);
         })
-        .catch(function(err) {
+        .catch(function (err) {
             console.warn('⚠️ Comments API failed:', err);
             renderComments([]);
         });
@@ -337,9 +337,9 @@ function submitComment(e) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name, text: text })
     })
-        .then(function(res) { return res.json(); })
-        .then(function() { loadComments(); })
-        .catch(function(err) { console.error(err); });
+        .then(function (res) { return res.json(); })
+        .then(function () { loadComments(); })
+        .catch(function (err) { console.error(err); });
 
     nameInput.value = '';
     textInput.value = '';
@@ -348,7 +348,7 @@ function submitComment(e) {
 function renderComments(comments) {
     var list = document.getElementById('commentsList');
     if (!list) return;
-    
+
     var html = '';
     for (var i = 0; i < comments.length; i++) {
         html += createCommentHTML(comments[i]);
@@ -360,11 +360,11 @@ function createCommentHTML(comment) {
     var timeAgo = getTimeAgo(new Date(comment.timestamp));
     return '<div class="comment-item">' +
         '<div class="comment-header">' +
-            '<span class="comment-author">' + escapeHTML(comment.name) + '</span>' +
-            '<span class="comment-date">' + timeAgo + '</span>' +
+        '<span class="comment-author">' + escapeHTML(comment.name) + '</span>' +
+        '<span class="comment-date">' + timeAgo + '</span>' +
         '</div>' +
         '<p class="comment-text">' + escapeHTML(comment.text) + '</p>' +
-    '</div>';
+        '</div>';
 }
 
 function getTimeAgo(date) {
@@ -422,7 +422,7 @@ function updateRights() {
     var rights = rightsData[closestAge];
     var keys = Object.keys(rights);
     var html = '';
-    
+
     for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
         var right = rights[key];
@@ -434,15 +434,15 @@ function updateRights() {
 
         html += '<div class="right-card ' + right.status + '" onclick="showDetails(\'' + key + '\', ' + closestAge + ')">' +
             '<div class="right-header">' +
-                '<span class="right-icon">' + right.icon + '</span>' +
-                '<div class="right-info">' +
-                    '<h4 class="right-title">' + title + '</h4>' +
-                    '<span class="right-status status-' + right.status + '">' + statusLabel + '</span>' +
-                '</div>' +
+            '<span class="right-icon">' + right.icon + '</span>' +
+            '<div class="right-info">' +
+            '<h4 class="right-title">' + title + '</h4>' +
+            '<span class="right-status status-' + right.status + '">' + statusLabel + '</span>' +
+            '</div>' +
             '</div>' +
             '<p class="right-description">' + description + '</p>' +
             '<button class="details-btn">' + detailsBtn + '</button>' +
-        '</div>';
+            '</div>';
     }
     container.innerHTML = html;
 }
@@ -480,7 +480,7 @@ function updateImpacts() {
         html += '<div class="impact-item ' + impact.type + '">' +
             '<span class="impact-icon">' + impact.icon + '</span>' +
             '<span class="impact-text">' + text + '</span>' +
-        '</div>';
+            '</div>';
     }
     container.innerHTML = html;
 }
@@ -499,11 +499,15 @@ function showDetails(key, age) {
     var law = window.i18n ? window.i18n.t('rights_data.' + age + '.' + key + '.law', right.law) : right.law;
     var legalRefLabel = window.i18n ? window.i18n.t('rights.legal_reference', 'المرجع القانوني') : 'المرجع القانوني';
 
+    // Convert newlines to <br> for display
+    var detailsFormatted = details.replace(/\n/g, '<br>');
+    var lawFormatted = law.replace(/\n/g, '<br>');
+
     modalBody.innerHTML = '<h3 class="modal-title">' + right.icon + ' ' + title + '</h3>' +
-        '<p class="modal-description">' + details + '</p>' +
+        '<p class="modal-description">' + detailsFormatted + '</p>' +
         '<div class="modal-law">' +
-            '<div class="law-title">📜 ' + legalRefLabel + '</div>' +
-            '<div class="law-text">' + law + '</div>' +
+        '<div class="law-title">📜 ' + legalRefLabel + '</div>' +
+        '<div class="law-text">' + lawFormatted + '</div>' +
         '</div>';
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
@@ -544,7 +548,7 @@ function shareWhatsapp() {
 }
 
 function copyLink() {
-    navigator.clipboard.writeText(window.location.href).then(function() {
+    navigator.clipboard.writeText(window.location.href).then(function () {
         var btn = document.getElementById('copyLink');
         if (!btn) return;
 
@@ -552,7 +556,7 @@ function copyLink() {
         var copiedText = window.i18n ? window.i18n.t('cta.link_copied', 'تم النسخ!') : 'تم النسخ!';
 
         btn.innerHTML = '<span>✓</span> ' + copiedText;
-        setTimeout(function() { btn.innerHTML = originalText; }, 2000);
+        setTimeout(function () { btn.innerHTML = originalText; }, 2000);
     });
 }
 
@@ -563,7 +567,7 @@ function copyLink() {
 var ADMIN_PASSWORD = 'TahrirAdmin@2025';
 var isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && e.shiftKey && e.key === 'K') {
         e.preventDefault();
         showAdminLogin();
@@ -589,16 +593,16 @@ function loadArticles() {
     }
 
     fetch(API_URL + '/articles')
-        .then(function(res) { 
+        .then(function (res) {
             if (!res.ok) throw new Error('API Error');
-            return res.json(); 
+            return res.json();
         })
-        .then(function(data) {
+        .then(function (data) {
             console.log('✅ Articles loaded:', data.length);
             articles = data;
             renderArticles();
         })
-        .catch(function(err) {
+        .catch(function (err) {
             console.warn('⚠️ Articles API failed:', err);
             articles = [];
             renderArticles();
@@ -654,29 +658,29 @@ function renderArticleCard(article) {
     var imageHtml = article.image
         ? '<img src="' + escapeHTML(article.image) + '" alt="' + escapeHTML(title) + '" class="article-image">'
         : '<div class="article-image-placeholder"><span class="emoji-icon">📰</span></div>';
-    
+
     var authorHtml = author ? ' • <span class="emoji-icon">✍️</span> ' + escapeHTML(author) : '';
 
     return '<article class="article-card">' +
         imageHtml +
         '<div class="article-body">' +
-            '<h4 class="article-title">' + escapeHTML(title) + '</h4>' +
-            '<p class="article-date"><span class="emoji-icon">📅</span> ' + formattedDate + authorHtml + '</p>' +
-            '<p class="article-excerpt">' + escapeHTML(excerpt) + '</p>' +
-            '<hr class="article-divider">' +
-            '<div class="article-actions">' +
-                '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\')">' +
-                    '<span class="action-icon emoji-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
-                    '<span>' + (article.likes || 0) + '</span>' +
-                '</button>' +
-                '<button class="article-action-btn" onclick="openArticle(\'' + article._id + '\')">' +
-                    '<span class="action-icon emoji-icon">💬</span>' +
-                    '<span>' + commentsCount + '</span>' +
-                '</button>' +
-                '<button class="read-more-btn" onclick="openArticle(\'' + article._id + '\')">' + readMoreText + '</button>' +
-            '</div>' +
+        '<h4 class="article-title">' + escapeHTML(title) + '</h4>' +
+        '<p class="article-date"><span class="emoji-icon">📅</span> ' + formattedDate + authorHtml + '</p>' +
+        '<p class="article-excerpt">' + escapeHTML(excerpt) + '</p>' +
+        '<hr class="article-divider">' +
+        '<div class="article-actions">' +
+        '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\')">' +
+        '<span class="action-icon emoji-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
+        '<span>' + (article.likes || 0) + '</span>' +
+        '</button>' +
+        '<button class="article-action-btn" onclick="openArticle(\'' + article._id + '\')">' +
+        '<span class="action-icon emoji-icon">💬</span>' +
+        '<span>' + commentsCount + '</span>' +
+        '</button>' +
+        '<button class="read-more-btn" onclick="openArticle(\'' + article._id + '\')">' + readMoreText + '</button>' +
         '</div>' +
-    '</article>';
+        '</div>' +
+        '</article>';
 }
 
 function toggleArticleLike(articleId) {
@@ -686,9 +690,9 @@ function toggleArticleLike(articleId) {
     localStorage.setItem('articleLikes', JSON.stringify(articleLikes));
 
     fetch(API_URL + '/articles/' + articleId + '/like', { method: 'POST' })
-        .then(function(res) { return res.json(); })
-        .then(function() { loadArticles(); })
-        .catch(function(err) { console.error(err); });
+        .then(function (res) { return res.json(); })
+        .then(function () { loadArticles(); })
+        .catch(function (err) { console.error(err); });
 }
 
 function openArticle(articleId) {
@@ -736,11 +740,11 @@ function openArticle(articleId) {
             var c = comments[i];
             commentsHtml += '<div class="comment-item">' +
                 '<div class="comment-header">' +
-                    '<strong>' + escapeHTML(c.name) + '</strong>' +
-                    '<span class="comment-date">' + new Date(c.timestamp).toLocaleDateString() + '</span>' +
+                '<strong>' + escapeHTML(c.name) + '</strong>' +
+                '<span class="comment-date">' + new Date(c.timestamp).toLocaleDateString() + '</span>' +
                 '</div>' +
                 '<p>' + escapeHTML(c.text) + '</p>' +
-            '</div>';
+                '</div>';
         }
     } else {
         commentsHtml = '<p class="no-comments">' + noCommentsText + '</p>';
@@ -754,33 +758,33 @@ function openArticle(articleId) {
         imageHtml +
         '<h3 class="article-modal-title">' + escapeHTML(title) + '</h3>' +
         '<div class="article-modal-meta">' +
-            '<span>📅 ' + formattedDate + '</span>' +
-            authorHtml +
-            '<span>❤️ ' + (article.likes || 0) + ' ' + likesLabel + '</span>' +
-            '<span>💬 ' + comments.length + ' ' + commentsLabel + '</span>' +
+        '<span>📅 ' + formattedDate + '</span>' +
+        authorHtml +
+        '<span>❤️ ' + (article.likes || 0) + ' ' + likesLabel + '</span>' +
+        '<span>💬 ' + comments.length + ' ' + commentsLabel + '</span>' +
         '</div>' +
         '<div class="article-modal-body">' + escapeHTML(content).replace(/\n/g, '<br>') + '</div>' +
         '<div class="article-modal-actions">' +
-            '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\'); openArticle(\'' + article._id + '\');">' +
-                '<span class="action-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
-                '<span>' + likeText + '</span>' +
-            '</button>' +
-            '<button class="article-action-btn" onclick="shareArticle(\'' + article._id + '\')">' +
-                '<span class="action-icon">📤</span>' +
-                '<span>' + shareText + '</span>' +
-            '</button>' +
-            deleteBtn +
+        '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\'); openArticle(\'' + article._id + '\');">' +
+        '<span class="action-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
+        '<span>' + likeText + '</span>' +
+        '</button>' +
+        '<button class="article-action-btn" onclick="shareArticle(\'' + article._id + '\')">' +
+        '<span class="action-icon">📤</span>' +
+        '<span>' + shareText + '</span>' +
+        '</button>' +
+        deleteBtn +
         '</div>' +
         '<div class="article-comments-section">' +
-            '<h4>' + commentsTitle + '</h4>' +
-            '<div class="comments-list">' + commentsHtml + '</div>' +
-            '<form class="comment-form" onsubmit="submitArticleComment(event, \'' + article._id + '\')">' +
-                '<input type="text" id="articleCommentName" placeholder="' + namePlaceholder + '" class="details-input" required>' +
-                '<textarea id="articleCommentText" placeholder="' + writeCommentPlaceholder + '" class="details-input" required></textarea>' +
-                '<button type="submit" class="details-btn">' + sendText + '</button>' +
-            '</form>' +
+        '<h4>' + commentsTitle + '</h4>' +
+        '<div class="comments-list">' + commentsHtml + '</div>' +
+        '<form class="comment-form" onsubmit="submitArticleComment(event, \'' + article._id + '\')">' +
+        '<input type="text" id="articleCommentName" placeholder="' + namePlaceholder + '" class="details-input" required>' +
+        '<textarea id="articleCommentText" placeholder="' + writeCommentPlaceholder + '" class="details-input" required></textarea>' +
+        '<button type="submit" class="details-btn">' + sendText + '</button>' +
+        '</form>' +
         '</div>' +
-    '</div>';
+        '</div>';
 
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
@@ -799,12 +803,12 @@ function submitArticleComment(e, articleId) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name, text: text })
     })
-        .then(function(res) { return res.json(); })
-        .then(function() {
+        .then(function (res) { return res.json(); })
+        .then(function () {
             loadArticles();
             openArticle(articleId);
         })
-        .catch(function(err) { console.error(err); });
+        .catch(function (err) { console.error(err); });
 }
 
 function shareArticle(articleId) {
@@ -827,11 +831,11 @@ function deleteArticle(articleId) {
     if (!confirm('هل أنت متأكد من حذف هذا المقال؟')) return;
 
     fetch(API_URL + '/articles/' + articleId, { method: 'DELETE' })
-        .then(function() {
+        .then(function () {
             closeModal();
             loadArticles();
         })
-        .catch(function(err) { console.error(err); });
+        .catch(function (err) { console.error(err); });
 }
 
 // ============================================
@@ -913,8 +917,8 @@ function submitArticle(e) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: title, author: author, content: content, image: image })
     })
-        .then(function(res) { return res.json(); })
-        .then(function() {
+        .then(function (res) { return res.json(); })
+        .then(function () {
             loadArticles();
             document.getElementById('articleTitle').value = '';
             document.getElementById('articleAuthor').value = '';
@@ -924,7 +928,7 @@ function submitArticle(e) {
             if (adminPanel) adminPanel.classList.add('hidden');
             alert('تم نشر المقال بنجاح! ✅');
         })
-        .catch(function(err) { console.error(err); });
+        .catch(function (err) { console.error(err); });
 }
 
 // ============================================
@@ -1000,7 +1004,7 @@ function selectProvince(id) {
     var provinceRateEl = document.getElementById('provinceRate');
     var provinceTypeEl = document.getElementById('provinceType');
     var provinceStoryEl = document.getElementById('provinceStory');
-    
+
     if (provinceNameEl) provinceNameEl.textContent = name;
     if (provinceRateEl) provinceRateEl.textContent = rate + ' ' + childMarriageText;
     if (provinceTypeEl) provinceTypeEl.textContent = type;
@@ -1067,7 +1071,7 @@ function loadDeferredContent() {
     loadArticles();
     incrementViews();
     initScrollReveal();
-    
+
     // Load comments with slight delay (less critical)
     setTimeout(loadComments, 300);
 }
@@ -1075,13 +1079,13 @@ function loadDeferredContent() {
 // ============================================
 // Initialize - Optimized for fast loading
 // ============================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('🚀 DOM Content Loaded - Initializing...');
-    
+
     // Critical: Initialize theme and UI immediately
     initTheme();
     initParticles();
-    
+
     // Defer non-critical API calls - Safari compatible
     if (typeof requestIdleCallback === 'function') {
         requestIdleCallback(loadDeferredContent);
@@ -1102,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
-        themeToggle.addEventListener('touchend', function(e) {
+        themeToggle.addEventListener('touchend', function (e) {
             e.preventDefault();
             toggleTheme();
         });
@@ -1111,17 +1115,17 @@ document.addEventListener('DOMContentLoaded', function() {
     var headerThemeToggle = document.getElementById('headerThemeToggle');
     if (headerThemeToggle) {
         headerThemeToggle.addEventListener('click', toggleTheme);
-        headerThemeToggle.addEventListener('touchend', function(e) {
+        headerThemeToggle.addEventListener('touchend', function (e) {
             e.preventDefault();
             toggleTheme();
         });
     }
-    
+
     // Start button - with iOS touch support
     var startBtnInit = document.getElementById('startBtn');
     if (startBtnInit) {
         startBtnInit.addEventListener('click', startExperience);
-        startBtnInit.addEventListener('touchend', function(e) {
+        startBtnInit.addEventListener('touchend', function (e) {
             e.preventDefault();
             startExperience();
         });
@@ -1129,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var ageSlider = document.getElementById('ageSlider');
     if (ageSlider) {
-        ageSlider.addEventListener('input', function(e) {
+        ageSlider.addEventListener('input', function (e) {
             currentAge = parseInt(e.target.value);
             var ageNumberEl = document.getElementById('ageNumber');
             if (ageNumberEl) ageNumberEl.textContent = currentAge;
@@ -1144,10 +1148,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var likeBtn = document.getElementById('likeBtn');
     if (likeBtn) likeBtn.addEventListener('click', toggleLike);
-    
+
     var shareBtn = document.getElementById('shareBtn');
     if (shareBtn) {
-        shareBtn.addEventListener('click', function() {
+        shareBtn.addEventListener('click', function () {
             var modal = document.getElementById('detailsModal');
             var modalBody = document.getElementById('modalBody');
             modalBody.innerHTML = '<h3 class="modal-title">📤 شارك الموقع</h3>' +
@@ -1162,10 +1166,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var modalClose = document.getElementById('modalClose');
     if (modalClose) modalClose.addEventListener('click', closeModal);
-    
+
     var detailsModal = document.getElementById('detailsModal');
     if (detailsModal) {
-        detailsModal.addEventListener('click', function(e) {
+        detailsModal.addEventListener('click', function (e) {
             // Close when clicking outside the modal content (on overlay or modal background)
             if (e.target.id === 'detailsModal' || e.target.classList.contains('modal-overlay')) {
                 closeModal();
@@ -1175,15 +1179,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var commentForm = document.getElementById('commentForm');
     if (commentForm) commentForm.addEventListener('submit', submitComment);
-    
+
     var cancelAdmin = document.getElementById('cancelAdmin');
     if (cancelAdmin) {
-        cancelAdmin.addEventListener('click', function() {
+        cancelAdmin.addEventListener('click', function () {
             var adminPanel = document.getElementById('adminPanel');
             if (adminPanel) adminPanel.classList.add('hidden');
         });
     }
-    
+
     var articleForm = document.getElementById('articleForm');
     if (articleForm) articleForm.addEventListener('submit', submitArticle);
 
@@ -1191,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var statsBtn = document.getElementById('statsBtn');
     if (statsBtn) {
         statsBtn.addEventListener('click', goToMainExperience);
-        statsBtn.addEventListener('touchend', function(e) {
+        statsBtn.addEventListener('touchend', function (e) {
             e.preventDefault();
             goToMainExperience();
         });
@@ -1212,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var currentLang = window.i18n && window.i18n.getCurrentLanguage ? window.i18n.getCurrentLanguage() : 'ar';
             // Show the OTHER language (the one we'll switch TO)
             var newText = currentLang === 'ar' ? 'EN' : 'ع';
-            
+
             if (langIcon) langIcon.textContent = newText;
             if (headerToggleBtn) {
                 var headerLangIcon = headerToggleBtn.querySelector('.lang-icon');
@@ -1233,10 +1237,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('🌐 Toggling language from ' + currentLang + ' to ' + newLang);
 
-            window.i18n.setLanguage(newLang).then(function() {
+            window.i18n.setLanguage(newLang).then(function () {
                 updateToggleButtons();
                 console.log('✅ Language toggled to: ' + newLang);
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.error('❌ Error toggling language:', error);
             });
         }
@@ -1244,14 +1248,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add click listeners to both buttons - with iOS touch support
         if (toggleBtn) {
             toggleBtn.addEventListener('click', handleLanguageToggle);
-            toggleBtn.addEventListener('touchend', function(e) {
+            toggleBtn.addEventListener('touchend', function (e) {
                 e.preventDefault();
                 handleLanguageToggle();
             });
         }
         if (headerToggleBtn) {
             headerToggleBtn.addEventListener('click', handleLanguageToggle);
-            headerToggleBtn.addEventListener('touchend', function(e) {
+            headerToggleBtn.addEventListener('touchend', function (e) {
                 e.preventDefault();
                 handleLanguageToggle();
             });
@@ -1264,7 +1268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Set initial state
-        setTimeout(function() {
+        setTimeout(function () {
             updateToggleButtons();
             console.log('✅ Language toggle initialized');
         }, 100);

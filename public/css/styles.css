@@ -279,8 +279,8 @@ label[for],
 }
 
 /* Hide fixed toggles when main experience is visible */
-.main-experience:not(.hidden) ~ .theme-toggle,
-.main-experience:not(.hidden) ~ .language-toggle,
+.main-experience:not(.hidden)~.theme-toggle,
+.main-experience:not(.hidden)~.language-toggle,
 body:has(.main-experience:not(.hidden)) .theme-toggle,
 body:has(.main-experience:not(.hidden)) .language-toggle {
     display: none;
@@ -2085,6 +2085,19 @@ html[dir] * {
 
 .law-text {
     color: var(--text-muted);
+    line-height: 1.8;
+}
+
+.law-text a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.law-text a:hover {
+    color: var(--accent-secondary);
+    text-decoration: none;
 }
 
 /* ============================================
@@ -3414,7 +3427,7 @@ textarea:focus-visible {
    User Request: "Make them look like this always" (Arabic & English)
 */
 .partners-grid img {
-    height: 140px;
+    height: 220px;
     /* Standardize height */
     width: auto;
     object-fit: contain;
@@ -3422,12 +3435,10 @@ textarea:focus-visible {
     transition: transform 0.3s ease;
     filter: none;
 
-    /* The requested "White Card" look */
-    background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
-    border-radius: 20px;
-    /* Slightly more rounded as per screenshot */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* Clean look without background */
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
 }
 
 .partners-grid img:hover {
@@ -3436,8 +3447,22 @@ textarea:focus-visible {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Remove separate dark mode rule since we now enforce this universally */
-/* body.dark-mode .partners-grid img { ... } (Deleted) */
+/* Dark mode: single white background for all partner logos */
+body.dark-mode .partners-grid {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    gap: var(--space-lg);
+}
+
+body.dark-mode .partners-grid img {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
 
 @media (max-width: 768px) {
     .partners-grid {
@@ -3650,6 +3675,7 @@ textarea:focus-visible {
 
 /* Small tablets and large phones */
 @media (max-width: 768px) {
+
     /* Base font adjustment */
     html {
         font-size: 15px;
