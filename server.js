@@ -152,8 +152,8 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 // 4. Body Parser with size limits
-app.use(express.json({ limit: '10kb' })); // Limit body size to prevent large payload attacks
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.json({ limit: '5mb' })); // Increased for base64 images
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
 // 5. Data Sanitization against NoSQL Injection
 app.use(mongoSanitize({
@@ -831,21 +831,29 @@ const upload = multer({
 
 // Image upload endpoint - stores as base64 data URL
 app.post('/api/upload', requireAdmin, function(req, res) {
+    console.log('📤 Upload request received');
+    
     upload.single('image')(req, res, async function(err) {
+        console.log('📤 Processing upload...');
+        
         if (err instanceof multer.MulterError) {
             if (err.code === 'LIMIT_FILE_SIZE') {
+                console.error('❌ File too large');
                 return res.status(400).json({ error: 'حجم الصورة كبير جداً (الحد الأقصى 2MB)' });
             }
-            console.error('Multer error:', err);
+            console.error('❌ Multer error:', err);
             return res.status(400).json({ error: 'خطأ في رفع الصورة: ' + err.message });
         } else if (err) {
-            console.error('Upload error:', err);
+            console.error('❌ Upload error:', err);
             return res.status(400).json({ error: err.message });
         }
         
         if (!req.file) {
+            console.error('❌ No file received');
             return res.status(400).json({ error: 'لم يتم اختيار صورة' });
         }
+        
+        console.log('📤 File received:', req.file.originalname, 'Size:', req.file.size);
         
         try {
             let imageBuffer = req.file.buffer;
@@ -853,6 +861,7 @@ app.post('/api/upload', requireAdmin, function(req, res) {
             
             // Process with sharp if available (resize to 770x770)
             if (sharp) {
+                console.log('📤 Processing with sharp...');
                 imageBuffer = await sharp(req.file.buffer)
                     .resize(770, 770, {
                         fit: 'cover',
@@ -873,6 +882,7 @@ app.post('/api/upload', requireAdmin, function(req, res) {
             
         } catch (processError) {
             console.error('❌ Image processing error:', processError.message);
+            console.error(processError.stack);
             
             // Fallback: return original as base64
             const base64Image = req.file.buffer.toString('base64');
