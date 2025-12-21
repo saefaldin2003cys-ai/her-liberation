@@ -1678,6 +1678,19 @@ html[dir] * {
     margin-bottom: var(--space-xl);
 }
 
+/* Clickable Links in Article Content */
+.article-link {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    word-break: break-all;
+    transition: all 0.2s ease;
+}
+
+.article-link:hover {
+    color: var(--accent-secondary);
+    text-decoration: none;
+}
+
 .article-modal-actions {
     display: flex;
     align-items: center;

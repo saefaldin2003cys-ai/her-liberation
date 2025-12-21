@@ -181,7 +181,6 @@ function sanitizeInput(obj) {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#x27;')
-            .replace(/\//g, '&#x2F;')
             .replace(/\\/g, '&#x5C;')
             .replace(/`/g, '&#x60;')
             .trim();
@@ -194,7 +193,7 @@ function sanitizeInput(obj) {
             }
         }
 
-        return sanitized.slice(0, 1000); // Max 1000 chars
+        return sanitized; // No length limit - allow full content
     }
     if (typeof obj === 'object' && obj !== null) {
         for (var key in obj) {

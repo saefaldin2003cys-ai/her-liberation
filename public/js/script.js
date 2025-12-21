@@ -381,6 +381,17 @@ function escapeHTML(str) {
     return div.innerHTML;
 }
 
+// Convert URLs in text to clickable links
+function linkifyText(text) {
+    // Regex to find URLs (http, https)
+    var urlPattern = /(https?:\/\/[^\s<]+)/g;
+    return text.replace(urlPattern, function (url) {
+        // Decode any HTML entities in the URL
+        var decodedUrl = url.replace(/&amp;/g, '&').replace(/&#x2F;/g, '/');
+        return '<a href="' + decodedUrl + '" target="_blank" rel="noopener noreferrer" class="article-link">' + url + '</a>';
+    });
+}
+
 // ============================================
 // Navigation
 // ============================================
@@ -666,10 +677,6 @@ function renderArticleCard(article) {
         '<p class="article-excerpt">' + escapeHTML(excerpt) + '</p>' +
         '<hr class="article-divider">' +
         '<div class="article-actions">' +
-        '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\')">' +
-        '<span class="action-icon emoji-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
-        '<span>' + (article.likes || 0) + '</span>' +
-        '</button>' +
         '<button class="article-action-btn" onclick="openArticle(\'' + article._id + '\')">' +
         '<span class="action-icon emoji-icon">💬</span>' +
         '<span>' + commentsCount + '</span>' +
@@ -757,7 +764,7 @@ function openArticle(articleId) {
         authorHtml +
         '<span>💬 ' + comments.length + ' ' + commentsLabel + '</span>' +
         '</div>' +
-        '<div class="article-modal-body">' + escapeHTML(content).replace(/\n/g, '<br>') + '</div>' +
+        '<div class="article-modal-body">' + linkifyText(escapeHTML(content).replace(/\n/g, '<br>')) + '</div>' +
         (isAdmin ? '<div class="article-modal-actions">' + deleteBtn + '</div>' : '') +
         '<div class="article-comments-section">' +
         '<h4>' + commentsTitle + '</h4>' +
