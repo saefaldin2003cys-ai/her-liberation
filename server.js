@@ -840,8 +840,10 @@ app.post('/api/upload', requireAdmin, function(req, res) {
             if (err.code === 'LIMIT_FILE_SIZE') {
                 return res.status(400).json({ error: 'حجم الصورة كبير جداً (الحد الأقصى 5MB)' });
             }
+            console.error('Multer error:', err);
             return res.status(400).json({ error: 'خطأ في رفع الصورة: ' + err.message });
         } else if (err) {
+            console.error('Upload error:', err);
             return res.status(400).json({ error: err.message });
         }
         
@@ -855,26 +857,36 @@ app.post('/api/upload', requireAdmin, function(req, res) {
             const processedFilename = 'processed-' + req.file.filename.replace(/\.[^/.]+$/, '') + '.jpg';
             const processedPath = path.join(uploadsDir, processedFilename);
             
-            await sharp(originalPath)
-                .resize(770, 770, {
-                    fit: 'cover',
-                    position: 'center'
-                })
-                .jpeg({ quality: 85 })
-                .toFile(processedPath);
-            
-            // Delete original file
-            fs.unlinkSync(originalPath);
-            
-            // Return the URL of the processed image
-            const imageUrl = '/uploads/' + processedFilename;
-            console.log('✅ Image uploaded and processed (770x770):', imageUrl);
-            res.json({ success: true, url: imageUrl });
+            // Check if sharp is available
+            if (sharp) {
+                await sharp(originalPath)
+                    .resize(770, 770, {
+                        fit: 'cover',
+                        position: 'center'
+                    })
+                    .jpeg({ quality: 85 })
+                    .toFile(processedPath);
+                
+                // Delete original file
+                try {
+                    fs.unlinkSync(originalPath);
+                } catch (unlinkErr) {
+                    console.warn('Could not delete original file:', unlinkErr.message);
+                }
+                
+                // Return the URL of the processed image
+                const imageUrl = '/uploads/' + processedFilename;
+                console.log('✅ Image uploaded and processed (770x770):', imageUrl);
+                return res.json({ success: true, url: imageUrl });
+            } else {
+                throw new Error('Sharp not available');
+            }
         } catch (processError) {
-            console.error('❌ Image processing error:', processError);
+            console.error('❌ Image processing error:', processError.message);
             // If processing fails, return original image
             const imageUrl = '/uploads/' + req.file.filename;
-            res.json({ success: true, url: imageUrl });
+            console.log('✅ Image uploaded (original):', imageUrl);
+            return res.json({ success: true, url: imageUrl });
         }
     });
 });
