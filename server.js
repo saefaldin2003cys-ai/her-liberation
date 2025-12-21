@@ -5,13 +5,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const multer = require('multer');
-let sharp;
-try {
-    sharp = require('sharp');
-} catch (e) {
-    console.warn('Sharp not available, image processing disabled');
-    sharp = null;
-}
+// Sharp disabled - images will be stored as-is
+const sharp = null;
 require('dotenv').config();
 
 // ==========================================
@@ -208,6 +203,12 @@ function sanitizeInput(obj) {
                 delete obj[key];
                 console.warn('🚨 Prototype pollution attempt blocked');
                 continue;
+            }
+            // Skip sanitization for image field if it's a valid data URL or external URL
+            if (key === 'image' && typeof obj[key] === 'string') {
+                if (obj[key].startsWith('data:image/') || obj[key].startsWith('https://') || obj[key].startsWith('http://')) {
+                    continue; // Don't sanitize valid image URLs
+                }
             }
             obj[key] = sanitizeInput(obj[key]);
         }
