@@ -482,11 +482,22 @@ function requireAdmin(req, res, next) {
         return res.status(401).json({ error: 'Session expired' });
     }
     
-    // Verify IP consistency (prevents session hijacking)
-    if (session.ip !== req.ip) {
-        console.warn('🚨 Session hijacking attempt:', decoded.sessionId);
-        sessionStore.delete(decoded.sessionId);
-        return res.status(401).json({ error: 'Session invalid' });
+    // Verify IP consistency (less strict - allow IP changes within session lifetime)
+    // Store multiple allowed IPs per session to handle proxy/network changes
+    if (!session.allowedIPs) {
+        session.allowedIPs = [session.ip];
+    }
+    
+    if (session.allowedIPs.indexOf(req.ip) === -1) {
+        // Allow up to 3 different IPs per session (for network changes)
+        if (session.allowedIPs.length < 3) {
+            session.allowedIPs.push(req.ip);
+            console.log('📝 New IP added to session:', req.ip);
+        } else {
+            console.warn('🚨 Too many IP changes for session:', decoded.sessionId);
+            sessionStore.delete(decoded.sessionId);
+            return res.status(401).json({ error: 'Session invalid - too many IP changes' });
+        }
     }
     
     // Update last activity
@@ -587,8 +598,17 @@ app.get('/api/auth/verify', function(req, res) {
     }
     
     var session = sessionStore.get(decoded.sessionId);
-    if (!session || session.ip !== req.ip) {
+    if (!session) {
         return res.status(401).json({ valid: false });
+    }
+    
+    // Allow IP to be added to session's allowed IPs
+    if (!session.allowedIPs) {
+        session.allowedIPs = [session.ip];
+    }
+    
+    if (session.allowedIPs.indexOf(req.ip) === -1 && session.allowedIPs.length < 3) {
+        session.allowedIPs.push(req.ip);
     }
     
     res.json({ valid: true, expiresAt: decoded.exp * 1000 });
