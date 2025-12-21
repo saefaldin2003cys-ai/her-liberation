@@ -752,21 +752,10 @@ function openArticle(articleId) {
         '<div class="article-modal-meta">' +
             '<span>📅 ' + formattedDate + '</span>' +
             authorHtml +
-            '<span>❤️ ' + (article.likes || 0) + ' ' + likesLabel + '</span>' +
             '<span>💬 ' + comments.length + ' ' + commentsLabel + '</span>' +
         '</div>' +
         '<div class="article-modal-body">' + escapeHTML(content).replace(/\n/g, '<br>') + '</div>' +
-        '<div class="article-modal-actions">' +
-            '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\'); openArticle(\'' + article._id + '\');">' +
-                '<span class="action-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
-                '<span>' + likeText + '</span>' +
-            '</button>' +
-            '<button class="article-action-btn" onclick="shareArticle(\'' + article._id + '\')">' +
-                '<span class="action-icon">📤</span>' +
-                '<span>' + shareText + '</span>' +
-            '</button>' +
-            deleteBtn +
-        '</div>' +
+        deleteBtn +
         '<div class="article-comments-section">' +
             '<h4>' + commentsTitle + '</h4>' +
             '<div class="comments-list">' + commentsHtml + '</div>' +
@@ -774,6 +763,10 @@ function openArticle(articleId) {
                 '<input type="text" id="articleCommentName" placeholder="' + namePlaceholder + '" class="details-input" required>' +
                 '<textarea id="articleCommentText" placeholder="' + writeCommentPlaceholder + '" class="details-input" required></textarea>' +
                 '<button type="submit" class="details-btn">' + sendText + '</button>' +
+                '<button type="button" class="article-action-btn share-btn" onclick="shareArticle(\'' + article._id + '\')">' +
+                    '<span class="action-icon">📤</span>' +
+                    '<span>' + shareText + '</span>' +
+                '</button>' +
             '</form>' +
         '</div>' +
     '</div>';

@@ -1287,6 +1287,20 @@ html[dir] * {
     margin-bottom: var(--space-2xl);
 }
 
+.comment-form .share-btn {
+    margin-top: var(--space-sm);
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+}
+
+.comment-form .share-btn:hover {
+    border-color: var(--accent-primary);
+    background: rgba(233, 30, 140, 0.1);
+}
+
 .input-field,
 .textarea-field {
     width: 100%;
