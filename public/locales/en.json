@@ -261,8 +261,9 @@
         "question": "Do you agree that the minimum age for marriage should be 18?",
         "agree": "Yes, I agree (18+)",
         "disagree": "No, I disagree",
-        "other": "Other opinion",
         "thanks": "Thank you for sharing your opinion!",
-        "results_title": "Voting Results:"
+        "results_title": "Voting Results:",
+        "agree_label": "Supporters",
+        "disagree_label": "Opponents"
     }
 }

@@ -1386,6 +1386,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (agreePercentEl) agreePercentEl.textContent = agreePercent + '%';
         if (disagreePercentEl) disagreePercentEl.textContent = disagreePercent + '%';
 
+        // Update vote counts
+        var agreeCountEl = document.getElementById('agreeCount');
+        var disagreeCountEl = document.getElementById('disagreeCount');
+
+        if (agreeCountEl) agreeCountEl.textContent = data.agree18 || 0;
+        if (disagreeCountEl) disagreeCountEl.textContent = data.disagree || 0;
+
         // Animate bars with slight delay
         setTimeout(function () {
             var agreeBar = document.getElementById('agreeBar');
