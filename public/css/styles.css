@@ -1625,6 +1625,21 @@ html[dir] * {
 /* Article Modal */
 .article-modal-content {
     max-width: 800px;
+    width: 100%;
+}
+
+/* Article Comments Section - Full Display */
+.article-comments-section {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--border-color);
+}
+
+.article-comments-section h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
 }
 
 .article-modal-image {
@@ -1660,6 +1675,7 @@ html[dir] * {
     line-height: 2;
     font-size: 1.1rem;
     white-space: pre-wrap;
+    margin-bottom: var(--space-xl);
 }
 
 .article-modal-actions {
