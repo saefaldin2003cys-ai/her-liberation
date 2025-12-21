@@ -690,18 +690,19 @@ async function seedData() {
             }
         }
 
-        // Seed Articles
-        const articlesCount = await Article.countDocuments();
-        if (articlesCount === 0) {
-            const articlesPath = path.join(DB_Data_Path, 'articles.json');
-            if (fs.existsSync(articlesPath)) {
-                const articlesData = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
-                if (articlesData.length > 0) {
-                    await Article.create(articlesData);
-                    console.log('🌱 Seeded Articles from JSON');
-                }
-            }
-        }
+        // Seed Articles - DISABLED (use admin panel to add articles)
+        // Articles should be managed through the admin panel only
+        // const articlesCount = await Article.countDocuments();
+        // if (articlesCount === 0) {
+        //     const articlesPath = path.join(DB_Data_Path, 'articles.json');
+        //     if (fs.existsSync(articlesPath)) {
+        //         const articlesData = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
+        //         if (articlesData.length > 0) {
+        //             await Article.create(articlesData);
+        //             console.log('🌱 Seeded Articles from JSON');
+        //         }
+        //     }
+        // }
     } catch (error) {
         console.warn('⚠️ Error seeding data (normal if files missing or models mismatch):', error.message);
     }
