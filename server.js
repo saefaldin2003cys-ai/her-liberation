@@ -5,6 +5,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const multer = require('multer');
+const sharp = require('sharp');
 require('dotenv').config();
 
 // ==========================================
@@ -834,7 +835,7 @@ const upload = multer({
 
 // Image upload endpoint
 app.post('/api/upload', requireAdmin, function(req, res) {
-    upload.single('image')(req, res, function(err) {
+    upload.single('image')(req, res, async function(err) {
         if (err instanceof multer.MulterError) {
             if (err.code === 'LIMIT_FILE_SIZE') {
                 return res.status(400).json({ error: 'حجم الصورة كبير جداً (الحد الأقصى 5MB)' });
@@ -848,10 +849,33 @@ app.post('/api/upload', requireAdmin, function(req, res) {
             return res.status(400).json({ error: 'لم يتم اختيار صورة' });
         }
         
-        // Return the URL of the uploaded image
-        const imageUrl = '/uploads/' + req.file.filename;
-        console.log('✅ Image uploaded:', imageUrl);
-        res.json({ success: true, url: imageUrl });
+        try {
+            // Process image with sharp - resize to 770x770
+            const originalPath = req.file.path;
+            const processedFilename = 'processed-' + req.file.filename.replace(/\.[^/.]+$/, '') + '.jpg';
+            const processedPath = path.join(uploadsDir, processedFilename);
+            
+            await sharp(originalPath)
+                .resize(770, 770, {
+                    fit: 'cover',
+                    position: 'center'
+                })
+                .jpeg({ quality: 85 })
+                .toFile(processedPath);
+            
+            // Delete original file
+            fs.unlinkSync(originalPath);
+            
+            // Return the URL of the processed image
+            const imageUrl = '/uploads/' + processedFilename;
+            console.log('✅ Image uploaded and processed (770x770):', imageUrl);
+            res.json({ success: true, url: imageUrl });
+        } catch (processError) {
+            console.error('❌ Image processing error:', processError);
+            // If processing fails, return original image
+            const imageUrl = '/uploads/' + req.file.filename;
+            res.json({ success: true, url: imageUrl });
+        }
     });
 });
 
