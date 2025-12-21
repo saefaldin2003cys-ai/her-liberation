@@ -114,28 +114,28 @@
                 "statusLabel": "🟢 Full Citizenship",
                 "description": "Complete legal freedom of action.",
                 "details": "At 18 years, a girl becomes legally adult and has full capacity to act.",
-                "law": "Iraqi Civil Law"
+                "law": "<a href='https://tasjeel.mot.gov.iq/newtasjeel/%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86%20%D8%A7%D9%84%D9%85%D8%B3%D8%A7%D9%87%D9%85%D8%A9/%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86%20%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A%2040%20%D9%84%D8%B3%D9%86%D8%A9%201951.pdf' target='_blank'>Iraqi Civil Law</a>"
             },
             "economicRights": {
                 "title": "Economic Rights",
                 "statusLabel": "🟢 Financially Free",
                 "description": "Own, sell, and buy with complete freedom.",
                 "details": "Complete freedom of ownership and financial management without restrictions.",
-                "law": "Iraqi Civil Law"
+                "law": "<a href='https://tasjeel.mot.gov.iq/newtasjeel/%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86%20%D8%A7%D9%84%D9%85%D8%B3%D8%A7%D9%87%D9%85%D8%A9/%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86%20%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A%2040%20%D9%84%D8%B3%D9%86%D8%A9%201951.pdf' target='_blank'>Iraqi Civil Law</a>"
             },
             "civilRights": {
                 "title": "Civil Rights",
                 "statusLabel": "🟢 Free Movement",
                 "description": "Freedom to travel and obtain documents.",
                 "details": "Freedom to travel and obtain passport and documents independently.",
-                "law": "Iraqi Constitution"
+                "law": "<a href='https://moj.gov.iq/upload/pdf/قانون%20الجوازات%20-%20Copy.pdf' target='_blank'>Iraqi Passport Law</a>"
             },
             "marriage": {
                 "title": "Marriage",
                 "statusLabel": "🟢 Free Decision",
                 "description": "Can marry without anyone's permission. Her personal decision is the law.",
                 "details": "Freedom to marry with her personal consent without needing permission from any other party.",
-                "law": "Personal Status Law"
+                "law": "<a href='https://iraqipersonalstatuslaw.com/law/law.pdf' target='_blank'>Personal Status Law</a>"
             }
         }
     },
@@ -255,5 +255,14 @@
     "share": {
         "twitter_text": "Discover children's rights under the law and the dangers of early marriage 💔\n\n#HerLiberation #ChildhoodProtection",
         "whatsapp_text": "Discover children's rights under the law and the dangers of early marriage"
+    },
+    "poll": {
+        "title": "Poll: Minimum Age for Marriage",
+        "question": "Do you agree that the minimum age for marriage should be 18?",
+        "agree": "Yes, I agree (18+)",
+        "disagree": "No, I disagree",
+        "other": "Other opinion",
+        "thanks": "Thank you for sharing your opinion!",
+        "results_title": "Voting Results:"
     }
 }

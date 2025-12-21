@@ -1298,4 +1298,101 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log('✅ All dynamic content updated');
     });
+
+    // ============================================
+    // Poll Functions
+    // ============================================
+
+    // Check if user already voted (from localStorage)
+    var hasVoted = localStorage.getItem('poll_voted') === 'true';
+
+    // Load poll on page load
+    loadPoll();
+
+    function loadPoll() {
+        var pollForm = document.getElementById('pollForm');
+        var pollResults = document.getElementById('pollResults');
+
+        if (!pollForm || !pollResults) return;
+
+        // If already voted, show results directly
+        if (hasVoted) {
+            pollForm.classList.add('hidden');
+            pollResults.classList.remove('hidden');
+            // Fetch and display current results
+            fetch(API_URL + '/poll')
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    updatePollResults(data);
+                })
+                .catch(function (err) {
+                    console.warn('Poll load error:', err);
+                });
+        }
+    }
+
+    // Make submitPollVote globally accessible
+    window.submitPollVote = function (choice) {
+        var pollForm = document.getElementById('pollForm');
+        var pollResults = document.getElementById('pollResults');
+
+        if (!pollForm || !pollResults) return;
+
+        // Disable buttons to prevent double-click
+        var buttons = pollForm.querySelectorAll('.poll-option');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].disabled = true;
+            buttons[i].style.opacity = '0.5';
+        }
+
+        fetch(API_URL + '/poll/vote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ choice: choice })
+        })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                // Mark as voted
+                localStorage.setItem('poll_voted', 'true');
+                hasVoted = true;
+
+                // Show results
+                pollForm.classList.add('hidden');
+                pollResults.classList.remove('hidden');
+
+                // Update the bars with animation
+                updatePollResults(data);
+            })
+            .catch(function (err) {
+                console.error('Vote error:', err);
+                // Re-enable buttons on error
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = false;
+                    buttons[i].style.opacity = '1';
+                }
+            });
+    };
+
+    function updatePollResults(data) {
+        var total = data.total || 1; // Prevent division by zero
+
+        var agreePercent = Math.round((data.agree18 / total) * 100);
+        var disagreePercent = Math.round((data.disagree / total) * 100);
+
+        // Update percentages
+        var agreePercentEl = document.getElementById('agreePercent');
+        var disagreePercentEl = document.getElementById('disagreePercent');
+
+        if (agreePercentEl) agreePercentEl.textContent = agreePercent + '%';
+        if (disagreePercentEl) disagreePercentEl.textContent = disagreePercent + '%';
+
+        // Animate bars with slight delay
+        setTimeout(function () {
+            var agreeBar = document.getElementById('agreeBar');
+            var disagreeBar = document.getElementById('disagreeBar');
+
+            if (agreeBar) agreeBar.style.width = agreePercent + '%';
+            if (disagreeBar) disagreeBar.style.width = disagreePercent + '%';
+        }, 100);
+    }
 });

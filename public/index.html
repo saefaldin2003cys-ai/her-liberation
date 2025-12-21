@@ -15,30 +15,46 @@
     <!-- Preload critical resources -->
     <link rel="preload" href="css/styles.css" as="style">
     <link rel="preload" href="js/script.js" as="script">
-    
+
     <!-- Fonts - with display swap for faster rendering -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet"
+        media="print" onload="this.media='all'">
+
     <!-- Fallback for fonts -->
     <noscript>
-        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap"
+            rel="stylesheet">
     </noscript>
 
     <!-- Critical CSS inline for faster first paint -->
     <style>
         /* Critical CSS for initial render */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { 
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
             font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0C0A1D; 
-            color: #F9FAFB; 
+            background: #0C0A1D;
+            color: #F9FAFB;
             line-height: 1.7;
             min-height: 100vh;
         }
-        .hidden { display: none !important; }
+
+        .hidden {
+            display: none !important;
+        }
+
         .start-screen {
             min-height: 100vh;
             display: flex;
@@ -46,13 +62,28 @@
             justify-content: center;
             padding: 2rem;
         }
-        .start-content { text-align: center; max-width: 600px; }
-        .hero-logo { width: 130px; height: 130px; border-radius: 50%; }
-        .hero-title { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 900; margin: 1rem 0; }
-        .title-line { 
-            background: linear-gradient(135deg, #E91E8C, #7C3AED); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
+
+        .start-content {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .hero-logo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 900;
+            margin: 1rem 0;
+        }
+
+        .title-line {
+            background: linear-gradient(135deg, #E91E8C, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 
@@ -178,20 +209,19 @@
                     <button class="header-toggle-btn" id="headerLangToggle" aria-label="تبديل اللغة">
                         <span class="lang-icon">EN</span>
                     </button>
-                    
+
                     <img src="assets/images/1_20251127_202518.png" alt="تحريرها" class="header-logo">
-                    
+
                     <button class="header-toggle-btn" id="headerThemeToggle" aria-label="تبديل الوضع">
                         <span class="theme-icon">🌙</span>
                     </button>
                 </div>
-                
+
                 <!-- Section Navigation -->
                 <nav class="section-nav">
                     <a href="#rights-section" class="section-link" data-i18n="navigation.rights">الحقوق</a>
                     <a href="#map-section" class="section-link" data-i18n="navigation.map">الخريطة</a>
                     <a href="#articles-section" class="section-link" data-i18n="navigation.articles">المدونة</a>
-                    <a href="#comments-section" class="section-link" data-i18n="navigation.comments">التعليقات</a>
                 </nav>
             </div>
         </header>
@@ -332,25 +362,57 @@
             </div>
         </section>
 
-        <!-- Comments Section -->
-        <section id="comments-section" class="comments-section">
-            <div class="comments-container glass-card">
-                <h3 class="section-title" data-i18n="comments.title">💬 شارك رأيك</h3>
+        <!-- Poll Section -->
+        <section id="poll-section" class="poll-section">
+            <div class="poll-container glass-card">
+                <div class="poll-header">
+                    <span class="poll-icon">📊</span>
+                    <h3 class="section-title" data-i18n="poll.title">استفتاء: الحد الأدنى لسن الزواج</h3>
+                </div>
 
-                <!-- Comment Form -->
-                <form id="commentForm" class="comment-form">
-                    <input type="text" id="commentName" placeholder="اسمك (اختياري)" class="input-field"
-                        data-i18n-attr="placeholder" data-i18n="comments.name_placeholder">
-                    <textarea id="commentText" placeholder="اكتب تعليقك هنا..." class="textarea-field" required
-                        data-i18n-attr="placeholder" data-i18n="comments.text_placeholder"></textarea>
-                    <button type="submit" class="submit-btn">
-                        <span data-i18n="comments.submit">إرسال التعليق</span>
-                    </button>
-                </form>
+                <!-- Voting Form (shown before voting) -->
+                <div id="pollForm" class="poll-form">
+                    <p class="poll-question" data-i18n="poll.question">هل توافق على أن يكون الحد الأدنى لسن الزواج 18
+                        سنة؟</p>
+                    <div class="poll-options">
+                        <button class="poll-option" onclick="submitPollVote('agree18')">
+                            <span class="option-icon">✅</span>
+                            <span data-i18n="poll.agree">نعم، أوافق (+18)</span>
+                        </button>
+                        <button class="poll-option" onclick="submitPollVote('disagree')">
+                            <span class="option-icon">❌</span>
+                            <span data-i18n="poll.disagree">لا، لا أوافق</span>
+                        </button>
+                    </div>
+                </div>
 
-                <!-- Comments List -->
-                <div class="comments-list" id="commentsList">
-                    <!-- Comments will be loaded -->
+                <!-- Results (shown after voting) -->
+                <div id="pollResults" class="poll-results hidden">
+                    <div class="poll-thank-you">
+                        <span class="thank-icon">✓</span>
+                        <span data-i18n="poll.thanks">شكراً لمشاركتنا رأيك!</span>
+                    </div>
+                    <p class="results-title" data-i18n="poll.results_title">نتائج التصويت:</p>
+
+                    <div class="poll-result-item">
+                        <div class="result-label">
+                            <span data-i18n="poll.agree">نعم، أوافق (+18)</span>
+                            <span id="agreePercent" class="result-percent">0%</span>
+                        </div>
+                        <div class="result-bar">
+                            <div id="agreeBar" class="result-fill agree"></div>
+                        </div>
+                    </div>
+
+                    <div class="poll-result-item">
+                        <div class="result-label">
+                            <span data-i18n="poll.disagree">لا، لا أوافق</span>
+                            <span id="disagreePercent" class="result-percent">0%</span>
+                        </div>
+                        <div class="result-bar">
+                            <div id="disagreeBar" class="result-fill disagree"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -451,156 +513,156 @@
     <script src="js/i18n.js"></script>
     <script src="js/i18n-integration.js"></script>
     <script src="js/script.js"></script>
-    
+
     <!-- iOS Safari Fallback - Direct Event Binding -->
     <script>
-    (function() {
-        'use strict';
-        
-        // Wait for DOM
-        function onReady(fn) {
-            if (document.readyState !== 'loading') {
-                fn();
-            } else {
-                document.addEventListener('DOMContentLoaded', fn);
+        (function () {
+            'use strict';
+
+            // Wait for DOM
+            function onReady(fn) {
+                if (document.readyState !== 'loading') {
+                    fn();
+                } else {
+                    document.addEventListener('DOMContentLoaded', fn);
+                }
             }
-        }
-        
-        onReady(function() {
-            console.log('iOS Fallback: Binding events...');
-            
-            // Discover Button
-            var startBtn = document.getElementById('startBtn');
-            if (startBtn) {
-                startBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('Start button clicked!');
-                    if (typeof startExperience === 'function') {
-                        startExperience();
-                    }
-                };
-            }
-            
-            // Theme Toggle
-            var themeToggle = document.getElementById('themeToggle');
-            if (themeToggle) {
-                themeToggle.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('Theme toggle clicked!');
-                    if (typeof toggleTheme === 'function') {
-                        toggleTheme();
-                    }
-                };
-            }
-            
-            // Language Toggle
-            var langToggle = document.getElementById('languageToggle');
-            if (langToggle) {
-                langToggle.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('Language toggle clicked!');
-                    if (window.i18n) {
-                        var currentLang = window.i18n.getCurrentLanguage();
-                        var newLang = currentLang === 'ar' ? 'en' : 'ar';
-                        window.i18n.setLanguage(newLang);
-                        var icon = document.getElementById('langIcon');
-                        if (icon) icon.textContent = newLang === 'ar' ? 'EN' : 'ع';
-                    }
-                };
-            }
-            
-            // Stats Button
-            var statsBtn = document.getElementById('statsBtn');
-            if (statsBtn) {
-                statsBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('Stats button clicked!');
-                    if (typeof goToMainExperience === 'function') {
-                        goToMainExperience();
-                    }
-                };
-            }
-            
-            // Age Slider - iOS fix
-            var ageSlider = document.getElementById('ageSlider');
-            if (ageSlider) {
-                ageSlider.oninput = function(e) {
-                    var age = parseInt(e.target.value);
-                    console.log('Age changed to: ' + age);
-                    
-                    // Update age display
-                    var ageNumber = document.getElementById('ageNumber');
-                    var ageValue = document.getElementById('ageValue');
-                    if (ageNumber) ageNumber.textContent = age;
-                    if (ageValue) ageValue.textContent = age;
-                    
-                    // Update rights and impacts
-                    if (typeof updateRights === 'function') updateRights();
-                    if (typeof updateTimeline === 'function') updateTimeline();
-                    if (typeof updateImpacts === 'function') updateImpacts();
-                };
-            }
-            
-            // Modal Close Button
-            var modalClose = document.getElementById('modalClose');
-            if (modalClose) {
-                modalClose.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('Modal close clicked!');
-                    if (typeof closeModal === 'function') {
-                        closeModal();
-                    } else {
-                        var modal = document.getElementById('detailsModal');
-                        if (modal) modal.classList.remove('show');
-                    }
-                };
-            }
-            
-            // Details Modal - close on overlay click
-            var detailsModal = document.getElementById('detailsModal');
-            if (detailsModal) {
-                detailsModal.onclick = function(e) {
-                    if (e.target.id === 'detailsModal' || e.target.classList.contains('modal-overlay')) {
-                        console.log('Modal overlay clicked!');
+
+            onReady(function () {
+                console.log('iOS Fallback: Binding events...');
+
+                // Discover Button
+                var startBtn = document.getElementById('startBtn');
+                if (startBtn) {
+                    startBtn.onclick = function (e) {
+                        e.preventDefault();
+                        console.log('Start button clicked!');
+                        if (typeof startExperience === 'function') {
+                            startExperience();
+                        }
+                    };
+                }
+
+                // Theme Toggle
+                var themeToggle = document.getElementById('themeToggle');
+                if (themeToggle) {
+                    themeToggle.onclick = function (e) {
+                        e.preventDefault();
+                        console.log('Theme toggle clicked!');
+                        if (typeof toggleTheme === 'function') {
+                            toggleTheme();
+                        }
+                    };
+                }
+
+                // Language Toggle
+                var langToggle = document.getElementById('languageToggle');
+                if (langToggle) {
+                    langToggle.onclick = function (e) {
+                        e.preventDefault();
+                        console.log('Language toggle clicked!');
+                        if (window.i18n) {
+                            var currentLang = window.i18n.getCurrentLanguage();
+                            var newLang = currentLang === 'ar' ? 'en' : 'ar';
+                            window.i18n.setLanguage(newLang);
+                            var icon = document.getElementById('langIcon');
+                            if (icon) icon.textContent = newLang === 'ar' ? 'EN' : 'ع';
+                        }
+                    };
+                }
+
+                // Stats Button
+                var statsBtn = document.getElementById('statsBtn');
+                if (statsBtn) {
+                    statsBtn.onclick = function (e) {
+                        e.preventDefault();
+                        console.log('Stats button clicked!');
+                        if (typeof goToMainExperience === 'function') {
+                            goToMainExperience();
+                        }
+                    };
+                }
+
+                // Age Slider - iOS fix
+                var ageSlider = document.getElementById('ageSlider');
+                if (ageSlider) {
+                    ageSlider.oninput = function (e) {
+                        var age = parseInt(e.target.value);
+                        console.log('Age changed to: ' + age);
+
+                        // Update age display
+                        var ageNumber = document.getElementById('ageNumber');
+                        var ageValue = document.getElementById('ageValue');
+                        if (ageNumber) ageNumber.textContent = age;
+                        if (ageValue) ageValue.textContent = age;
+
+                        // Update rights and impacts
+                        if (typeof updateRights === 'function') updateRights();
+                        if (typeof updateTimeline === 'function') updateTimeline();
+                        if (typeof updateImpacts === 'function') updateImpacts();
+                    };
+                }
+
+                // Modal Close Button
+                var modalClose = document.getElementById('modalClose');
+                if (modalClose) {
+                    modalClose.onclick = function (e) {
+                        e.preventDefault();
+                        console.log('Modal close clicked!');
                         if (typeof closeModal === 'function') {
                             closeModal();
                         } else {
-                            detailsModal.classList.remove('show');
+                            var modal = document.getElementById('detailsModal');
+                            if (modal) modal.classList.remove('show');
                         }
-                    }
-                };
-            }
-            
-            // Right Cards - click to show details
-            var rightCards = document.querySelectorAll('.right-card');
-            for (var i = 0; i < rightCards.length; i++) {
-                rightCards[i].onclick = function(e) {
-                    var key = this.getAttribute('data-right');
-                    console.log('Right card clicked: ' + key);
-                    if (typeof showRightDetails === 'function') {
-                        showRightDetails(key);
-                    }
-                };
-            }
-            
-            console.log('iOS Fallback: Events bound successfully!');
-        });
-    })();
+                    };
+                }
+
+                // Details Modal - close on overlay click
+                var detailsModal = document.getElementById('detailsModal');
+                if (detailsModal) {
+                    detailsModal.onclick = function (e) {
+                        if (e.target.id === 'detailsModal' || e.target.classList.contains('modal-overlay')) {
+                            console.log('Modal overlay clicked!');
+                            if (typeof closeModal === 'function') {
+                                closeModal();
+                            } else {
+                                detailsModal.classList.remove('show');
+                            }
+                        }
+                    };
+                }
+
+                // Right Cards - click to show details
+                var rightCards = document.querySelectorAll('.right-card');
+                for (var i = 0; i < rightCards.length; i++) {
+                    rightCards[i].onclick = function (e) {
+                        var key = this.getAttribute('data-right');
+                        console.log('Right card clicked: ' + key);
+                        if (typeof showRightDetails === 'function') {
+                            showRightDetails(key);
+                        }
+                    };
+                }
+
+                console.log('iOS Fallback: Events bound successfully!');
+            });
+        })();
     </script>
 
     <!-- Fallback: force discover button to work even if JS fails -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var btn = document.getElementById('startBtn');
-      if (btn) {
-        btn.onclick = function() {
-          var startScreen = document.getElementById('startScreen');
-          var statsOverlay = document.getElementById('statsOverlay');
-          if (startScreen) startScreen.classList.add('hidden');
-          if (statsOverlay) statsOverlay.classList.remove('hidden');
-        };
-      }
-    });
+        document.addEventListener('DOMContentLoaded', function () {
+            var btn = document.getElementById('startBtn');
+            if (btn) {
+                btn.onclick = function () {
+                    var startScreen = document.getElementById('startScreen');
+                    var statsOverlay = document.getElementById('statsOverlay');
+                    if (startScreen) startScreen.classList.add('hidden');
+                    if (statsOverlay) statsOverlay.classList.remove('hidden');
+                };
+            }
+        });
     </script>
 </body>
 

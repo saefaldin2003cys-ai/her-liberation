@@ -58,6 +58,7 @@ setInterval(function () {
 const Stats = require('./models/Stats');
 const Article = require('./models/Article');
 const Comment = require('./models/Comment');
+const Poll = require('./models/Poll');
 
 const app = express();
 const PORT = process.env.PORT || 5500;
@@ -749,6 +750,79 @@ app.post('/api/stats/like', postLimiter, async (req, res) => {
         res.json(stats);
     } catch (error) {
         console.error('Stats like error:', error.message);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+// --- Poll (Marriage Age Referendum) ---
+app.get('/api/poll', async (req, res) => {
+    try {
+        var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
+        if (!poll) {
+            poll = await Poll.create({
+                question: 'minimum_marriage_age',
+                votes: { agree18: 0, disagree: 0, other: 0 },
+                voters: []
+            });
+        }
+        // Return only vote counts, not voter IPs
+        res.json({
+            agree18: poll.votes.agree18,
+            disagree: poll.votes.disagree,
+            other: poll.votes.other,
+            total: poll.votes.agree18 + poll.votes.disagree + poll.votes.other
+        });
+    } catch (error) {
+        console.error('Poll GET error:', error.message);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+app.post('/api/poll/vote', postLimiter, async (req, res) => {
+    try {
+        var choice = req.body.choice; // 'agree18', 'disagree', or 'other'
+        var voterIP = req.ip || req.connection.remoteAddress;
+
+        // Validate choice
+        if (!['agree18', 'disagree', 'other'].includes(choice)) {
+            return res.status(400).json({ error: 'Invalid vote choice' });
+        }
+
+        var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
+        if (!poll) {
+            poll = await Poll.create({
+                question: 'minimum_marriage_age',
+                votes: { agree18: 0, disagree: 0, other: 0 },
+                voters: []
+            });
+        }
+
+        // Check if already voted
+        if (poll.voters.includes(voterIP)) {
+            return res.status(400).json({
+                error: 'لقد صوّتت مسبقاً',
+                alreadyVoted: true,
+                agree18: poll.votes.agree18,
+                disagree: poll.votes.disagree,
+                other: poll.votes.other,
+                total: poll.votes.agree18 + poll.votes.disagree + poll.votes.other
+            });
+        }
+
+        // Record vote
+        poll.votes[choice] += 1;
+        poll.voters.push(voterIP);
+        await poll.save();
+
+        res.json({
+            success: true,
+            agree18: poll.votes.agree18,
+            disagree: poll.votes.disagree,
+            other: poll.votes.other,
+            total: poll.votes.agree18 + poll.votes.disagree + poll.votes.other
+        });
+    } catch (error) {
+        console.error('Poll vote error:', error.message);
         res.status(500).json({ error: 'Server Error' });
     }
 });
