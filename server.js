@@ -926,8 +926,8 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields (titleAr, contentAr)' });
         }
         
-        // Title length validation only (no limit on content)
-        if (titleAr.length > 500) {
+        // Length validation
+        if (titleAr.length > 200) {
             return res.status(400).json({ error: 'Title too long' });
         }
         

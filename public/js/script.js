@@ -651,8 +651,13 @@ function renderArticleCard(article) {
     var commentsCount = (article.comments || []).length;
     var readMoreText = lang === 'en' ? 'Read More' : 'قراءة المزيد';
 
+    var imagePosition = article.imagePosition !== undefined ? article.imagePosition : 50;
     var imageHtml = article.image
-        ? '<img src="' + escapeHTML(article.image) + '" alt="' + escapeHTML(title) + '" class="article-image">'
+        ? '<img src="' + escapeHTML(article.image) + '" alt="' + escapeHTML(title) + '" class="article-image" style="object-position: center ' + imagePosition + '%;">'
+        : '<div class="article-image-placeholder"><span class="emoji-icon">📰</span></div>';
+    
+    var authorHtml = author ? ' • <span class="emoji-icon">✍️</span> ' + escapeHTML(author) : '';
+
     return '<article class="article-card">' +
         imageHtml +
         '<div class="article-body">' +
@@ -742,7 +747,8 @@ function openArticle(articleId) {
         commentsHtml = '<p class="no-comments">' + noCommentsText + '</p>';
     }
 
-    var imageHtml = article.image ? '<img src="' + escapeHTML(article.image) + '" alt="" class="article-modal-image">' : '';
+    var modalImagePosition = article.imagePosition !== undefined ? article.imagePosition : 50;
+    var imageHtml = article.image ? '<img src="' + escapeHTML(article.image) + '" alt="" class="article-modal-image" style="object-position: center ' + modalImagePosition + '%;">' : '';
     var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
     var deleteBtn = isAdmin ? '<button class="article-action-btn danger" onclick="deleteArticle(\'' + article._id + '\')"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
 
@@ -752,10 +758,21 @@ function openArticle(articleId) {
         '<div class="article-modal-meta">' +
             '<span>📅 ' + formattedDate + '</span>' +
             authorHtml +
+            '<span>❤️ ' + (article.likes || 0) + ' ' + likesLabel + '</span>' +
             '<span>💬 ' + comments.length + ' ' + commentsLabel + '</span>' +
         '</div>' +
         '<div class="article-modal-body">' + escapeHTML(content).replace(/\n/g, '<br>') + '</div>' +
-        deleteBtn +
+        '<div class="article-modal-actions">' +
+            '<button class="article-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleArticleLike(\'' + article._id + '\'); openArticle(\'' + article._id + '\');">' +
+                '<span class="action-icon">' + (isLiked ? '❤️' : '🤍') + '</span>' +
+                '<span>' + likeText + '</span>' +
+            '</button>' +
+            '<button class="article-action-btn" onclick="shareArticle(\'' + article._id + '\')">' +
+                '<span class="action-icon">📤</span>' +
+                '<span>' + shareText + '</span>' +
+            '</button>' +
+            deleteBtn +
+        '</div>' +
         '<div class="article-comments-section">' +
             '<h4>' + commentsTitle + '</h4>' +
             '<div class="comments-list">' + commentsHtml + '</div>' +
@@ -763,10 +780,6 @@ function openArticle(articleId) {
                 '<input type="text" id="articleCommentName" placeholder="' + namePlaceholder + '" class="details-input" required>' +
                 '<textarea id="articleCommentText" placeholder="' + writeCommentPlaceholder + '" class="details-input" required></textarea>' +
                 '<button type="submit" class="details-btn">' + sendText + '</button>' +
-                '<button type="button" class="article-action-btn share-btn" onclick="shareArticle(\'' + article._id + '\')">' +
-                    '<span class="action-icon">📤</span>' +
-                    '<span>' + shareText + '</span>' +
-                '</button>' +
             '</form>' +
         '</div>' +
     '</div>';
