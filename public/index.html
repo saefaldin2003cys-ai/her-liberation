@@ -587,6 +587,21 @@
         });
     })();
     </script>
+
+    <!-- Fallback: force discover button to work even if JS fails -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('startBtn');
+      if (btn) {
+        btn.onclick = function() {
+          var startScreen = document.getElementById('startScreen');
+          var statsOverlay = document.getElementById('statsOverlay');
+          if (startScreen) startScreen.classList.add('hidden');
+          if (statsOverlay) statsOverlay.classList.remove('hidden');
+        };
+      }
+    });
+    </script>
 </body>
 
 </html>
