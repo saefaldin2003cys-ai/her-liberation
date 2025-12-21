@@ -5,7 +5,15 @@ const path = require('path');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const multer = require('multer');
-const sharp = require('sharp');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+let sharp;
+try {
+    sharp = require('sharp');
+} catch (e) {
+    console.warn('Sharp not available, image processing disabled');
+    sharp = null;
+}
 require('dotenv').config();
 
 // ==========================================
@@ -797,18 +805,39 @@ app.post('/api/comments', postLimiter, async (req, res) => {
 // ==========================================
 const uploadsDir = path.join(__dirname, 'public', 'uploads');
 
-// Ensure uploads directory exists
+// Ensure uploads directory exists (for local fallback)
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configure multer for image uploads
-const storage = multer.diskStorage({
+// Configure Cloudinary
+const useCloudinary = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
+
+if (useCloudinary) {
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+    });
+    console.log('☁️  Cloudinary configured for image uploads');
+}
+
+// Configure Cloudinary storage
+const cloudinaryStorage = useCloudinary ? new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'herliberation',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        transformation: [{ width: 770, height: 770, crop: 'fill', gravity: 'center' }]
+    }
+}) : null;
+
+// Configure local storage (fallback)
+const localStorage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, uploadsDir);
     },
     filename: function(req, file, cb) {
-        // Generate unique filename
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = path.extname(file.originalname).toLowerCase();
         cb(null, 'img-' + uniqueSuffix + ext);
@@ -825,8 +854,9 @@ const fileFilter = function(req, file, cb) {
     }
 };
 
+// Use Cloudinary if configured, otherwise use local storage
 const upload = multer({
-    storage: storage,
+    storage: useCloudinary ? cloudinaryStorage : localStorage,
     limits: {
         fileSize: 5 * 1024 * 1024 // 5MB max
     },
@@ -852,13 +882,20 @@ app.post('/api/upload', requireAdmin, function(req, res) {
         }
         
         try {
-            // Process image with sharp - resize to 770x770
-            const originalPath = req.file.path;
-            const processedFilename = 'processed-' + req.file.filename.replace(/\.[^/.]+$/, '') + '.jpg';
-            const processedPath = path.join(uploadsDir, processedFilename);
+            // If using Cloudinary, the file is already uploaded and transformed
+            if (useCloudinary && req.file.path) {
+                const imageUrl = req.file.path;
+                console.log('✅ Image uploaded to Cloudinary (770x770):', imageUrl);
+                return res.json({ success: true, url: imageUrl });
+            }
             
-            // Check if sharp is available
+            // Local storage with sharp processing
+            const originalPath = req.file.path;
+            
             if (sharp) {
+                const processedFilename = 'processed-' + req.file.filename.replace(/\.[^/.]+$/, '') + '.jpg';
+                const processedPath = path.join(uploadsDir, processedFilename);
+                
                 await sharp(originalPath)
                     .resize(770, 770, {
                         fit: 'cover',
@@ -867,23 +904,23 @@ app.post('/api/upload', requireAdmin, function(req, res) {
                     .jpeg({ quality: 85 })
                     .toFile(processedPath);
                 
-                // Delete original file
                 try {
                     fs.unlinkSync(originalPath);
                 } catch (unlinkErr) {
                     console.warn('Could not delete original file:', unlinkErr.message);
                 }
                 
-                // Return the URL of the processed image
                 const imageUrl = '/uploads/' + processedFilename;
                 console.log('✅ Image uploaded and processed (770x770):', imageUrl);
                 return res.json({ success: true, url: imageUrl });
             } else {
-                throw new Error('Sharp not available');
+                // No sharp, return original
+                const imageUrl = '/uploads/' + req.file.filename;
+                console.log('✅ Image uploaded (original):', imageUrl);
+                return res.json({ success: true, url: imageUrl });
             }
         } catch (processError) {
             console.error('❌ Image processing error:', processError.message);
-            // If processing fails, return original image
             const imageUrl = '/uploads/' + req.file.filename;
             console.log('✅ Image uploaded (original):', imageUrl);
             return res.json({ success: true, url: imageUrl });
