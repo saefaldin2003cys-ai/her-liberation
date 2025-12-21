@@ -1531,6 +1531,17 @@ html[dir] * {
     background: var(--bg-secondary);
 }
 
+/* Image position classes */
+.article-image.pos-top {
+    object-position: center top;
+}
+.article-image.pos-center {
+    object-position: center center;
+}
+.article-image.pos-bottom {
+    object-position: center bottom;
+}
+
 .article-image-placeholder {
     width: 100%;
     height: 200px;
@@ -1633,6 +1644,17 @@ html[dir] * {
     object-fit: cover;
     border-radius: var(--radius-md);
     margin-bottom: var(--space-xl);
+}
+
+/* Modal image position classes */
+.article-modal-image.pos-top {
+    object-position: center top;
+}
+.article-modal-image.pos-center {
+    object-position: center center;
+}
+.article-modal-image.pos-bottom {
+    object-position: center bottom;
 }
 
 .article-modal-title {
@@ -3147,6 +3169,17 @@ html[dir="ltr"] .modal-close {
     width: 100%;
     height: 180px;
     object-fit: cover;
+}
+
+/* Image position classes for this section */
+.article-image.pos-top {
+    object-position: center top;
+}
+.article-image.pos-center {
+    object-position: center center;
+}
+.article-image.pos-bottom {
+    object-position: center bottom;
 }
 
 .article-image-placeholder {

@@ -427,11 +427,71 @@
             overflow: hidden;
         }
 
+        .image-preview-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+        }
+
         .image-preview img {
             width: 100%;
-            max-height: 200px;
+            height: 200px;
             object-fit: cover;
             border-radius: var(--radius-md);
+            transition: object-position 0.3s ease;
+        }
+
+        .image-preview img.pos-top {
+            object-position: center top;
+        }
+
+        .image-preview img.pos-center {
+            object-position: center center;
+        }
+
+        .image-preview img.pos-bottom {
+            object-position: center bottom;
+        }
+
+        .image-position-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+        }
+
+        .position-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+
+        .position-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .position-btn:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .position-btn.active {
+            background: var(--accent-gradient);
+            border-color: transparent;
         }
 
         .remove-image {
@@ -579,9 +639,18 @@
                                     </label>
                                 </div>
                                 <div id="imagePreview" class="image-preview" style="display: none;">
-                                    <img id="previewImg" src="" alt="معاينة">
+                                    <div class="image-preview-container">
+                                        <img id="previewImg" src="" alt="معاينة">
+                                    </div>
+                                    <div class="image-position-controls">
+                                        <span class="position-label">موضع الصورة:</span>
+                                        <button type="button" class="position-btn" onclick="setImagePosition('top')" title="أعلى">⬆️</button>
+                                        <button type="button" class="position-btn active" onclick="setImagePosition('center')" title="وسط">⬛</button>
+                                        <button type="button" class="position-btn" onclick="setImagePosition('bottom')" title="أسفل">⬇️</button>
+                                    </div>
                                     <button type="button" class="remove-image" onclick="removeImage()">✕</button>
                                 </div>
+                                <input type="hidden" id="imagePosition" value="center">
                             </div>
                             <div id="urlTab" class="tab-content">
                                 <input type="text" id="imageUrl" class="input-field" placeholder="https://...">
@@ -763,6 +832,9 @@
             } else if (imageUrl) {
                 image = imageUrl;
             }
+            
+            // Get image position
+            const imagePosition = document.getElementById('imagePosition').value || 'center';
 
             if (!titleAr || !authorAr || !contentAr) {
                 showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
@@ -775,7 +847,7 @@
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + authToken
                 },
-                body: JSON.stringify({ titleAr, titleEn, authorAr, authorEn, contentAr, contentEn, image })
+                body: JSON.stringify({ titleAr, titleEn, authorAr, authorEn, contentAr, contentEn, image, imagePosition })
             })
                 .then(res => {
                     if (res.status === 401 || res.status === 403) {
@@ -860,11 +932,28 @@
                 
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('previewImg').src = e.target.result;
+                    const previewImg = document.getElementById('previewImg');
+                    previewImg.src = e.target.result;
+                    previewImg.className = 'pos-center'; // Default position
                     document.getElementById('imagePreview').style.display = 'block';
+                    document.getElementById('imagePosition').value = 'center';
+                    // Reset position buttons
+                    document.querySelectorAll('.position-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.position-btn[onclick*="center"]').classList.add('active');
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Set image position
+        function setImagePosition(position) {
+            const previewImg = document.getElementById('previewImg');
+            previewImg.className = 'pos-' + position;
+            document.getElementById('imagePosition').value = position;
+            
+            // Update button states
+            document.querySelectorAll('.position-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.position-btn[onclick*="${position}"]`).classList.add('active');
         }
 
         // Remove image preview
@@ -872,6 +961,8 @@
             document.getElementById('imageFile').value = '';
             document.getElementById('imagePreview').style.display = 'none';
             document.getElementById('previewImg').src = '';
+            document.getElementById('previewImg').className = '';
+            document.getElementById('imagePosition').value = 'center';
         }
 
         // Delete article - requires authentication

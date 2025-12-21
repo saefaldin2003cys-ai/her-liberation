@@ -651,8 +651,9 @@ function renderArticleCard(article) {
     var commentsCount = (article.comments || []).length;
     var readMoreText = lang === 'en' ? 'Read More' : 'قراءة المزيد';
 
+    var imagePosition = article.imagePosition || 'center';
     var imageHtml = article.image
-        ? '<img src="' + escapeHTML(article.image) + '" alt="' + escapeHTML(title) + '" class="article-image">'
+        ? '<img src="' + escapeHTML(article.image) + '" alt="' + escapeHTML(title) + '" class="article-image pos-' + imagePosition + '">'
         : '<div class="article-image-placeholder"><span class="emoji-icon">📰</span></div>';
     
     var authorHtml = author ? ' • <span class="emoji-icon">✍️</span> ' + escapeHTML(author) : '';
@@ -746,7 +747,8 @@ function openArticle(articleId) {
         commentsHtml = '<p class="no-comments">' + noCommentsText + '</p>';
     }
 
-    var imageHtml = article.image ? '<img src="' + escapeHTML(article.image) + '" alt="" class="article-modal-image">' : '';
+    var modalImagePosition = article.imagePosition || 'center';
+    var imageHtml = article.image ? '<img src="' + escapeHTML(article.image) + '" alt="" class="article-modal-image pos-' + modalImagePosition + '">' : '';
     var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
     var deleteBtn = isAdmin ? '<button class="article-action-btn danger" onclick="deleteArticle(\'' + article._id + '\')"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
 

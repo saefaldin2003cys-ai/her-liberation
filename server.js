@@ -390,7 +390,7 @@ app.use(function(req, res, next) {
     // Prevent mass assignment
     if (req.body && typeof req.body === 'object') {
         var allowedFields = ['name', 'text', 'titleAr', 'titleEn', 'contentAr', 'contentEn', 
-                             'authorAr', 'authorEn', 'image', 'password', 'captchaToken', 'captchaAnswer'];
+                             'authorAr', 'authorEn', 'image', 'imagePosition', 'password', 'captchaToken', 'captchaAnswer'];
         var keys = Object.keys(req.body);
         for (var j = 0; j < keys.length; j++) {
             if (allowedFields.indexOf(keys[j]) === -1 && keys[j].charAt(0) !== '_') {
@@ -914,6 +914,12 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
         var contentAr = req.body.contentAr;
         var contentEn = req.body.contentEn;
         var image = req.body.image;
+        var imagePosition = req.body.imagePosition || 'center';
+        
+        // Validate imagePosition
+        if (!['top', 'center', 'bottom'].includes(imagePosition)) {
+            imagePosition = 'center';
+        }
         
         // Validation
         if (!titleAr || !contentAr) {
@@ -944,6 +950,7 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
                 en: contentEn || contentAr
             },
             image: image || '',
+            imagePosition: imagePosition,
             likes: 0,
             comments: []
         });
