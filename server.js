@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
+const multer = require('multer');
 require('dotenv').config();
 
 // ==========================================
@@ -790,6 +791,70 @@ app.post('/api/comments', postLimiter, async (req, res) => {
     }
 });
 
+// ==========================================
+// Image Upload Configuration
+// ==========================================
+const uploadsDir = path.join(__dirname, 'public', 'uploads');
+
+// Ensure uploads directory exists
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, uploadsDir);
+    },
+    filename: function(req, file, cb) {
+        // Generate unique filename
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname).toLowerCase();
+        cb(null, 'img-' + uniqueSuffix + ext);
+    }
+});
+
+const fileFilter = function(req, file, cb) {
+    // Accept only image files
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('نوع الملف غير مدعوم. الأنواع المسموحة: JPEG, PNG, GIF, WebP'), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB max
+    },
+    fileFilter: fileFilter
+});
+
+// Image upload endpoint
+app.post('/api/upload', requireAdmin, function(req, res) {
+    upload.single('image')(req, res, function(err) {
+        if (err instanceof multer.MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ error: 'حجم الصورة كبير جداً (الحد الأقصى 5MB)' });
+            }
+            return res.status(400).json({ error: 'خطأ في رفع الصورة: ' + err.message });
+        } else if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+        
+        if (!req.file) {
+            return res.status(400).json({ error: 'لم يتم اختيار صورة' });
+        }
+        
+        // Return the URL of the uploaded image
+        const imageUrl = '/uploads/' + req.file.filename;
+        console.log('✅ Image uploaded:', imageUrl);
+        res.json({ success: true, url: imageUrl });
+    });
+});
+
 // --- Articles ---
 app.get('/api/articles', async (req, res) => {
     try {
@@ -821,8 +886,8 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
             return res.status(400).json({ error: 'Content too long' });
         }
         
-        // Image URL validation
-        if (image && !(/^https?:\/\/.+/.test(image))) {
+        // Image URL validation (allow local uploads or external URLs)
+        if (image && !(/^(https?:\/\/.+|\/uploads\/.+)$/.test(image))) {
             return res.status(400).json({ error: 'Invalid image URL' });
         }
 
