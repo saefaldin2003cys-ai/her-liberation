@@ -5,8 +5,6 @@ const path = require('path');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 let sharp;
 try {
     sharp = require('sharp');
@@ -801,48 +799,17 @@ app.post('/api/comments', postLimiter, async (req, res) => {
 });
 
 // ==========================================
-// Image Upload Configuration
+// Image Upload Configuration (MongoDB Base64 Storage)
 // ==========================================
 const uploadsDir = path.join(__dirname, 'public', 'uploads');
 
-// Ensure uploads directory exists (for local fallback)
+// Ensure uploads directory exists (for local development)
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configure Cloudinary
-const useCloudinary = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
-
-if (useCloudinary) {
-    cloudinary.config({
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_API_SECRET
-    });
-    console.log('☁️  Cloudinary configured for image uploads');
-}
-
-// Configure Cloudinary storage
-const cloudinaryStorage = useCloudinary ? new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'herliberation',
-        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-        transformation: [{ width: 770, height: 770, crop: 'fill', gravity: 'center' }]
-    }
-}) : null;
-
-// Configure local storage (fallback)
-const localStorage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, uploadsDir);
-    },
-    filename: function(req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname).toLowerCase();
-        cb(null, 'img-' + uniqueSuffix + ext);
-    }
-});
+// Use memory storage for base64 conversion
+const memoryStorage = multer.memoryStorage();
 
 const fileFilter = function(req, file, cb) {
     // Accept only image files
@@ -854,21 +821,20 @@ const fileFilter = function(req, file, cb) {
     }
 };
 
-// Use Cloudinary if configured, otherwise use local storage
 const upload = multer({
-    storage: useCloudinary ? cloudinaryStorage : localStorage,
+    storage: memoryStorage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB max
+        fileSize: 2 * 1024 * 1024 // 2MB max for base64
     },
     fileFilter: fileFilter
 });
 
-// Image upload endpoint
+// Image upload endpoint - stores as base64 data URL
 app.post('/api/upload', requireAdmin, function(req, res) {
     upload.single('image')(req, res, async function(err) {
         if (err instanceof multer.MulterError) {
             if (err.code === 'LIMIT_FILE_SIZE') {
-                return res.status(400).json({ error: 'حجم الصورة كبير جداً (الحد الأقصى 5MB)' });
+                return res.status(400).json({ error: 'حجم الصورة كبير جداً (الحد الأقصى 2MB)' });
             }
             console.error('Multer error:', err);
             return res.status(400).json({ error: 'خطأ في رفع الصورة: ' + err.message });
@@ -882,48 +848,36 @@ app.post('/api/upload', requireAdmin, function(req, res) {
         }
         
         try {
-            // If using Cloudinary, the file is already uploaded and transformed
-            if (useCloudinary && req.file.path) {
-                const imageUrl = req.file.path;
-                console.log('✅ Image uploaded to Cloudinary (770x770):', imageUrl);
-                return res.json({ success: true, url: imageUrl });
-            }
+            let imageBuffer = req.file.buffer;
+            let mimeType = 'image/jpeg';
             
-            // Local storage with sharp processing
-            const originalPath = req.file.path;
-            
+            // Process with sharp if available (resize to 770x770)
             if (sharp) {
-                const processedFilename = 'processed-' + req.file.filename.replace(/\.[^/.]+$/, '') + '.jpg';
-                const processedPath = path.join(uploadsDir, processedFilename);
-                
-                await sharp(originalPath)
+                imageBuffer = await sharp(req.file.buffer)
                     .resize(770, 770, {
                         fit: 'cover',
                         position: 'center'
                     })
-                    .jpeg({ quality: 85 })
-                    .toFile(processedPath);
-                
-                try {
-                    fs.unlinkSync(originalPath);
-                } catch (unlinkErr) {
-                    console.warn('Could not delete original file:', unlinkErr.message);
-                }
-                
-                const imageUrl = '/uploads/' + processedFilename;
-                console.log('✅ Image uploaded and processed (770x770):', imageUrl);
-                return res.json({ success: true, url: imageUrl });
-            } else {
-                // No sharp, return original
-                const imageUrl = '/uploads/' + req.file.filename;
-                console.log('✅ Image uploaded (original):', imageUrl);
-                return res.json({ success: true, url: imageUrl });
+                    .jpeg({ quality: 80 })
+                    .toBuffer();
+                mimeType = 'image/jpeg';
+                console.log('✅ Image processed with sharp (770x770)');
             }
+            
+            // Convert to base64 data URL
+            const base64Image = imageBuffer.toString('base64');
+            const dataUrl = `data:${mimeType};base64,${base64Image}`;
+            
+            console.log('✅ Image uploaded as base64 (size:', Math.round(dataUrl.length / 1024), 'KB)');
+            return res.json({ success: true, url: dataUrl });
+            
         } catch (processError) {
             console.error('❌ Image processing error:', processError.message);
-            const imageUrl = '/uploads/' + req.file.filename;
-            console.log('✅ Image uploaded (original):', imageUrl);
-            return res.json({ success: true, url: imageUrl });
+            
+            // Fallback: return original as base64
+            const base64Image = req.file.buffer.toString('base64');
+            const dataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+            return res.json({ success: true, url: dataUrl });
         }
     });
 });
@@ -959,8 +913,8 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
             return res.status(400).json({ error: 'Content too long' });
         }
         
-        // Image URL validation (allow local uploads or external URLs)
-        if (image && !(/^(https?:\/\/.+|\/uploads\/.+)$/.test(image))) {
+        // Image URL validation (allow local uploads, external URLs, or base64 data URLs)
+        if (image && !(/^(https?:\/\/.+|\/uploads\/.+|data:image\/.+)$/.test(image))) {
             return res.status(400).json({ error: 'Invalid image URL' });
         }
 
