@@ -3628,6 +3628,36 @@ body.dark-mode .partners-grid img {
     box-shadow: 0 4px 12px rgba(233, 30, 140, 0.3);
 }
 
+/* Share Button - Under Send Button */
+.article-share-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    background: transparent;
+    color: var(--accent-primary);
+    border: 2px solid var(--accent-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: var(--space-sm);
+}
+
+.article-share-btn:hover {
+    background: var(--accent-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(233, 30, 140, 0.3);
+}
+
+.article-share-btn .action-icon {
+    font-size: 1.1rem;
+}
+
 /* Hero Logo Styling */
 .hero-logo-container {
     display: flex;

@@ -35,19 +35,19 @@ var captchaStore = new Map(); // token -> { answer, expires }
 var sessionStore = new Map(); // sessionId -> { ip, userAgent, lastActivity }
 
 // Auto-cleanup expired entries every 10 minutes
-setInterval(function() {
+setInterval(function () {
     var now = Date.now();
-    ipBlacklist.forEach(function(value, key) {
+    ipBlacklist.forEach(function (value, key) {
         if (value.blocked && now - value.lastAttempt > 3600000) { // 1 hour
             ipBlacklist.delete(key);
         }
     });
-    captchaStore.forEach(function(value, key) {
+    captchaStore.forEach(function (value, key) {
         if (now > value.expires) {
             captchaStore.delete(key);
         }
     });
-    sessionStore.forEach(function(value, key) {
+    sessionStore.forEach(function (value, key) {
         if (now - value.lastActivity > 86400000) { // 24 hours
             sessionStore.delete(key);
         }
@@ -87,7 +87,7 @@ var limiter = rateLimit({
     message: { error: 'Too many requests, please try again later.' },
     standardHeaders: true,
     legacyHeaders: false,
-    skip: function(req) {
+    skip: function (req) {
         // Skip rate limiting for static files
         return req.path.match(/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$/);
     }
@@ -99,7 +99,7 @@ var postLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
     max: 10, // 10 POST requests per minute
     message: { error: 'Too many submissions, please wait a moment.' },
-    keyGenerator: function(req) {
+    keyGenerator: function (req) {
         return req.ip + ':' + req.path;
     }
 });
@@ -121,7 +121,7 @@ var allowedOrigins = [
 ];
 
 var corsOptions = {
-    origin: function(origin, callback) {
+    origin: function (origin, callback) {
         // Allow requests with no origin (same-origin requests from the app itself)
         if (!origin) {
             return callback(null, true);
@@ -153,7 +153,7 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 // 5. Data Sanitization against NoSQL Injection
 app.use(mongoSanitize({
     replaceWith: '_',
-    onSanitize: function(data) {
+    onSanitize: function (data) {
         console.warn('🚨 NoSQL Injection attempt blocked:', data.key);
     }
 }));
@@ -185,7 +185,7 @@ function sanitizeInput(obj) {
             .replace(/\\/g, '&#x5C;')
             .replace(/`/g, '&#x60;')
             .trim();
-        
+
         // Check for dangerous patterns
         for (var i = 0; i < dangerousPatterns.length; i++) {
             if (dangerousPatterns[i].test(obj)) {
@@ -193,7 +193,7 @@ function sanitizeInput(obj) {
                 return '';
             }
         }
-        
+
         return sanitized.slice(0, 1000); // Max 1000 chars
     }
     if (typeof obj === 'object' && obj !== null) {
@@ -217,7 +217,7 @@ function sanitizeInput(obj) {
 }
 
 // Apply XSS sanitization to all requests
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     if (req.body) req.body = sanitizeInput(req.body);
     if (req.query) req.query = sanitizeInput(req.query);
     if (req.params) req.params = sanitizeInput(req.params);
@@ -225,7 +225,7 @@ app.use(function(req, res, next) {
 });
 
 // 8. Security headers for static files (Enhanced)
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-XSS-Protection', '1; mode=block');
@@ -234,22 +234,22 @@ app.use(function(req, res, next) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    
+
     // Remove sensitive headers
     res.removeHeader('X-Powered-By');
     next();
 });
 
 // 9. Request logging for security monitoring
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var ip = req.ip || req.connection.remoteAddress;
     var userAgent = req.get('User-Agent') || 'Unknown';
-    
+
     // Log suspicious requests
     if (req.method === 'POST' || req.method === 'DELETE') {
         console.log('[' + new Date().toISOString() + '] ' + req.method + ' ' + req.path + ' from ' + ip);
     }
-    
+
     // Block suspicious user agents
     var suspiciousAgents = ['sqlmap', 'nikto', 'nmap', 'masscan', 'zgrab'];
     var lowerUA = userAgent.toLowerCase();
@@ -259,12 +259,12 @@ app.use(function(req, res, next) {
             return res.status(403).json({ error: 'Access denied' });
         }
     }
-    
+
     next();
 });
 
 // 10. Block common attack paths
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var blockedPaths = [
         '/wp-admin', '/wp-login', '/wp-content',
         '/phpmyadmin', '/pma', '/mysql',
@@ -272,7 +272,7 @@ app.use(function(req, res, next) {
         '/admin.php', '/config.php',
         '/shell', '/cmd', '/exec'
     ];
-    
+
     var lowerPath = req.path.toLowerCase();
     for (var i = 0; i < blockedPaths.length; i++) {
         if (lowerPath.indexOf(blockedPaths[i]) !== -1) {
@@ -319,19 +319,19 @@ function checkRCE(input) {
     return false;
 }
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var fullUrl = req.originalUrl + JSON.stringify(req.body || {}) + JSON.stringify(req.query || {});
-    
+
     if (checkRCE(fullUrl)) {
         console.error('🚨 RCE ATTEMPT BLOCKED from', req.ip, ':', req.originalUrl);
-        
+
         // Auto-blacklist IP
         var ipData = ipBlacklist.get(req.ip) || { count: 0, lastAttempt: 0, blocked: false };
         ipData.count += 10; // Heavy penalty
         ipData.lastAttempt = Date.now();
         if (ipData.count >= 5) ipData.blocked = true;
         ipBlacklist.set(req.ip, ipData);
-        
+
         return res.status(403).json({ error: 'Access denied - Security violation' });
     }
     next();
@@ -340,9 +340,9 @@ app.use(function(req, res, next) {
 // ==========================================
 // 12. IP Blacklist Middleware
 // ==========================================
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var ipData = ipBlacklist.get(req.ip);
-    
+
     if (ipData && ipData.blocked) {
         var timeSinceBlock = Date.now() - ipData.lastAttempt;
         if (timeSinceBlock < 3600000) { // 1 hour block
@@ -361,7 +361,7 @@ app.use(function(req, res, next) {
 // ==========================================
 var requestHistory = new Map(); // IP -> [timestamps]
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     // Prevent request replay attacks
     var requestId = req.headers['x-request-id'];
     if (requestId) {
@@ -371,9 +371,9 @@ app.use(function(req, res, next) {
             return res.status(409).json({ error: 'Duplicate request' });
         }
         requestHistory.set(replayKey, Date.now());
-        setTimeout(function() { requestHistory.delete(replayKey); }, 300000); // 5 min
+        setTimeout(function () { requestHistory.delete(replayKey); }, 300000); // 5 min
     }
-    
+
     // Prevent parameter tampering on sensitive fields
     if (req.body) {
         var forbiddenFields = ['_id', 'id', 'isAdmin', 'role', 'permissions', 'password', 'hash'];
@@ -386,11 +386,11 @@ app.use(function(req, res, next) {
             }
         }
     }
-    
+
     // Prevent mass assignment
     if (req.body && typeof req.body === 'object') {
-        var allowedFields = ['name', 'text', 'titleAr', 'titleEn', 'contentAr', 'contentEn', 
-                             'authorAr', 'authorEn', 'image', 'imagePosition', 'password', 'captchaToken', 'captchaAnswer'];
+        var allowedFields = ['name', 'text', 'titleAr', 'titleEn', 'contentAr', 'contentEn',
+            'authorAr', 'authorEn', 'image', 'imagePosition', 'password', 'captchaToken', 'captchaAnswer'];
         var keys = Object.keys(req.body);
         for (var j = 0; j < keys.length; j++) {
             if (allowedFields.indexOf(keys[j]) === -1 && keys[j].charAt(0) !== '_') {
@@ -399,22 +399,22 @@ app.use(function(req, res, next) {
             }
         }
     }
-    
+
     next();
 });
 
 // ==========================================
 // 14. CAPTCHA System (Simple Math-based)
 // ==========================================
-app.get('/api/captcha', function(req, res) {
+app.get('/api/captcha', function (req, res) {
     var num1 = Math.floor(Math.random() * 10) + 1;
     var num2 = Math.floor(Math.random() * 10) + 1;
     var operators = ['+', '-', '*'];
     var op = operators[Math.floor(Math.random() * operators.length)];
-    
+
     var answer;
     var question;
-    
+
     if (op === '+') {
         answer = num1 + num2;
         question = num1 + ' + ' + num2;
@@ -427,13 +427,13 @@ app.get('/api/captcha', function(req, res) {
         answer = num1 * num2;
         question = num1 + ' × ' + num2;
     }
-    
+
     var token = uuidv4();
     captchaStore.set(token, {
         answer: answer,
         expires: Date.now() + 300000 // 5 minutes
     });
-    
+
     res.json({
         token: token,
         question: question + ' = ?'
@@ -442,14 +442,14 @@ app.get('/api/captcha', function(req, res) {
 
 function verifyCaptcha(token, answer) {
     if (!token || answer === undefined) return false;
-    
+
     var captcha = captchaStore.get(token);
     if (!captcha) return false;
     if (Date.now() > captcha.expires) {
         captchaStore.delete(token);
         return false;
     }
-    
+
     var isValid = parseInt(answer) === captcha.answer;
     captchaStore.delete(token); // One-time use
     return isValid;
@@ -473,30 +473,30 @@ function verifyToken(token) {
 // Admin authentication middleware
 function requireAdmin(req, res, next) {
     var authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Authentication required' });
     }
-    
+
     var token = authHeader.substring(7);
     var decoded = verifyToken(token);
-    
+
     if (!decoded || !decoded.isAdmin) {
         return res.status(403).json({ error: 'Admin access required' });
     }
-    
+
     // Verify session
     var session = sessionStore.get(decoded.sessionId);
     if (!session) {
         return res.status(401).json({ error: 'Session expired' });
     }
-    
+
     // Verify IP consistency (less strict - allow IP changes within session lifetime)
     // Store multiple allowed IPs per session to handle proxy/network changes
     if (!session.allowedIPs) {
         session.allowedIPs = [session.ip];
     }
-    
+
     if (session.allowedIPs.indexOf(req.ip) === -1) {
         // Allow up to 3 different IPs per session (for network changes)
         if (session.allowedIPs.length < 3) {
@@ -508,7 +508,7 @@ function requireAdmin(req, res, next) {
             return res.status(401).json({ error: 'Session invalid - too many IP changes' });
         }
     }
-    
+
     // Update last activity
     session.lastActivity = Date.now();
     req.adminSession = decoded;
@@ -516,24 +516,24 @@ function requireAdmin(req, res, next) {
 }
 
 // Admin login endpoint
-app.post('/api/auth/login', strictLimiter, function(req, res) {
+app.post('/api/auth/login', strictLimiter, function (req, res) {
     var password = req.body.password;
-    
+
     console.log('🔐 Login attempt received');
-    
+
     if (!password || typeof password !== 'string') {
         return res.status(400).json({ error: 'Password required' });
     }
-    
+
     // Check if IP is blacklisted
     var ipData = ipBlacklist.get(req.ip) || { count: 0, lastAttempt: 0, blocked: false };
     if (ipData.blocked) {
         return res.status(403).json({ error: 'Too many failed attempts. Try again later.' });
     }
-    
+
     // Debug: Check if hash is loaded
     console.log('🔐 Hash loaded:', ADMIN_PASSWORD_HASH ? 'Yes (length: ' + ADMIN_PASSWORD_HASH.length + ')' : 'No');
-    
+
     // Verify password
     var isValid = false;
     try {
@@ -542,7 +542,7 @@ app.post('/api/auth/login', strictLimiter, function(req, res) {
         console.error('🚨 bcrypt error:', err.message);
         return res.status(500).json({ error: 'Authentication error' });
     }
-    
+
     if (!isValid) {
         // Track failed attempts
         ipData.count += 1;
@@ -552,13 +552,13 @@ app.post('/api/auth/login', strictLimiter, function(req, res) {
             console.warn('🚨 IP blocked after failed login attempts:', req.ip);
         }
         ipBlacklist.set(req.ip, ipData);
-        
+
         return res.status(401).json({ error: 'Invalid credentials' });
     }
-    
+
     // Clear failed attempts on success
     ipBlacklist.delete(req.ip);
-    
+
     // Create session
     var sessionId = uuidv4();
     sessionStore.set(sessionId, {
@@ -566,20 +566,20 @@ app.post('/api/auth/login', strictLimiter, function(req, res) {
         userAgent: req.headers['user-agent'],
         lastActivity: Date.now()
     });
-    
+
     // Generate token
     var token = generateToken({
         isAdmin: true,
         sessionId: sessionId,
         iat: Date.now()
     });
-    
+
     console.log('✅ Admin login from:', req.ip);
     res.json({ success: true, token: token });
 });
 
 // Admin logout
-app.post('/api/auth/logout', function(req, res) {
+app.post('/api/auth/logout', function (req, res) {
     var authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
         var token = authHeader.substring(7);
@@ -592,34 +592,34 @@ app.post('/api/auth/logout', function(req, res) {
 });
 
 // Verify token endpoint
-app.get('/api/auth/verify', function(req, res) {
+app.get('/api/auth/verify', function (req, res) {
     var authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ valid: false });
     }
-    
+
     var token = authHeader.substring(7);
     var decoded = verifyToken(token);
-    
+
     if (!decoded) {
         return res.status(401).json({ valid: false });
     }
-    
+
     var session = sessionStore.get(decoded.sessionId);
     if (!session) {
         return res.status(401).json({ valid: false });
     }
-    
+
     // Allow IP to be added to session's allowed IPs
     if (!session.allowedIPs) {
         session.allowedIPs = [session.ip];
     }
-    
+
     if (session.allowedIPs.indexOf(req.ip) === -1 && session.allowedIPs.length < 3) {
         session.allowedIPs.push(req.ip);
     }
-    
+
     res.json({ valid: true, expiresAt: decoded.exp * 1000 });
 });
 
@@ -771,22 +771,22 @@ app.post('/api/comments', postLimiter, async (req, res) => {
         var text = req.body.text;
         var captchaToken = req.body.captchaToken;
         var captchaAnswer = req.body.captchaAnswer;
-        
+
         // Verify CAPTCHA first
         if (!verifyCaptcha(captchaToken, captchaAnswer)) {
             return res.status(400).json({ error: 'فشل التحقق - CAPTCHA verification failed' });
         }
-        
+
         // Validate input
         if (!name || !text) {
             return res.status(400).json({ error: 'Missing fields' });
         }
-        
+
         // Additional validation
         if (typeof name !== 'string' || typeof text !== 'string') {
             return res.status(400).json({ error: 'Invalid input type' });
         }
-        
+
         if (name.length > 50 || text.length > 500) {
             return res.status(400).json({ error: 'Input too long' });
         }
@@ -813,7 +813,7 @@ if (!fs.existsSync(uploadsDir)) {
 // Use memory storage for base64 conversion
 const memoryStorage = multer.memoryStorage();
 
-const fileFilter = function(req, file, cb) {
+const fileFilter = function (req, file, cb) {
     // Accept only image files
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedTypes.includes(file.mimetype)) {
@@ -826,22 +826,22 @@ const fileFilter = function(req, file, cb) {
 const upload = multer({
     storage: memoryStorage,
     limits: {
-        fileSize: 2 * 1024 * 1024 // 2MB max for base64
+        fileSize: 10 * 1024 * 1024 // 10MB max - للصور بأبعادها الطبيعية
     },
     fileFilter: fileFilter
 });
 
-// Image upload endpoint - stores as base64 data URL
-app.post('/api/upload', requireAdmin, function(req, res) {
+// Image upload endpoint - stores as base64 data URL (NO RESIZING - Original Dimensions)
+app.post('/api/upload', requireAdmin, function (req, res) {
     console.log('📤 Upload request received');
-    
-    upload.single('image')(req, res, async function(err) {
+
+    upload.single('image')(req, res, async function (err) {
         console.log('📤 Processing upload...');
-        
+
         if (err instanceof multer.MulterError) {
             if (err.code === 'LIMIT_FILE_SIZE') {
                 console.error('❌ File too large');
-                return res.status(400).json({ error: 'حجم الصورة كبير جداً (الحد الأقصى 2MB)' });
+                return res.status(400).json({ error: 'حجم الصورة كبير جداً (الحد الأقصى 10MB)' });
             }
             console.error('❌ Multer error:', err);
             return res.status(400).json({ error: 'خطأ في رفع الصورة: ' + err.message });
@@ -849,47 +849,25 @@ app.post('/api/upload', requireAdmin, function(req, res) {
             console.error('❌ Upload error:', err);
             return res.status(400).json({ error: err.message });
         }
-        
+
         if (!req.file) {
             console.error('❌ No file received');
             return res.status(400).json({ error: 'لم يتم اختيار صورة' });
         }
-        
+
         console.log('📤 File received:', req.file.originalname, 'Size:', req.file.size);
-        
+
         try {
-            let imageBuffer = req.file.buffer;
-            let mimeType = 'image/jpeg';
-            
-            // Process with sharp if available (resize to 770x770)
-            if (sharp) {
-                console.log('📤 Processing with sharp...');
-                imageBuffer = await sharp(req.file.buffer)
-                    .resize(770, 770, {
-                        fit: 'cover',
-                        position: 'center'
-                    })
-                    .jpeg({ quality: 80 })
-                    .toBuffer();
-                mimeType = 'image/jpeg';
-                console.log('✅ Image processed with sharp (770x770)');
-            }
-            
-            // Convert to base64 data URL
-            const base64Image = imageBuffer.toString('base64');
-            const dataUrl = `data:${mimeType};base64,${base64Image}`;
-            
-            console.log('✅ Image uploaded as base64 (size:', Math.round(dataUrl.length / 1024), 'KB)');
-            return res.json({ success: true, url: dataUrl });
-            
-        } catch (processError) {
-            console.error('❌ Image processing error:', processError.message);
-            console.error(processError.stack);
-            
-            // Fallback: return original as base64
+            // حفظ الصورة بأبعادها الطبيعية بدون أي تعديل
             const base64Image = req.file.buffer.toString('base64');
             const dataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+
+            console.log('✅ Image uploaded at ORIGINAL dimensions (size:', Math.round(dataUrl.length / 1024), 'KB)');
             return res.json({ success: true, url: dataUrl });
+
+        } catch (processError) {
+            console.error('❌ Image processing error:', processError.message);
+            return res.status(500).json({ error: 'خطأ في معالجة الصورة' });
         }
     });
 });
@@ -915,22 +893,22 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
         var contentEn = req.body.contentEn;
         var image = req.body.image;
         var imagePosition = parseInt(req.body.imagePosition) || 50;
-        
+
         // Validate imagePosition (0-100)
         if (isNaN(imagePosition) || imagePosition < 0 || imagePosition > 100) {
             imagePosition = 50;
         }
-        
+
         // Validation
         if (!titleAr || !contentAr) {
             return res.status(400).json({ error: 'Missing required fields (titleAr, contentAr)' });
         }
-        
+
         // Length validation
         if (titleAr.length > 200) {
             return res.status(400).json({ error: 'Title too long' });
         }
-        
+
         // Image URL validation (allow local uploads, external URLs, or base64 data URLs)
         if (image && !(/^(https?:\/\/.+|\/uploads\/.+|data:image\/.+)$/.test(image))) {
             return res.status(400).json({ error: 'Invalid image URL' });
@@ -968,7 +946,7 @@ app.delete('/api/articles/:id', requireAdmin, async (req, res) => {
         if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ error: 'Invalid article ID' });
         }
-        
+
         var result = await Article.findByIdAndDelete(req.params.id);
         if (result) {
             console.log('✅ Article deleted by admin:', req.params.id);
@@ -989,7 +967,7 @@ app.post('/api/articles/:id/like', postLimiter, async (req, res) => {
         if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ error: 'Invalid article ID' });
         }
-        
+
         var article = await Article.findById(req.params.id);
         if (article) {
             article.likes += 1;
@@ -1011,19 +989,19 @@ app.post('/api/articles/:id/comments', postLimiter, async (req, res) => {
         if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ error: 'Invalid article ID' });
         }
-        
+
         var name = req.body.name;
         var text = req.body.text;
-        
+
         // Validate input
         if (!text || typeof text !== 'string') {
             return res.status(400).json({ error: 'Comment text is required' });
         }
-        
+
         if (text.length > 500 || (name && name.length > 50)) {
             return res.status(400).json({ error: 'Input too long' });
         }
-        
+
         var article = await Article.findById(req.params.id);
         if (article) {
             var newComment = {
@@ -1048,12 +1026,12 @@ app.post('/api/articles/:id/comments', postLimiter, async (req, res) => {
 // ==========================================
 
 // 404 Handler for API routes
-app.use('/api/*', function(req, res) {
+app.use('/api/*', function (req, res) {
     res.status(404).json({ error: 'API endpoint not found' });
 });
 
 // CORS error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     if (err.message === 'Not allowed by CORS') {
         console.warn('🚨 CORS violation from:', req.get('origin'));
         return res.status(403).json({ error: 'CORS policy violation' });
@@ -1062,61 +1040,61 @@ app.use(function(err, req, res, next) {
 });
 
 // Global error handler - Don't leak error details in production
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     console.error('Global error:', err.message);
-    
+
     // Don't leak stack traces in production
     var errorResponse = {
         error: 'Internal server error'
     };
-    
+
     if (process.env.NODE_ENV !== 'production') {
         errorResponse.details = err.message;
     }
-    
+
     res.status(500).json(errorResponse);
 });
 
 // ==========================================
 // Graceful Shutdown
 // ==========================================
-process.on('SIGTERM', function() {
+process.on('SIGTERM', function () {
     console.log('🛑 SIGTERM received. Shutting down gracefully...');
-    mongoose.connection.close().then(function() {
+    mongoose.connection.close().then(function () {
         console.log('📦 MongoDB connection closed.');
         process.exit(0);
-    }).catch(function(err) {
+    }).catch(function (err) {
         console.error('Error closing MongoDB:', err);
         process.exit(1);
     });
 });
 
-process.on('SIGINT', function() {
+process.on('SIGINT', function () {
     console.log('🛑 SIGINT received. Shutting down gracefully...');
-    mongoose.connection.close().then(function() {
+    mongoose.connection.close().then(function () {
         console.log('📦 MongoDB connection closed.');
         process.exit(0);
-    }).catch(function(err) {
+    }).catch(function (err) {
         console.error('Error closing MongoDB:', err);
         process.exit(1);
     });
 });
 
 // Handle uncaught exceptions
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     console.error('🚨 Uncaught Exception:', err.message);
     console.error(err.stack);
     process.exit(1);
 });
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', function(reason, promise) {
+process.on('unhandledRejection', function (reason, promise) {
     console.error('🚨 Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
 // Start
-connectDB().then(function() {
-    app.listen(PORT, function() {
+connectDB().then(function () {
+    app.listen(PORT, function () {
         console.log('');
         console.log('╔════════════════════════════════════════════╗');
         console.log('║     🌸 خادم تحريرها يعمل بنجاح! 🌸         ║');
