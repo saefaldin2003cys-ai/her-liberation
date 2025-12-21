@@ -16,7 +16,7 @@ const articleSchema = new mongoose.Schema({
         en: { type: String }
     },
     image: { type: String },
-    imagePosition: { type: String, default: 'center', enum: ['top', 'center', 'bottom'] },
+    imagePosition: { type: Number, default: 50, min: 0, max: 100 },
     likes: { type: Number, default: 0 },
     comments: [{
         name: String, // Changed from user to name to match frontend

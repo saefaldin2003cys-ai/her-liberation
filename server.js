@@ -914,11 +914,11 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
         var contentAr = req.body.contentAr;
         var contentEn = req.body.contentEn;
         var image = req.body.image;
-        var imagePosition = req.body.imagePosition || 'center';
+        var imagePosition = parseInt(req.body.imagePosition) || 50;
         
-        // Validate imagePosition
-        if (!['top', 'center', 'bottom'].includes(imagePosition)) {
-            imagePosition = 'center';
+        // Validate imagePosition (0-100)
+        if (isNaN(imagePosition) || imagePosition < 0 || imagePosition > 100) {
+            imagePosition = 50;
         }
         
         // Validation

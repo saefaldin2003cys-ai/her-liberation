@@ -442,25 +442,13 @@
             transition: object-position 0.3s ease;
         }
 
-        .image-preview img.pos-top {
-            object-position: center top;
-        }
-
-        .image-preview img.pos-center {
-            object-position: center center;
-        }
-
-        .image-preview img.pos-bottom {
-            object-position: center bottom;
-        }
-
         .image-position-controls {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 1rem;
             margin-top: 0.75rem;
-            padding: 0.5rem;
+            padding: 0.75rem 1rem;
             background: var(--bg-primary);
             border-radius: var(--radius-md);
         }
@@ -468,30 +456,53 @@
         .position-label {
             color: var(--text-muted);
             font-size: 0.85rem;
-            margin-left: 0.5rem;
+            white-space: nowrap;
         }
 
-        .position-btn {
-            width: 36px;
-            height: 36px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
+        .position-slider-wrapper {
+            flex: 1;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 0.75rem;
         }
 
-        .position-btn:hover {
-            border-color: var(--accent-primary);
+        .position-slider {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
         }
 
-        .position-btn.active {
+        .position-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
             background: var(--accent-gradient);
-            border-color: transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(233, 30, 140, 0.4);
+        }
+
+        .position-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .position-value {
+            min-width: 45px;
+            text-align: center;
+            color: var(--accent-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .remove-image {
@@ -640,17 +651,20 @@
                                 </div>
                                 <div id="imagePreview" class="image-preview" style="display: none;">
                                     <div class="image-preview-container">
-                                        <img id="previewImg" src="" alt="معاينة">
+                                        <img id="previewImg" src="" alt="معاينة" style="object-position: center 50%;">
                                     </div>
                                     <div class="image-position-controls">
                                         <span class="position-label">موضع الصورة:</span>
-                                        <button type="button" class="position-btn" onclick="setImagePosition('top')" title="أعلى">⬆️</button>
-                                        <button type="button" class="position-btn active" onclick="setImagePosition('center')" title="وسط">⬛</button>
-                                        <button type="button" class="position-btn" onclick="setImagePosition('bottom')" title="أسفل">⬇️</button>
+                                        <div class="position-slider-wrapper">
+                                            <span>⬆️</span>
+                                            <input type="range" id="positionSlider" class="position-slider" min="0" max="100" value="50" oninput="updateImagePosition(this.value)">
+                                            <span>⬇️</span>
+                                            <span id="positionValue" class="position-value">50%</span>
+                                        </div>
                                     </div>
                                     <button type="button" class="remove-image" onclick="removeImage()">✕</button>
                                 </div>
-                                <input type="hidden" id="imagePosition" value="center">
+                                <input type="hidden" id="imagePosition" value="50">
                             </div>
                             <div id="urlTab" class="tab-content">
                                 <input type="text" id="imageUrl" class="input-field" placeholder="https://...">
@@ -934,26 +948,22 @@
                 reader.onload = function(e) {
                     const previewImg = document.getElementById('previewImg');
                     previewImg.src = e.target.result;
-                    previewImg.className = 'pos-center'; // Default position
+                    previewImg.style.objectPosition = 'center 50%';
                     document.getElementById('imagePreview').style.display = 'block';
-                    document.getElementById('imagePosition').value = 'center';
-                    // Reset position buttons
-                    document.querySelectorAll('.position-btn').forEach(btn => btn.classList.remove('active'));
-                    document.querySelector('.position-btn[onclick*="center"]').classList.add('active');
+                    document.getElementById('imagePosition').value = '50';
+                    document.getElementById('positionSlider').value = 50;
+                    document.getElementById('positionValue').textContent = '50%';
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // Set image position
-        function setImagePosition(position) {
+        // Update image position from slider
+        function updateImagePosition(value) {
             const previewImg = document.getElementById('previewImg');
-            previewImg.className = 'pos-' + position;
-            document.getElementById('imagePosition').value = position;
-            
-            // Update button states
-            document.querySelectorAll('.position-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.position-btn[onclick*="${position}"]`).classList.add('active');
+            previewImg.style.objectPosition = 'center ' + value + '%';
+            document.getElementById('imagePosition').value = value;
+            document.getElementById('positionValue').textContent = value + '%';
         }
 
         // Remove image preview
@@ -961,8 +971,10 @@
             document.getElementById('imageFile').value = '';
             document.getElementById('imagePreview').style.display = 'none';
             document.getElementById('previewImg').src = '';
-            document.getElementById('previewImg').className = '';
-            document.getElementById('imagePosition').value = 'center';
+            document.getElementById('previewImg').style.objectPosition = 'center 50%';
+            document.getElementById('imagePosition').value = '50';
+            document.getElementById('positionSlider').value = 50;
+            document.getElementById('positionValue').textContent = '50%';
         }
 
         // Delete article - requires authentication
