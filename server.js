@@ -761,7 +761,7 @@ app.get('/api/poll', async (req, res) => {
         if (!poll) {
             poll = await Poll.create({
                 question: 'minimum_marriage_age',
-                votes: { agree18: 0, disagree: 0, other: 0 },
+                votes: { agree18: 0, disagree: 0 },
                 voters: []
             });
         }
@@ -769,8 +769,7 @@ app.get('/api/poll', async (req, res) => {
         res.json({
             agree18: poll.votes.agree18,
             disagree: poll.votes.disagree,
-            other: poll.votes.other,
-            total: poll.votes.agree18 + poll.votes.disagree + poll.votes.other
+            total: poll.votes.agree18 + poll.votes.disagree
         });
     } catch (error) {
         console.error('Poll GET error:', error.message);
@@ -780,11 +779,11 @@ app.get('/api/poll', async (req, res) => {
 
 app.post('/api/poll/vote', postLimiter, async (req, res) => {
     try {
-        var choice = req.body.choice; // 'agree18', 'disagree', or 'other'
+        var choice = req.body.choice; // 'agree18' or 'disagree'
         var voterIP = req.ip || req.connection.remoteAddress;
 
         // Validate choice
-        if (!['agree18', 'disagree', 'other'].includes(choice)) {
+        if (!['agree18', 'disagree'].includes(choice)) {
             return res.status(400).json({ error: 'Invalid vote choice' });
         }
 
@@ -792,7 +791,7 @@ app.post('/api/poll/vote', postLimiter, async (req, res) => {
         if (!poll) {
             poll = await Poll.create({
                 question: 'minimum_marriage_age',
-                votes: { agree18: 0, disagree: 0, other: 0 },
+                votes: { agree18: 0, disagree: 0 },
                 voters: []
             });
         }
@@ -804,8 +803,7 @@ app.post('/api/poll/vote', postLimiter, async (req, res) => {
                 alreadyVoted: true,
                 agree18: poll.votes.agree18,
                 disagree: poll.votes.disagree,
-                other: poll.votes.other,
-                total: poll.votes.agree18 + poll.votes.disagree + poll.votes.other
+                total: poll.votes.agree18 + poll.votes.disagree
             });
         }
 
@@ -818,8 +816,7 @@ app.post('/api/poll/vote', postLimiter, async (req, res) => {
             success: true,
             agree18: poll.votes.agree18,
             disagree: poll.votes.disagree,
-            other: poll.votes.other,
-            total: poll.votes.agree18 + poll.votes.disagree + poll.votes.other
+            total: poll.votes.agree18 + poll.votes.disagree
         });
     } catch (error) {
         console.error('Poll vote error:', error.message);
