@@ -4320,3 +4320,92 @@ body.dark-mode .partners-grid img {
         max-height: 95vh;
     }
 }
+
+/* ============================================
+   Share Modal Styles
+   ============================================ */
+.share-modal-content {
+    text-align: center;
+}
+
+.share-article-title {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+    font-size: 0.95rem;
+}
+
+.share-platforms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--space-md);
+}
+
+.share-platform-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.share-platform-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.share-platform-btn svg {
+    width: 28px;
+    height: 28px;
+}
+
+.share-platform-btn.whatsapp:hover {
+    border-color: #25D366;
+    background: rgba(37, 211, 102, 0.1);
+    color: #25D366;
+}
+
+.share-platform-btn.twitter:hover {
+    border-color: #000;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.share-platform-btn.facebook:hover {
+    border-color: #1877F2;
+    background: rgba(24, 119, 242, 0.1);
+    color: #1877F2;
+}
+
+.share-platform-btn.telegram:hover {
+    border-color: #0088cc;
+    background: rgba(0, 136, 204, 0.1);
+    color: #0088cc;
+}
+
+.share-platform-btn.copy-link:hover {
+    border-color: var(--accent-primary);
+    background: rgba(233, 30, 140, 0.1);
+    color: var(--accent-primary);
+}
+
+.share-platform-btn.copied {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+/* Light mode adjustments */
+[data-theme="light"] .share-platform-btn {
+    background: var(--bg-card);
+}
+
+[data-theme="light"] .share-platform-btn.twitter:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
