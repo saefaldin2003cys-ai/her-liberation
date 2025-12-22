@@ -3651,87 +3651,9 @@ textarea:focus-visible {
     }
 }
 
-/* ============================================
-   Partners Section
-   ============================================ */
-.partners-section {
-    padding: var(--space-xl) 0;
-    margin-top: var(--space-xl);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    width: 100%;
-}
 
 
-/* Force LTR direction to keep logos from switching places in Arabic */
-.partners-grid {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-2xl);
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--space-md);
-    direction: ltr !important;
-    /* CRITICAL: Prevent reordering */
-}
 
-/* 
-   Universal "White Card" Style 
-   User Request: "Make them look like this always" (Arabic & English)
-*/
-.partners-grid img {
-    height: 220px;
-    /* Standardize height */
-    width: auto;
-    object-fit: contain;
-    opacity: 1;
-    transition: transform 0.3s ease;
-    filter: none;
-
-    /* Clean look without background */
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-}
-
-.partners-grid img:hover {
-    transform: scale(1.05);
-    background: #ffffff;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Dark mode: single white background for all partner logos */
-body.dark-mode .partners-grid {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 10px 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    max-width: 800px;
-    gap: var(--space-lg);
-}
-
-body.dark-mode .partners-grid img {
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-@media (max-width: 768px) {
-    .partners-grid {
-        gap: var(--space-lg);
-    }
-
-    .partners-grid img {
-        height: 90px;
-    }
-
-    body.dark-mode .partners-grid img {
-        height: 90px;
-        padding: 10px;
-    }
-}
 
 /* ============================================
    UI Polish - Articles & Comments
@@ -4141,21 +4063,9 @@ body.dark-mode .partners-grid img {
     .campaign-slogan {
         padding: var(--space-sm) var(--space-md);
     }
-
-    /* Footer */
-    .footer-logos {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .partners-grid {
-        gap: var(--space-md);
-    }
-
-    .partners-grid img {
-        height: 70px;
-    }
 }
+
+
 
 /* Extra small phones */
 @media (max-width: 480px) {
