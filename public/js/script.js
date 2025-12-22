@@ -542,15 +542,44 @@ window.goToMainExperience = goToMainExperience;
 // ============================================
 // Share Functions
 // ============================================
-function shareTwitter() {
-    var text = window.i18n ? window.i18n.t('share.twitter_text', 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة') : 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة';
-    var url = window.location.href;
+function shareFacebook(url) {
+    url = url || window.location.href;
+    window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
+}
+
+function shareInstagram() {
+    // Try native sharing first (works best on mobile for Stories)
+    if (navigator.share) {
+        navigator.share({
+            title: document.title,
+            text: 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔',
+            url: window.location.href
+        }).catch(console.error);
+    } else {
+        // Fallback
+        copyLink();
+        alert('Instagram does not support direct web sharing. Link copied! Open Instagram and paste it in your Story.');
+    }
+}
+
+function shareTikTok() {
+    // Similar to Instagram, TikTok sharing is app-centric.
+    // We'll copy the link and redirect to TikTok or just notify.
+    copyLink();
+    alert('TikTok does not support direct sharing. The link has been copied to your clipboard!');
+}
+
+function shareTwitter(text, url) {
+    text = text || (window.i18n ? window.i18n.t('share.twitter_text', 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة') : 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة');
+    url = url || window.location.href;
     window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
 }
 
-function shareWhatsapp() {
-    var defaultText = 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر\n\n' + window.location.href;
-    var text = window.i18n ? window.i18n.t('share.whatsapp_text', defaultText) : defaultText;
+function shareWhatsapp(text) {
+    if (!text) {
+        var defaultText = 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر\n\n' + window.location.href;
+        text = window.i18n ? window.i18n.t('share.whatsapp_text', defaultText) : defaultText;
+    }
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 
@@ -817,8 +846,54 @@ function shareArticle(articleId) {
     if (!article) return;
     var articleContent = getArticleContent(article);
     var title = articleContent.title;
-    var text = title + '\n\n' + window.location.href;
-    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    // For Twitter, we want just the title, URL is separate param
+    var twitterText = title;
+    // For WhatsApp, we want combined text
+    var whatsappText = title + '\n\n' + window.location.href;
+    var url = window.location.href;
+
+    // Helper to safely escape strings for inline onclick
+    var escapeStr = function (str) {
+        return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    };
+
+    // Try native share first
+    if (navigator.share) {
+        var fullShareText = title + '\n' + window.location.href;
+        // Auto-copy to clipboard to make it "ready"
+        navigator.clipboard.writeText(fullShareText).catch(function () { /* ignore copy errors */ });
+
+        var shareData = {
+            title: title + ' | تحريرها',
+            text: title + '\n' + window.location.href,
+            url: window.location.href
+        };
+        navigator.share(shareData).catch(function (err) {
+            console.log('Share canceled or failed', err);
+            // Optional fallback if needed
+            // openArticleShareModal();
+        });
+    } else {
+        openArticleShareModal();
+    }
+
+    function openArticleShareModal() {
+        var modal = document.getElementById('detailsModal');
+        var modalBody = document.getElementById('modalBody');
+
+        modalBody.innerHTML = '<h3 class="modal-title">📤 شارك هذا المقال</h3>' +
+            '<div class="share-buttons">' +
+            '<button class="share-btn instagram" onclick="shareInstagram()">📸 انستجرام</button>' +
+            '<button class="share-btn twitter" onclick="shareTwitter(\'' + escapeStr(twitterText) + '\', \'' + escapeStr(url) + '\')">𝕏 تويتر</button>' +
+            '<button class="share-btn tiktok" onclick="shareTikTok()">🎵 تيك توك</button>' +
+            '<button class="share-btn facebook" onclick="shareFacebook(\'' + escapeStr(url) + '\')">📘 فيسبوك</button>' +
+            '<button class="share-btn whatsapp" onclick="shareWhatsapp(\'' + escapeStr(whatsappText) + '\')">واتساب</button>' +
+            '<button class="share-btn copy" id="copyLink" onclick="copyLink()">📋 نسخ الرابط</button>' +
+            '</div>';
+
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function deleteArticle(articleId) {
@@ -1147,16 +1222,44 @@ document.addEventListener('DOMContentLoaded', function () {
     var shareBtn = document.getElementById('shareBtn');
     if (shareBtn) {
         shareBtn.addEventListener('click', function () {
-            var modal = document.getElementById('detailsModal');
-            var modalBody = document.getElementById('modalBody');
-            modalBody.innerHTML = '<h3 class="modal-title">📤 شارك الموقع</h3>' +
-                '<div class="share-buttons">' +
-                '<button class="share-btn twitter" onclick="shareTwitter()">𝕏 تويتر</button>' +
-                '<button class="share-btn whatsapp" onclick="shareWhatsapp()">واتساب</button>' +
-                '<button class="share-btn copy" id="copyLink" onclick="copyLink()">📋 نسخ الرابط</button>' +
-                '</div>';
-            modal.classList.add('show');
+            // Try native share first
+            if (navigator.share) {
+                var shareData = {
+                    title: 'تحريرها | قبل الـ 18 عاماً: طفلة لا زوجة',
+                    text: 'تحريرها | قبل الـ 18 عاماً: طفلة لا زوجة\n' + window.location.href,
+                    url: window.location.href
+                };
+
+                // Auto-copy to clipboard to make it "ready"
+                var fullShareText = shareData.title + '\n' + shareData.text + '\n' + shareData.url;
+                navigator.clipboard.writeText(fullShareText).catch(function () { /* ignore copy errors */ });
+
+                navigator.share(shareData).catch(function (err) {
+                    console.log('Share canceled or failed', err);
+                    // Optional: Open modal on error if needed, but usually cancellation implies disregard.
+                    // If strictly fallback needed on error:
+                    // openShareModal();
+                });
+            } else {
+                // Fallback to custom modal
+                openShareModal();
+            }
         });
+    }
+
+    function openShareModal() {
+        var modal = document.getElementById('detailsModal');
+        var modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = '<h3 class="modal-title">📤 شارك الموقع</h3>' +
+            '<div class="share-buttons">' +
+            '<button class="share-btn instagram" onclick="shareInstagram()">📸 انستجرام</button>' +
+            '<button class="share-btn twitter" onclick="shareTwitter()">𝕏 تويتر</button>' +
+            '<button class="share-btn tiktok" onclick="shareTikTok()">🎵 تيك توك</button>' +
+            '<button class="share-btn facebook" onclick="shareFacebook()">📘 فيسبوك</button>' +
+            '<button class="share-btn whatsapp" onclick="shareWhatsapp()">واتساب</button>' +
+            '<button class="share-btn copy" id="copyLink" onclick="copyLink()">📋 نسخ الرابط</button>' +
+            '</div>';
+        modal.classList.add('show');
     }
 
     var modalClose = document.getElementById('modalClose');

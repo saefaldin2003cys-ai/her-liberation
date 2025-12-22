@@ -2354,6 +2354,69 @@ html[dir] * {
     text-decoration: none;
 }
 
+/* Share Buttons */
+.share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    justify-content: center;
+    margin-top: var(--space-md);
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    text-decoration: none;
+}
+
+.share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.share-btn.twitter {
+    background: #1DA1F2;
+    color: white;
+    border: none;
+}
+
+.share-btn.whatsapp {
+    background: #25D366;
+    color: white;
+    border: none;
+}
+
+.share-btn.facebook {
+    background: #1877F2;
+    color: white;
+    border: none;
+}
+
+.share-btn.instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: white;
+    border: none;
+}
+
+.share-btn.tiktok {
+    background: #000000;
+    color: white;
+    border: none;
+}
+
+.share-btn.copy {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
 /* ============================================
    Footer
    ============================================ */
