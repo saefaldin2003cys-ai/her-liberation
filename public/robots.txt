@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://herliberation.org/sitemap.xml
+Sitemap: https://www.her-liberation.org/sitemap.xml
 
 # Disallow admin paths (if any in future)
 Disallow: /admin/
