@@ -1,0 +1,32 @@
+{
+    "name": "تحريرها - HerLiberation",
+    "short_name": "تحريرها",
+    "description": "حملة توعية حول حقوق الطفل في العراق ومخاطر زواج الأطفال",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0C0A1D",
+    "theme_color": "#E91E8C",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/assets/images/1_20251127_202518.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/assets/images/1_20251127_202518.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "lang": "ar",
+    "dir": "rtl",
+    "categories": [
+        "social",
+        "education",
+        "news"
+    ],
+    "screenshots": []
+}

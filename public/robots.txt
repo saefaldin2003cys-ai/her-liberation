@@ -1,0 +1,19 @@
+# HerLiberation Website - Robots.txt
+# تحريرها
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://herliberation.org/sitemap.xml
+
+# Disallow admin paths (if any in future)
+Disallow: /admin/
+
+# Allow CSS and JS for better indexing
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+
+# Crawl delay (optional - adjust based on server capacity)
+Crawl-delay: 1
