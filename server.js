@@ -645,57 +645,27 @@ app.get('/article/*', (req, res) => {
 const DB_Data_Path = path.join(__dirname, 'database');
 
 async function connectDB() {
-    const uri = process.env.MONGODB_URI;
-    if (!uri) {
-        console.error('❌ MONGODB_URI is missing in .env file!');
-        return;
-    }
-
-    const options = {
-        serverSelectionTimeoutMS: 5000, // Timeout after 5s (faster retry)
-        socketTimeoutMS: 30000, // Close sockets after 30s of inactivity
-    };
-
-    let retryCount = 0;
-    const maxRetries = 5;
-
-    async function attemptConnection() {
-        try {
-            console.log(`🔌 Attempting MongoDB connection (Attempt ${retryCount + 1}/${maxRetries})...`);
-            await mongoose.connect(uri, options);
-            console.log('✅ Connected to MongoDB successfully');
-            await seedData();
-        } catch (err) {
-            console.error(`❌ MongoDB Connection Attempt ${retryCount + 1} Failed: ${err.message}`);
-
-            if (err.message.includes('ENOTFOUND')) {
-                console.warn('⚠️ DNS Resolution issue detected. This might be a temporary network glitch.');
-            }
-
-            if (retryCount < maxRetries - 1) {
-                retryCount++;
-                const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
-                console.log(`⏳ Retrying in ${delay / 1000} seconds...`);
-                setTimeout(attemptConnection, delay);
-            } else {
-                console.error('---------------------------------------------------');
-                console.error('⚠️  CRITICAL: All MongoDB connection attempts failed.');
-                console.error('   Please check your internet connection or IP whitelist in MongoDB Atlas.');
-                console.error('---------------------------------------------------');
-            }
+    try {
+        const uri = process.env.MONGODB_URI;
+        if (!uri || uri.includes('<password>')) {
+            console.warn('⚠️ MONGODB_URI is likely invalid or default. Using In-Memory fallback or waiting for config.');
+            if (!uri) return;
         }
+        await mongoose.connect(uri);
+        console.log('✅ Connected to MongoDB');
+        await seedData();
+    } catch (err) {
+        console.error('');
+        console.error('❌ MongoDB Connection Failed!');
+        console.error(`   Error: ${err.message}`);
+        console.error('---------------------------------------------------');
+        console.error('⚠️  ACTION REQUIRED:');
+        console.error('   1. Open the .env file in your project folder.');
+        console.error('   2. Replace MONGODB_URI with your REAL connection string.');
+        console.error('   3. Restart the server.');
+        console.error('---------------------------------------------------');
+        console.error('');
     }
-
-    // Listen for connection events
-    mongoose.connection.on('disconnected', () => {
-        console.warn('📡 MongoDB disconnected! Mongoose will attempt to reconnect automatically.');
-    });
-
-    mongoose.connection.on('error', (err) => {
-        console.error('🚨 MongoDB Connection Error:', err.message);
-    });
-
-    await attemptConnection();
 }
 
 async function seedData() {

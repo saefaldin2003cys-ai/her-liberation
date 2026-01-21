@@ -1033,7 +1033,6 @@ function submitArticle(e) {
 // Global Functions
 // ============================================
 window.openArticle = openArticle;
-window.shareArticle = shareArticle;
 window.deleteArticle = deleteArticle;
 window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
