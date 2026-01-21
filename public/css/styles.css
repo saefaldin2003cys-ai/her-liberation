@@ -1612,7 +1612,7 @@ html[dir] * {
     font-family: inherit;
     font-size: 1rem;
     color: var(--text-primary);
-    text-align: right;
+    text-align: start;
 }
 
 .poll-option:hover {
@@ -1837,7 +1837,7 @@ html[dir] * {
         padding: var(--space-md);
         flex-direction: row;
         justify-content: space-between;
-        text-align: right;
+        text-align: start;
     }
 
     .summary-count {
@@ -2035,6 +2035,7 @@ html[dir] * {
 }
 
 .article-excerpt {
+    text-align: start;
     color: var(--text-secondary);
     line-height: 1.7;
     margin-bottom: var(--space-lg);
@@ -2095,7 +2096,7 @@ html[dir] * {
 }
 
 .read-more-btn {
-    margin-right: auto;
+    margin-inline-start: auto;
     padding: var(--space-sm) var(--space-lg);
     background: var(--accent-gradient);
     color: white;
