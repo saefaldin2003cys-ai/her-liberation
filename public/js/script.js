@@ -297,75 +297,6 @@ function formatNumber(num) {
     return num.toString();
 }
 
-// ============================================
-// Comments Functions (API)
-// ============================================
-function loadComments() {
-    console.log('💬 Loading comments...');
-    var list = document.getElementById('commentsList');
-    if (!list) {
-        console.log('⚠️ Comments list not found, retrying...');
-        setTimeout(loadComments, 500);
-        return;
-    }
-
-    fetch(API_URL + '/comments')
-        .then(function (res) {
-            if (!res.ok) throw new Error('API Error');
-            return res.json();
-        })
-        .then(function (comments) {
-            console.log('✅ Comments loaded:', comments.length);
-            renderComments(comments);
-        })
-        .catch(function (err) {
-            console.warn('⚠️ Comments API failed:', err);
-            renderComments([]);
-        });
-}
-
-function submitComment(e) {
-    e.preventDefault();
-    var nameInput = document.getElementById('commentName');
-    var textInput = document.getElementById('commentText');
-    var name = nameInput.value.trim() || 'زائر';
-    var text = textInput.value.trim();
-    if (!text) return;
-
-    fetch(API_URL + '/comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, text: text })
-    })
-        .then(function (res) { return res.json(); })
-        .then(function () { loadComments(); })
-        .catch(function (err) { console.error(err); });
-
-    nameInput.value = '';
-    textInput.value = '';
-}
-
-function renderComments(comments) {
-    var list = document.getElementById('commentsList');
-    if (!list) return;
-
-    var html = '';
-    for (var i = 0; i < comments.length; i++) {
-        html += createCommentHTML(comments[i]);
-    }
-    list.innerHTML = html;
-}
-
-function createCommentHTML(comment) {
-    var timeAgo = getTimeAgo(new Date(comment.timestamp));
-    return '<div class="comment-item">' +
-        '<div class="comment-header">' +
-        '<span class="comment-author">' + escapeHTML(comment.name) + '</span>' +
-        '<span class="comment-date">' + timeAgo + '</span>' +
-        '</div>' +
-        '<p class="comment-text">' + escapeHTML(comment.text) + '</p>' +
-        '</div>';
-}
 
 function getTimeAgo(date) {
     var seconds = Math.floor((Date.now() - date) / 1000);
@@ -1166,9 +1097,6 @@ function loadDeferredContent() {
     loadArticles();
     incrementViews();
     initScrollReveal();
-
-    // Load comments with slight delay (less critical)
-    setTimeout(loadComments, 300);
 }
 
 // ============================================
@@ -1272,8 +1200,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    var commentForm = document.getElementById('commentForm');
-    if (commentForm) commentForm.addEventListener('submit', submitComment);
 
     var cancelAdmin = document.getElementById('cancelAdmin');
     if (cancelAdmin) {

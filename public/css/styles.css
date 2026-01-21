@@ -1781,6 +1781,70 @@ html[dir] * {
     background: rgba(239, 68, 68, 0.08);
 }
 
+/* Mobile Optimization for Poll */
+@media (max-width: 600px) {
+    .poll-section {
+        margin-bottom: var(--space-xl);
+    }
+
+    .poll-container {
+        padding: var(--space-lg);
+    }
+
+    .poll-header {
+        margin-bottom: var(--space-lg);
+        gap: var(--space-sm);
+    }
+
+    .poll-icon {
+        font-size: 1.5rem;
+    }
+
+    .poll-header .section-title {
+        font-size: 1.2rem;
+    }
+
+    .poll-question {
+        font-size: 0.95rem;
+        margin-bottom: var(--space-lg);
+    }
+
+    .poll-option {
+        padding: var(--space-md) var(--space-lg);
+        font-size: 0.9rem;
+        gap: var(--space-sm);
+        border-radius: var(--radius-md);
+    }
+
+    .poll-option .option-icon {
+        font-size: 1.1rem;
+    }
+
+    .poll-thank-you {
+        padding: var(--space-md);
+        font-size: 1rem;
+        margin-bottom: var(--space-lg);
+    }
+
+    .poll-summary {
+        flex-direction: column;
+        gap: var(--space-md);
+        padding-top: var(--space-lg);
+        margin-top: var(--space-lg);
+    }
+
+    .summary-item {
+        padding: var(--space-md);
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: right;
+    }
+
+    .summary-count {
+        font-size: 1.5rem;
+    }
+}
+
 /* Articles Grid - Enhanced Layout */
 .articles-grid {
     display: grid;

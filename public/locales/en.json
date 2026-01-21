@@ -36,8 +36,7 @@
     "navigation": {
         "rights": "Rights",
         "map": "Map",
-        "articles": "Blog",
-        "comments": "Comments"
+        "articles": "Blog"
     },
     "age_selector": {
         "title": "Select the child's age",
@@ -227,20 +226,7 @@
         "loading": "Loading blog...",
         "no_articles": "No articles currently available",
         "read_more": "Read More",
-        "likes": "Likes",
-        "comments": "Comments",
-        "comments_count": "Comments"
-    },
-    "comments": {
-        "title": "💬 Share Your Opinion",
-        "name_placeholder": "Your name (optional)",
-        "text_placeholder": "Write your comment here...",
-        "submit": "Submit Comment",
-        "visitor": "Visitor",
-        "now": "Now",
-        "minutes_ago": "{count} minutes ago",
-        "hours_ago": "{count} hours ago",
-        "days_ago": "{count} days ago"
+        "likes": "Likes"
     },
     "cta": {
         "title": "Help Spread Awareness",

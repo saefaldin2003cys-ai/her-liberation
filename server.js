@@ -57,7 +57,6 @@ setInterval(function () {
 // Import Models
 const Stats = require('./models/Stats');
 const Article = require('./models/Article');
-const Comment = require('./models/Comment');
 const Poll = require('./models/Poll');
 
 const app = express();
@@ -95,7 +94,7 @@ var limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// Stricter rate limit for POST requests (comments, likes)
+// Stricter rate limit for POST requests (likes, polls)
 var postLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
     max: 10, // 10 POST requests per minute
@@ -681,18 +680,6 @@ async function seedData() {
             }
         }
 
-        // Seed Comments
-        const commentsCount = await Comment.countDocuments();
-        if (commentsCount === 0) {
-            const commentsPath = path.join(DB_Data_Path, 'comments.json');
-            if (fs.existsSync(commentsPath)) {
-                const commentsData = JSON.parse(fs.readFileSync(commentsPath, 'utf8'));
-                if (commentsData.length > 0) {
-                    await Comment.create(commentsData);
-                    console.log('🌱 Seeded Comments from JSON');
-                }
-            }
-        }
 
         // Seed Articles - DISABLED (use admin panel to add articles)
         // Articles should be managed through the admin panel only
@@ -828,51 +815,6 @@ app.post('/api/poll/vote', postLimiter, async (req, res) => {
     }
 });
 
-// --- Comments ---
-app.get('/api/comments', async (req, res) => {
-    try {
-        var comments = await Comment.find().sort({ timestamp: -1 }).limit(50);
-        res.json(comments);
-    } catch (error) {
-        console.error('Comments GET error:', error.message);
-        res.status(500).json({ error: 'Server Error' });
-    }
-});
-
-app.post('/api/comments', postLimiter, async (req, res) => {
-    try {
-        var name = req.body.name;
-        var text = req.body.text;
-        var captchaToken = req.body.captchaToken;
-        var captchaAnswer = req.body.captchaAnswer;
-
-        // Verify CAPTCHA first
-        if (!verifyCaptcha(captchaToken, captchaAnswer)) {
-            return res.status(400).json({ error: 'فشل التحقق - CAPTCHA verification failed' });
-        }
-
-        // Validate input
-        if (!name || !text) {
-            return res.status(400).json({ error: 'Missing fields' });
-        }
-
-        // Additional validation
-        if (typeof name !== 'string' || typeof text !== 'string') {
-            return res.status(400).json({ error: 'Invalid input type' });
-        }
-
-        if (name.length > 50 || text.length > 500) {
-            return res.status(400).json({ error: 'Input too long' });
-        }
-
-        var newComment = new Comment({ name: name, text: text });
-        await newComment.save();
-        res.json({ success: true, comment: newComment });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server Error' });
-    }
-});
 
 // ==========================================
 // Image Upload Configuration (MongoDB Base64 Storage)
@@ -1367,7 +1309,6 @@ connectDB().then(function () {
         console.log('   ✅ RCE Protection');
         console.log('   ✅ IP Auto-Blacklisting');
         console.log('   ✅ JWT Admin Authentication');
-        console.log('   ✅ CAPTCHA for Comments');
         console.log('   ✅ Logic Vulnerability Protection');
         console.log('   ✅ Session Hijacking Prevention');
         console.log('');
