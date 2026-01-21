@@ -585,7 +585,6 @@ document.addEventListener('keydown', function (e) {
 // Articles State
 // ============================================
 var articles = [];
-var articleLikes = JSON.parse(localStorage.getItem('articleLikes') || '{}');
 
 // ============================================
 // Articles Functions (API)
@@ -608,6 +607,13 @@ function loadArticles() {
             console.log('✅ Articles loaded:', data.length);
             articles = data;
             renderArticles();
+
+            // Check for deep link on load
+            var path = window.location.pathname;
+            if (path.startsWith('/article/')) {
+                var slugOrId = path.split('/article/')[1];
+                if (slugOrId) openArticle(slugOrId, true);
+            }
         })
         .catch(function (err) {
             console.warn('⚠️ Articles API failed:', err);
@@ -640,8 +646,9 @@ function getArticleContent(article) {
     var title = typeof article.title === 'object' ? (article.title[lang] || article.title.ar) : article.title;
     var author = typeof article.author === 'object' ? (article.author[lang] || article.author.ar) : article.author;
     var content = typeof article.content === 'object' ? (article.content[lang] || article.content.ar) : article.content;
+    var authorBio = article.authorBio ? (article.authorBio[lang] || article.authorBio.ar) : '';
 
-    return { title: title, author: author, content: content };
+    return { title: title, author: author, content: content, authorBio: authorBio };
 }
 
 function renderArticleCard(article) {
@@ -658,8 +665,6 @@ function renderArticleCard(article) {
     var author = articleContent.author;
     var content = articleContent.content;
     var excerpt = content.substring(0, 100) + '...';
-    var isLiked = articleLikes[article._id];
-    var commentsCount = (article.comments || []).length;
     var readMoreText = lang === 'en' ? 'Read More' : 'قراءة المزيد';
 
     var imagePosition = article.imagePosition !== undefined ? article.imagePosition : 50;
@@ -670,52 +675,54 @@ function renderArticleCard(article) {
     var authorHtml = author ? ' • <span class="emoji-icon">✍️</span> ' + escapeHTML(author) : '';
 
     return '<article class="article-card">' +
-        imageHtml +
+        '<div class="article-image-container">' + imageHtml + '</div>' +
         '<div class="article-body">' +
         '<h4 class="article-title">' + escapeHTML(title) + '</h4>' +
         '<p class="article-date"><span class="emoji-icon">📅</span> ' + formattedDate + authorHtml + '</p>' +
         '<p class="article-excerpt">' + escapeHTML(excerpt) + '</p>' +
         '<hr class="article-divider">' +
         '<div class="article-actions">' +
-        '<button class="article-action-btn" onclick="openArticle(\'' + article._id + '\')">' +
-        '<span class="action-icon emoji-icon">💬</span>' +
-        '<span>' + commentsCount + '</span>' +
-        '</button>' +
         '<button class="read-more-btn" onclick="openArticle(\'' + article._id + '\')">' + readMoreText + '</button>' +
         '</div>' +
         '</div>' +
         '</article>';
 }
 
-function toggleArticleLike(articleId) {
-    if (articleLikes[articleId]) return;
-
-    articleLikes[articleId] = true;
-    localStorage.setItem('articleLikes', JSON.stringify(articleLikes));
-
-    fetch(API_URL + '/articles/' + articleId + '/like', { method: 'POST' })
-        .then(function (res) { return res.json(); })
-        .then(function () { loadArticles(); })
-        .catch(function (err) { console.error(err); });
-}
-
-function openArticle(articleId) {
+function openArticle(articleId, fromPopState) {
     var article = null;
+    // Search by ID or Slug
     for (var i = 0; i < articles.length; i++) {
-        if (articles[i]._id === articleId) {
+        if (articles[i]._id === articleId || articles[i].slug === articleId) {
             article = articles[i];
             break;
         }
     }
-    if (!article) return;
 
-    var modal = document.getElementById('detailsModal');
-    var modalBody = document.getElementById('modalBody');
+    if (!article) {
+        // Try fetching specifically if not in list
+        fetch(API_URL + '/articles/detail/' + articleId)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data && !data.error) {
+                    // Temporarily add to list and open
+                    articles.push(data);
+                    openArticle(data._id, fromPopState);
+                }
+            });
+        return;
+    }
+
+    console.log('📖 Opening Article:', article._id);
+    var articlePage = document.getElementById('articlePage');
+    var articleViewContent = document.getElementById('articleViewContent');
+    if (!articlePage || !articleViewContent) return;
+
     var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
     var articleContent = getArticleContent(article);
     var title = articleContent.title;
     var author = articleContent.author;
     var content = articleContent.content;
+    var authorBio = articleContent.authorBio;
 
     var date = new Date(article.timestamp);
     var formattedDate = date.toLocaleDateString(lang === 'en' ? 'en-US' : 'ar-IQ', {
@@ -723,102 +730,198 @@ function openArticle(articleId) {
         month: 'long',
         day: 'numeric'
     });
-    var comments = article.comments || [];
 
     // Translation constants
     var shareText = lang === 'en' ? 'Share' : 'مشاركة';
-    var commentsTitle = lang === 'en' ? 'Comments' : 'التعليقات';
-    var noCommentsText = lang === 'en' ? 'No comments yet' : 'لا توجد تعليقات بعد';
-    var writeCommentPlaceholder = lang === 'en' ? 'Write a comment...' : 'اكتب تعليقاً...';
-    var namePlaceholder = lang === 'en' ? 'Your Name' : 'اسمك';
-    var sendText = lang === 'en' ? 'Send' : 'إرسال';
-    var commentsLabel = lang === 'en' ? 'Comments' : 'تعليق';
-
-    // Build comments HTML
-    var commentsHtml = '';
-    if (comments.length > 0) {
-        for (var i = 0; i < comments.length; i++) {
-            var c = comments[i];
-            commentsHtml += '<div class="comment-item">' +
-                '<div class="comment-header">' +
-                '<strong>' + escapeHTML(c.name) + '</strong>' +
-                '<span class="comment-date">' + new Date(c.timestamp).toLocaleDateString() + '</span>' +
-                '</div>' +
-                '<p>' + escapeHTML(c.text) + '</p>' +
-                '</div>';
-        }
-    } else {
-        commentsHtml = '<p class="no-comments">' + noCommentsText + '</p>';
-    }
 
     var modalImagePosition = article.imagePosition !== undefined ? article.imagePosition : 50;
     var imageHtml = article.image ? '<img src="' + escapeHTML(article.image) + '" alt="" class="article-modal-image" style="object-position: center ' + modalImagePosition + '%;">' : '';
+
+    // Process content with placeholders
+    var processedContent = escapeHTML(content).replace(/\n/g, '<br>');
+    var usedImages = new Set();
+    var mainImagePlaced = false;
+
+    // Handle [COVER] placeholder
+    if (processedContent.includes('[COVER]')) {
+        if (article.image) {
+            processedContent = processedContent.replace('[COVER]', imageHtml);
+            mainImagePlaced = true;
+        } else {
+            processedContent = processedContent.replace('[COVER]', '');
+        }
+    }
+
+    // Handle [IMAGE_N] placeholders
+    if (article.images && article.images.length > 0) {
+        for (var k = 0; k < article.images.length; k++) {
+            var placeholder = '[IMAGE_' + (k + 1) + ']';
+            if (processedContent.includes(placeholder)) {
+                var img = article.images[k];
+                var caption = img.caption ? (img.caption[lang] || img.caption.ar) : '';
+                var alignClass = (img.alignment || 'full') === 'full' ? 'align-full' : ('align-' + img.alignment);
+                var inlineImgHtml = '<div class="inline-article-image ' + alignClass + '">' +
+                    '<img src="' + escapeHTML(img.url) + '" alt="' + escapeHTML(caption) + '" class="additional-img">' +
+                    (caption ? '<p class="img-caption">' + escapeHTML(caption) + '</p>' : '') +
+                    '</div>';
+                processedContent = processedContent.replace(placeholder, inlineImgHtml);
+                usedImages.add(k);
+            }
+        }
+    }
+
+    // Additional Images HTML (for those not placed via placeholders)
+    var additionalImagesHtml = '';
+    var remainingImages = [];
+    if (article.images && article.images.length > 0) {
+        for (var j = 0; j < article.images.length; j++) {
+            if (!usedImages.has(j)) {
+                remainingImages.push(article.images[j]);
+            }
+        }
+
+        if (remainingImages.length > 0) {
+            additionalImagesHtml = '<div class="article-additional-images">';
+            for (var m = 0; m < remainingImages.length; m++) {
+                var rImg = remainingImages[m];
+                var rCaption = rImg.caption ? (rImg.caption[lang] || rImg.caption.ar) : '';
+                additionalImagesHtml += '<div class="additional-image-wrapper">' +
+                    '<img src="' + escapeHTML(rImg.url) + '" alt="' + escapeHTML(rCaption) + '" class="additional-img">' +
+                    (rCaption ? '<p class="img-caption">' + escapeHTML(rCaption) + '</p>' : '') +
+                    '</div>';
+            }
+            additionalImagesHtml += '</div>';
+        }
+    }
+
+    var authorBioHtml = authorBio ? '<div class="author-bio-section">' +
+        '<h4>' + (lang === 'en' ? 'About the Author' : 'عن الكاتبة') + '</h4>' +
+        '<p>' + escapeHTML(authorBio) + '</p>' +
+        '</div>' : '';
+
     var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
     var deleteBtn = isAdmin ? '<button class="article-action-btn danger" onclick="deleteArticle(\'' + article._id + '\')"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
 
-    modalBody.innerHTML = '<div class="article-modal-content">' +
-        imageHtml +
-        '<h3 class="article-modal-title">' + escapeHTML(title) + '</h3>' +
-        '<div class="article-modal-meta">' +
-        '<span>📅 ' + formattedDate + '</span>' +
-        authorHtml +
-        '<span>💬 ' + comments.length + ' ' + commentsLabel + '</span>' +
-        '</div>' +
-        '<div class="article-modal-body">' + linkifyText(escapeHTML(content).replace(/\n/g, '<br>')) + '</div>' +
-        (isAdmin ? '<div class="article-modal-actions">' + deleteBtn + '</div>' : '') +
-        '<div class="article-comments-section">' +
-        '<h4>' + commentsTitle + '</h4>' +
-        '<div class="comments-list">' + commentsHtml + '</div>' +
-        '<form class="comment-form" onsubmit="submitArticleComment(event, \'' + article._id + '\')">' +
-        '<input type="text" id="articleCommentName" placeholder="' + namePlaceholder + '" class="details-input" required>' +
-        '<textarea id="articleCommentText" placeholder="' + writeCommentPlaceholder + '" class="details-input" required></textarea>' +
-        '<button type="submit" class="details-btn">' + sendText + '</button>' +
-        '<button type="button" class="article-share-btn" onclick="shareArticle(\'' + article._id + '\')">' +
-        '<span class="action-icon">📤</span>' +
-        '<span>' + shareText + '</span>' +
+    var breadcrumbHtml = '<div class="article-breadcrumb">' +
+        '<span>' + (lang === 'en' ? 'Editorial' : 'قضايا ومقالات') + '</span>' +
+        '<span> / </span>' +
+        '<span class="breadcrumb-active">' + (lang === 'en' ? 'Deep Dive' : 'نظرة معمقة') + '</span>' +
+        '</div>';
+
+    var shareSectionHtml = '<div class="article-end-share">' +
+        '<h4 class="share-title">' + (lang === 'en' ? 'Share this story' : 'شارك هذه القصة') + '</h4>' +
+        '<div class="share-buttons-row">' +
+        '<button class="share-btn-big copy" onclick="copyArticleLink(\'' + (article.slug || article._id) + '\')">' +
+        '<span class="btn-icon">🔗</span> <span id="copyLinkTextContent">' + (lang === 'en' ? 'Copy Link' : 'نسخ الرابط') + '</span>' +
         '</button>' +
-        '</form>' +
         '</div>' +
         '</div>';
 
-    modal.classList.add('show');
+    articleViewContent.innerHTML = '<div class="premium-reader">' +
+        breadcrumbHtml +
+        '<h1 class="article-page-title">' + escapeHTML(title) + '</h1>' +
+        '<div class="article-modal-meta">' +
+        '<div class="author-meta-item">' +
+        '<span class="meta-icon">✍️</span>' +
+        '<div class="author-details">' +
+        '<span class="author-name">' + (author ? escapeHTML(author) : (lang === 'en' ? 'HerLiberation' : 'تحريرها')) + '</span>' +
+        '<span class="article-date-inline">' + formattedDate + '</span>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        (!mainImagePlaced ? '<div class="main-modal-image-wrapper">' + imageHtml + '</div>' : '') +
+        '<div class="article-modal-body">' + linkifyText(processedContent) + '</div>' +
+        additionalImagesHtml +
+        authorBioHtml +
+        shareSectionHtml +
+        '<div class="article-modal-footer">' +
+        deleteBtn +
+        '</div>' +
+        '</div>';
+
+    articlePage.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-}
 
-function submitArticleComment(e, articleId) {
-    e.preventDefault();
-    var nameInput = document.getElementById('articleCommentName');
-    var textInput = document.getElementById('articleCommentText');
-    var name = nameInput.value.trim() || 'زائر';
-    var text = textInput.value.trim();
-    if (!text) return;
+    // Smooth scroll to top
+    articlePage.scrollTop = 0;
 
-    fetch(API_URL + '/articles/' + articleId + '/comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, text: text })
-    })
-        .then(function (res) { return res.json(); })
-        .then(function () {
-            loadArticles();
-            openArticle(articleId);
-        })
-        .catch(function (err) { console.error(err); });
-}
-
-function shareArticle(articleId) {
-    var article = null;
-    for (var i = 0; i < articles.length; i++) {
-        if (articles[i]._id === articleId) {
-            article = articles[i];
-            break;
-        }
+    // Update URL if needed
+    if (!fromPopState) {
+        var slug = article.slug || article._id;
+        history.pushState({ articleId: article._id }, '', '/article/' + slug);
     }
-    if (!article) return;
-    var articleContent = getArticleContent(article);
-    var title = articleContent.title;
-    var text = title + '\n\n' + window.location.href;
-    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+
+    loadSuggestedArticles(article._id);
+}
+
+function closeArticlePage(fromPopState) {
+    var articlePage = document.getElementById('articlePage');
+    if (articlePage) {
+        articlePage.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    if (!fromPopState) {
+        history.pushState(null, '', '/');
+    }
+}
+
+function loadSuggestedArticles(currentId) {
+    var grid = document.getElementById('suggestedArticlesGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '<div class="loading-spinner"></div>';
+
+    fetch(API_URL + '/articles/related/' + currentId)
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (!data || data.length === 0) {
+                grid.innerHTML = '';
+                return;
+            }
+            grid.innerHTML = '';
+            var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+
+            data.forEach(function (article) {
+                var content = getArticleContent(article);
+                var card = document.createElement('div');
+                card.className = 'article-card';
+                card.onclick = function () { openArticle(article._id); };
+
+                var imageHtml = article.image ?
+                    '<div class="article-image-container"><img src="' + escapeHTML(article.image) + '" class="article-image" loading="lazy"></div>' :
+                    '<div class="article-image-placeholder">📄</div>';
+
+                card.innerHTML = imageHtml +
+                    '<div class="article-content-wrapper">' +
+                    '<h4 class="article-card-title">' + escapeHTML(content.title) + '</h4>' +
+                    '</div>';
+                grid.appendChild(card);
+            });
+        })
+        .catch(function () { grid.innerHTML = ''; });
+}
+
+
+function copyArticleLink(slugOrId) {
+    var url = window.location.origin + '/article/' + slugOrId;
+    var tempInput = document.createElement('input');
+    tempInput.value = url;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    var textEl = document.getElementById('copyLinkTextContent');
+    if (textEl) {
+        var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+        var originalText = textEl.textContent;
+        textEl.textContent = lang === 'en' ? 'Copied!' : 'تم النسخ!';
+        setTimeout(function () {
+            textEl.textContent = originalText;
+        }, 2000);
+    }
 }
 
 function deleteArticle(articleId) {
@@ -929,9 +1032,7 @@ function submitArticle(e) {
 // ============================================
 // Global Functions
 // ============================================
-window.toggleArticleLike = toggleArticleLike;
 window.openArticle = openArticle;
-window.submitArticleComment = submitArticleComment;
 window.shareArticle = shareArticle;
 window.deleteArticle = deleteArticle;
 window.loginAdmin = loginAdmin;
@@ -1402,4 +1503,22 @@ document.addEventListener('DOMContentLoaded', function () {
             if (disagreeBar) disagreeBar.style.width = disagreePercent + '%';
         }, 100);
     }
+});
+
+// ============================================
+// Independent Article Routing
+// ============================================
+document.addEventListener('DOMContentLoaded', function () {
+    var backBtn = document.getElementById('articleBack');
+    if (backBtn) {
+        backBtn.onclick = function () { closeArticlePage(); };
+    }
+
+    window.addEventListener('popstate', function (event) {
+        if (event.state && event.state.articleId) {
+            openArticle(event.state.articleId, true);
+        } else {
+            closeArticlePage(true);
+        }
+    });
 });

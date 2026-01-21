@@ -10,20 +10,28 @@ const articleSchema = new mongoose.Schema({
         ar: { type: String, default: 'تحريرها' },
         en: { type: String, default: 'HerLiberation' }
     },
-    date: { type: String }, // Keeping as string to match current JSON format
+    authorBio: {
+        ar: { type: String },
+        en: { type: String }
+    },
+    date: { type: String },
     content: {
         ar: { type: String, required: true },
         en: { type: String }
     },
-    image: { type: String },
+    image: { type: String }, // Main image (kept for backwards compatibility)
     imagePosition: { type: Number, default: 50, min: 0, max: 100 },
-    likes: { type: Number, default: 0 },
-    comments: [{
-        name: String, // Changed from user to name to match frontend
-        text: String,
-        timestamp: { type: Date, default: Date.now } // Changed from date to timestamp
+    images: [{
+        url: { type: String, required: true },
+        caption: {
+            ar: { type: String },
+            en: { type: String }
+        },
+        alignment: { type: String, enum: ['full', 'left', 'right'], default: 'full' },
+        position: { type: Number, default: 50, min: 0, max: 100 }
     }],
-    timestamp: { type: Date, default: Date.now } // Changed from createdAt
+    slug: { type: String, unique: true, sparse: true },
+    timestamp: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Article', articleSchema);

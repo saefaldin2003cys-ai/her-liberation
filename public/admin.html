@@ -545,7 +545,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -579,7 +581,7 @@
             </header>
 
             <!-- Stats -->
-            <div class="stats">
+            <div class="stats" style="grid-template-columns: repeat(2, 1fr);">
                 <div class="stat-card">
                     <div class="stat-number" id="articlesCount">0</div>
                     <div class="stat-label">مقالات</div>
@@ -587,10 +589,6 @@
                 <div class="stat-card">
                     <div class="stat-number" id="viewsCount">0</div>
                     <div class="stat-label">زيارات</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="likesCount">0</div>
-                    <div class="stat-label">إعجابات</div>
                 </div>
             </div>
 
@@ -613,6 +611,17 @@
                         </div>
                     </div>
 
+                    <!-- Slug Field -->
+                    <div class="form-group">
+                        <label for="articleSlug">الرابط الثابت (Slug) - اختياري</label>
+                        <p class="field-hint"
+                            style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem;">مثال:
+                            <code>child-marriage-iraq</code>. سيظهر كـ: her-liberation.org/article/child-marriage-iraq
+                        </p>
+                        <input type="text" id="articleSlug" class="input-field"
+                            placeholder="atleast-3-words-with-dashes" dir="ltr">
+                    </div>
+
                     <!-- Author Fields -->
                     <div class="row" style="display: flex; gap: 1rem;">
                         <div class="form-group" style="flex: 1;">
@@ -625,21 +634,55 @@
                         </div>
                     </div>
 
+                    <!-- Author Bio -->
+                    <div class="row" style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="authorBioAr">وصف الكاتب (بالعربية)</label>
+                            <textarea id="authorBioAr" class="input-field" dir="rtl"
+                                placeholder="نبذة عن الكاتب..."></textarea>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="authorBioEn">Author Bio (English)</label>
+                            <textarea id="authorBioEn" class="input-field" dir="ltr"
+                                placeholder="Short bio..."></textarea>
+                        </div>
+                    </div>
+
                     <!-- Content Fields -->
                     <div class="form-group">
                         <label for="contentAr">محتوى المقال (بالعربية) *</label>
+                        <p class="field-hint"
+                            style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                            💡 يمكنك وضع الصور داخل النص باستخدام: <code>[COVER]</code> للصورة الرئيسية، أو
+                            <code>[IMAGE_1]</code>، <code>[IMAGE_2]</code> للصور الإضافية.
+                        </p>
                         <textarea id="contentAr" class="input-field textarea-field" dir="rtl" required></textarea>
                     </div>
                     <div class="form-group">
                         <label for="contentEn">Article Content (English)</label>
                         <textarea id="contentEn" class="input-field textarea-field" dir="ltr"></textarea>
                     </div>
+
+                    <!-- Main Image (Original) -->
                     <div class="form-group">
-                        <label>صورة المقال (اختياري)</label>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label style="margin-bottom: 0;">صورة المقال الرئيسية</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    onclick="insertAtCursor('contentAr', '[COVER]')" title="إدراج في العربي">AR
+                                    ➕</button>
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    onclick="insertAtCursor('contentEn', '[COVER]')" title="Insert into English">EN
+                                    ➕</button>
+                            </div>
+                        </div>
                         <div class="image-upload-options">
                             <div class="upload-tabs">
-                                <button type="button" class="tab-btn active" onclick="switchImageTab('upload')">📤 رفع صورة</button>
-                                <button type="button" class="tab-btn" onclick="switchImageTab('url')">🔗 رابط صورة</button>
+                                <button type="button" class="tab-btn active" onclick="switchImageTab('upload')">📤 رفع
+                                    صورة</button>
+                                <button type="button" class="tab-btn" onclick="switchImageTab('url')">🔗 رابط
+                                    صورة</button>
                             </div>
                             <div id="uploadTab" class="tab-content active">
                                 <div class="file-upload-wrapper">
@@ -657,7 +700,8 @@
                                         <span class="position-label">موضع الصورة:</span>
                                         <div class="position-slider-wrapper">
                                             <span>⬆️</span>
-                                            <input type="range" id="positionSlider" class="position-slider" min="0" max="100" value="50" oninput="updateImagePosition(this.value)">
+                                            <input type="range" id="positionSlider" class="position-slider" min="0"
+                                                max="100" value="50" oninput="updateImagePosition(this.value)">
                                             <span>⬇️</span>
                                             <span id="positionValue" class="position-value">50%</span>
                                         </div>
@@ -670,6 +714,14 @@
                                 <input type="text" id="imageUrl" class="input-field" placeholder="https://...">
                             </div>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label>صور إضافية للمقال</label>
+                        <div id="additionalImagesContainer" class="additional-images-list">
+                            <!-- Dynamically added images -->
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm"
+                            onclick="addAdditionalImageField('additionalImagesContainer')">➕ إضافة صورة أخرى</button>
                     </div>
                     <button type="submit" class="btn btn-primary">نشر المقال</button>
                 </form>
@@ -685,6 +737,137 @@
         </div>
     </div>
 
+    <!-- Edit Article Modal -->
+    <div id="editModal" class="edit-modal" style="display: none;">
+        <div class="edit-modal-overlay" onclick="closeEditModal()"></div>
+        <div class="edit-modal-content card">
+            <h3 class="card-title">✏️ تعديل المقال</h3>
+            <form id="editArticleForm">
+                <input type="hidden" id="editArticleId">
+                <!-- Title Fields -->
+                <div class="row" style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="editTitleAr">عنوان المقال (بالعربية) *</label>
+                        <input type="text" id="editTitleAr" class="input-field" dir="rtl" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="editTitleEn">Article Title (English)</label>
+                        <input type="text" id="editTitleEn" class="input-field" dir="ltr">
+                    </div>
+                </div>
+                <!-- Edit Slug -->
+                <div class="form-group">
+                    <label for="editArticleSlug">الرابط الثابت (Slug)</label>
+                    <input type="text" id="editArticleSlug" class="input-field" dir="ltr">
+                </div>
+                <!-- Author Fields -->
+                <div class="row" style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="editAuthorAr">اسم الكاتب (بالعربية)</label>
+                        <input type="text" id="editAuthorAr" class="input-field" dir="rtl">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="editAuthorEn">Author Name (English)</label>
+                        <input type="text" id="editAuthorEn" class="input-field" dir="ltr">
+                    </div>
+                </div>
+                <!-- Author Bio -->
+                <div class="row" style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="editAuthorBioAr">وصف الكاتب (بالعربية)</label>
+                        <textarea id="editAuthorBioAr" class="input-field" dir="rtl"></textarea>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="editAuthorBioEn">Author Bio (English)</label>
+                        <textarea id="editAuthorBioEn" class="input-field" dir="ltr"></textarea>
+                    </div>
+                </div>
+                <!-- Content Fields -->
+                <div class="form-group">
+                    <label for="editContentAr">محتوى المقال (بالعربية) *</label>
+                    <p class="field-hint" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                        💡 استخدم <code>[COVER]</code> أو <code>[IMAGE_1]</code> لتحديد مكان ظهور الصور في النص.
+                    </p>
+                    <textarea id="editContentAr" class="input-field textarea-field" dir="rtl" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editContentEn">Article Content (English)</label>
+                    <textarea id="editContentEn" class="input-field textarea-field" dir="ltr"></textarea>
+                </div>
+                <!-- Image URL -->
+                <div class="form-group">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label style="margin-bottom: 0;">رابط الصورة الرئيسية</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" class="btn btn-secondary btn-sm"
+                                onclick="insertAtCursor('editContentAr', '[COVER]')" title="إدراج في العربي">AR
+                                ➕</button>
+                            <button type="button" class="btn btn-secondary btn-sm"
+                                onclick="insertAtCursor('editContentEn', '[COVER]')" title="Insert into English">EN
+                                ➕</button>
+                        </div>
+                    </div>
+                    <input type="text" id="editImageUrl" class="input-field" placeholder="https://...">
+                    <div id="editImagePreview" style="margin-top: 0.5rem;"></div>
+                </div>
+                <!-- Additional Images -->
+                <div class="form-group">
+                    <label>صور إضافية</label>
+                    <div id="editAdditionalImagesContainer" class="additional-images-list"></div>
+                    <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="addAdditionalImageField('editAdditionalImagesContainer')">➕ إضافة صورة أخرى</button>
+                </div>
+                <!-- Buttons -->
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                    <button type="button" class="btn" style="background: var(--text-muted);"
+                        onclick="closeEditModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .edit-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .edit-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .edit-modal-content {
+            position: relative;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
     <script>
         const API_URL = '/api';
         let authToken = null;
@@ -697,16 +880,16 @@
                 fetch(`${API_URL}/auth/verify`, {
                     headers: { 'Authorization': 'Bearer ' + savedToken }
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.valid) {
-                        authToken = savedToken;
-                        showDashboard();
-                    } else {
-                        sessionStorage.removeItem('adminToken');
-                    }
-                })
-                .catch(() => sessionStorage.removeItem('adminToken'));
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.valid) {
+                            authToken = savedToken;
+                            showDashboard();
+                        } else {
+                            sessionStorage.removeItem('adminToken');
+                        }
+                    })
+                    .catch(() => sessionStorage.removeItem('adminToken'));
             }
         });
 
@@ -716,7 +899,7 @@
             const password = document.getElementById('adminPassword').value;
             const loginError = document.getElementById('loginError');
             const submitBtn = e.target.querySelector('button[type="submit"]');
-            
+
             submitBtn.disabled = true;
             submitBtn.textContent = 'جاري التحقق...';
             loginError.style.display = 'none';
@@ -726,26 +909,26 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password: password })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success && data.token) {
-                    authToken = data.token;
-                    sessionStorage.setItem('adminToken', authToken);
-                    showDashboard();
-                } else {
-                    loginError.textContent = data.error || 'رمز الدخول غير صحيح';
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.token) {
+                        authToken = data.token;
+                        sessionStorage.setItem('adminToken', authToken);
+                        showDashboard();
+                    } else {
+                        loginError.textContent = data.error || 'رمز الدخول غير صحيح';
+                        loginError.style.display = 'block';
+                        document.getElementById('adminPassword').value = '';
+                    }
+                })
+                .catch(() => {
+                    loginError.textContent = 'خطأ في الاتصال بالخادم';
                     loginError.style.display = 'block';
-                    document.getElementById('adminPassword').value = '';
-                }
-            })
-            .catch(() => {
-                loginError.textContent = 'خطأ في الاتصال بالخادم';
-                loginError.style.display = 'block';
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'دخول';
-            });
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'دخول';
+                });
         });
 
         // Show dashboard
@@ -761,8 +944,8 @@
             fetch(`${API_URL}/auth/logout`, {
                 method: 'POST',
                 headers: { 'Authorization': 'Bearer ' + authToken }
-            }).catch(() => {});
-            
+            }).catch(() => { });
+
             authToken = null;
             sessionStorage.removeItem('adminToken');
             document.getElementById('loginScreen').style.display = 'flex';
@@ -777,7 +960,6 @@
                 .then(res => res.json())
                 .then(data => {
                     document.getElementById('viewsCount').textContent = data.views || 0;
-                    document.getElementById('likesCount').textContent = data.likes || 0;
                 })
                 .catch(() => { });
         }
@@ -798,16 +980,17 @@
                     container.innerHTML = articles.map(article => `
                         <div class="article-item">
                             <div class="article-thumbnail">
-                                ${article.image ? 
-                                    `<img src="${escapeHtml(article.image)}" alt="غلاف" onerror="this.parentElement.innerHTML='<span class=no-image>🖼️</span>'">` : 
-                                    '<span class="no-image">🖼️</span>'
-                                }
+                                ${article.image ?
+                            `<img src="${escapeHtml(article.image)}" alt="غلاف" onerror="this.parentElement.innerHTML='<span class=no-image>🖼️</span>'">` :
+                            '<span class="no-image">🖼️</span>'
+                        }
                             </div>
                             <div class="article-info">
                                 <h4>${escapeHtml(article.title.ar || article.title)}</h4>
-                                <p>✍️ ${escapeHtml(article.author.ar || article.author)} • ❤️ ${article.likes || 0} إعجاب • 💬 ${(article.comments || []).length} تعليق</p>
+                                <p>✍️ ${escapeHtml(article.author.ar || article.author)}</p>
                             </div>
                             <div class="article-actions">
+                                <button class="btn btn-primary btn-sm" onclick="editArticle('${article._id}')">✏️ تعديل</button>
                                 <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article._id}')">🗑️ حذف</button>
                             </div>
                         </div>
@@ -826,14 +1009,34 @@
             const titleEn = document.getElementById('titleEn').value.trim();
             const authorAr = document.getElementById('authorAr').value.trim();
             const authorEn = document.getElementById('authorEn').value.trim();
+            const authorBioAr = document.getElementById('authorBioAr').value.trim();
+            const authorBioEn = document.getElementById('authorBioEn').value.trim();
             const contentAr = document.getElementById('contentAr').value.trim();
             const contentEn = document.getElementById('contentEn').value.trim();
-            
+            const slug = document.getElementById('articleSlug').value.trim();
+
+            // Get images
+            const images = [];
+            document.querySelectorAll('#additionalImagesContainer .additional-image-item').forEach(item => {
+                const url = item.querySelector('.img-url').value.trim();
+                const captionAr = item.querySelector('.img-caption-ar').value.trim();
+                const captionEn = item.querySelector('.img-caption-en').value.trim();
+                const alignment = item.querySelector('.img-alignment').value;
+                if (url) {
+                    images.push({
+                        url: url,
+                        caption: { ar: captionAr, en: captionEn || captionAr },
+                        alignment: alignment,
+                        position: 50
+                    });
+                }
+            });
+
             // Get image from upload or URL
             let image = '';
             const imageFile = document.getElementById('imageFile').files[0];
             const imageUrl = document.getElementById('imageUrl').value.trim();
-            
+
             if (imageFile) {
                 // Upload image first
                 showMessage('جاري رفع الصورة...', 'success');
@@ -846,7 +1049,7 @@
             } else if (imageUrl) {
                 image = imageUrl;
             }
-            
+
             // Get image position
             const imagePosition = document.getElementById('imagePosition').value || 'center';
 
@@ -857,11 +1060,18 @@
 
             fetch(`${API_URL}/articles`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + authToken
                 },
-                body: JSON.stringify({ titleAr, titleEn, authorAr, authorEn, contentAr, contentEn, image, imagePosition })
+                body: JSON.stringify({
+                    titleAr, titleEn, authorAr, authorEn,
+                    authorBioAr, authorBioEn,
+                    contentAr, contentEn,
+                    image, imagePosition,
+                    images: images,
+                    slug: slug
+                })
             })
                 .then(res => {
                     if (res.status === 401 || res.status === 403) {
@@ -889,7 +1099,7 @@
         async function uploadImage(file) {
             const formData = new FormData();
             formData.append('image', file);
-            
+
             const response = await fetch(`${API_URL}/upload`, {
                 method: 'POST',
                 headers: {
@@ -897,17 +1107,17 @@
                 },
                 body: formData
             });
-            
+
             if (response.status === 401 || response.status === 403) {
                 logout();
                 throw new Error('انتهت الجلسة');
             }
-            
+
             const data = await response.json();
             if (data.error) {
                 throw new Error(data.error);
             }
-            
+
             return data.url;
         }
 
@@ -915,7 +1125,7 @@
         function switchImageTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
+
             if (tab === 'upload') {
                 document.querySelector('.tab-btn:first-child').classList.add('active');
                 document.getElementById('uploadTab').classList.add('active');
@@ -929,23 +1139,23 @@
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-                
+
                 // Validate file size (max 5MB)
                 if (file.size > 5 * 1024 * 1024) {
                     showMessage('حجم الصورة كبير جداً (الحد الأقصى 5MB)', 'error');
                     input.value = '';
                     return;
                 }
-                
+
                 // Validate file type
                 if (!file.type.startsWith('image/')) {
                     showMessage('يرجى اختيار ملف صورة صالح', 'error');
                     input.value = '';
                     return;
                 }
-                
+
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const previewImg = document.getElementById('previewImg');
                     previewImg.src = e.target.result;
                     previewImg.style.objectPosition = 'center 50%';
@@ -981,7 +1191,7 @@
         function deleteArticle(id) {
             if (!confirm('هل أنت متأكد من حذف هذا المقال؟')) return;
 
-            fetch(`${API_URL}/articles/${id}`, { 
+            fetch(`${API_URL}/articles/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + authToken }
             })
@@ -1003,6 +1213,233 @@
                 .catch((err) => {
                     showMessage(err.message || 'حدث خطأ أثناء الحذف', 'error');
                 });
+        }
+
+        // Store articles data for editing
+        let articlesData = [];
+
+        // Override loadArticles to store data
+        const originalLoadArticles = loadArticles;
+        loadArticles = function () {
+            fetch(`${API_URL}/articles`)
+                .then(res => res.json())
+                .then(articles => {
+                    articlesData = articles; // Store for editing
+                    document.getElementById('articlesCount').textContent = articles.length;
+                    const container = document.getElementById('articlesList');
+
+                    if (articles.length === 0) {
+                        container.innerHTML = '<div class="empty-state">لا توجد مقالات بعد</div>';
+                        return;
+                    }
+
+                    container.innerHTML = articles.map(article => `
+                        <div class="article-item">
+                            <div class="article-thumbnail">
+                                ${article.image ?
+                            `<img src="${escapeHtml(article.image)}" alt="غلاف" onerror="this.parentElement.innerHTML='<span class=no-image>🖼️</span>'">` :
+                            '<span class="no-image">🖼️</span>'
+                        }
+                            </div>
+                            <div class="article-info">
+                                <h4>${escapeHtml(article.title.ar || article.title)}</h4>
+                                <p>✍️ ${escapeHtml(article.author.ar || article.author)}</p>
+                            </div>
+                            <div class="article-actions">
+                                <button class="btn btn-primary btn-sm" onclick="editArticle('${article._id}')">✏️ تعديل</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article._id}')">🗑️ حذف</button>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(() => {
+                    document.getElementById('articlesList').innerHTML = '<div class="empty-state">خطأ في تحميل المقالات</div>';
+                });
+        };
+
+        // Edit article - open modal with data
+        function editArticle(id) {
+            const article = articlesData.find(a => a._id === id);
+            if (!article) {
+                showMessage('لم يتم العثور على المقال', 'error');
+                return;
+            }
+
+            // Fill form with article data
+            document.getElementById('editArticleId').value = id;
+            document.getElementById('editTitleAr').value = article.title.ar || article.title || '';
+            document.getElementById('editTitleEn').value = article.title.en || '';
+            document.getElementById('editAuthorAr').value = article.author.ar || article.author || '';
+            document.getElementById('editAuthorEn').value = article.author.en || '';
+            document.getElementById('editAuthorBioAr').value = (article.authorBio && article.authorBio.ar) || '';
+            document.getElementById('editAuthorBioEn').value = (article.authorBio && article.authorBio.en) || '';
+            document.getElementById('editContentAr').value = article.content.ar || article.content || '';
+            document.getElementById('editContentEn').value = article.content.en || '';
+            document.getElementById('editArticleSlug').value = article.slug || '';
+            document.getElementById('editImageUrl').value = article.image || '';
+
+            // Populate additional images
+            const imagesContainer = document.getElementById('editAdditionalImagesContainer');
+            imagesContainer.innerHTML = '';
+            if (article.images && article.images.length > 0) {
+                article.images.forEach(img => {
+                    addAdditionalImageField('editAdditionalImagesContainer', img);
+                });
+            }
+
+            // Show image preview if exists
+            const preview = document.getElementById('editImagePreview');
+            if (article.image) {
+                preview.innerHTML = `<img src="${escapeHtml(article.image)}" style="max-width: 200px; border-radius: 8px;">`;
+            } else {
+                preview.innerHTML = '';
+            }
+
+            // Show modal
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editArticleForm').reset();
+            document.getElementById('editImagePreview').innerHTML = '';
+        }
+
+        // Handle edit form submission
+        document.getElementById('editArticleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById('editArticleId').value;
+            const titleAr = document.getElementById('editTitleAr').value.trim();
+            const titleEn = document.getElementById('editTitleEn').value.trim();
+            const authorAr = document.getElementById('editAuthorAr').value.trim();
+            const authorEn = document.getElementById('editAuthorEn').value.trim();
+            const authorBioAr = document.getElementById('editAuthorBioAr').value.trim();
+            const authorBioEn = document.getElementById('editAuthorBioEn').value.trim();
+            const contentAr = document.getElementById('editContentAr').value.trim();
+            const contentEn = document.getElementById('editContentEn').value.trim();
+            const slug = document.getElementById('editArticleSlug').value.trim();
+            const image = document.getElementById('editImageUrl').value.trim();
+
+            // Get images
+            const images = [];
+            document.querySelectorAll('#editAdditionalImagesContainer .additional-image-item').forEach(item => {
+                const url = item.querySelector('.img-url').value.trim();
+                const captionAr = item.querySelector('.img-caption-ar').value.trim();
+                const captionEn = item.querySelector('.img-caption-en').value.trim();
+                const alignment = item.querySelector('.img-alignment').value;
+                if (url) {
+                    images.push({
+                        url: url,
+                        caption: { ar: captionAr, en: captionEn || captionAr },
+                        alignment: alignment,
+                        position: 50
+                    });
+                }
+            });
+
+            if (!titleAr || !contentAr) {
+                showMessage('يرجى ملء الحقول المطلوبة', 'error');
+                return;
+            }
+
+            fetch(`${API_URL}/articles/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + authToken
+                },
+                body: JSON.stringify({
+                    titleAr, titleEn, authorAr, authorEn,
+                    authorBioAr, authorBioEn,
+                    contentAr, contentEn,
+                    image,
+                    images: images,
+                    slug: slug
+                })
+            })
+                .then(res => {
+                    if (res.status === 401 || res.status === 403) {
+                        logout();
+                        throw new Error('انتهت الجلسة');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        showMessage(data.error, 'error');
+                    } else {
+                        showMessage('تم تحديث المقال بنجاح! ✅', 'success');
+                        closeEditModal();
+                        loadArticles();
+                    }
+                })
+                .catch((err) => {
+                    showMessage(err.message || 'حدث خطأ أثناء التحديث', 'error');
+                });
+        });
+
+        // Preview image on URL change
+        document.getElementById('editImageUrl').addEventListener('input', function () {
+            const url = this.value.trim();
+            const preview = document.getElementById('editImagePreview');
+            if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image/'))) {
+                preview.innerHTML = `<img src="${escapeHtml(url)}" style="max-width: 200px; border-radius: 8px;" onerror="this.parentElement.innerHTML='<span style=color:red>صورة غير صالحة</span>'">`;
+            } else {
+                preview.innerHTML = '';
+            }
+        });
+
+        function addAdditionalImageField(containerId, data = null) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'additional-image-item card';
+            div.style.padding = '0.75rem';
+            div.style.marginBottom = '1rem';
+            div.style.border = '1px solid var(--border-color)';
+            div.style.background = 'var(--bg-secondary)';
+
+            const count = container.querySelectorAll('.additional-image-item').length + 1;
+            const targetAr = containerId === 'additionalImagesContainer' ? 'contentAr' : 'editContentAr';
+            const targetEn = containerId === 'additionalImagesContainer' ? 'contentEn' : 'editContentEn';
+
+            div.innerHTML = `
+                <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="font-weight: bold; color: var(--accent-primary);">📸 صورة إضافية #${count}</span>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="insertAtCursor('${targetAr}', '[IMAGE_${count}]')" title="إدراج في العربي">AR ➕</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="insertAtCursor('${targetEn}', '[IMAGE_${count}]')" title="Insert into English">EN ➕</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.additional-image-item').remove()">✕</button>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                        <input type="text" class="input-field img-url" placeholder="رابط الصورة (URL)" value="${data ? escapeHtml(data.url) : ''}" style="flex: 1;">
+                        <select class="input-field img-alignment" style="width: auto; min-width: 100px;">
+                            <option value="full" ${data && data.alignment === 'full' ? 'selected' : ''}>عرض كامل</option>
+                            <option value="left" ${data && data.alignment === 'left' ? 'selected' : ''}>يسار (نص جانبي)</option>
+                            <option value="right" ${data && data.alignment === 'right' ? 'selected' : ''}>يمين (نص جانبي)</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" class="input-field img-caption-ar" placeholder="الوصف (عربي)" value="${data && data.caption ? escapeHtml(data.caption.ar || '') : ''}" style="flex: 1;">
+                        <input type="text" class="input-field img-caption-en" placeholder="Caption (English)" value="${data && data.caption ? escapeHtml(data.caption.en || '') : ''}" style="flex: 1;">
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function insertAtCursor(fieldId, text) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            const start = field.selectionStart;
+            const end = field.selectionEnd;
+            const val = field.value;
+            field.value = val.substring(0, start) + text + val.substring(end);
+            field.focus();
+            field.selectionStart = field.selectionEnd = start + text.length;
         }
 
         // Show message

@@ -390,7 +390,7 @@ app.use(function (req, res, next) {
     // Prevent mass assignment
     if (req.body && typeof req.body === 'object') {
         var allowedFields = ['name', 'text', 'titleAr', 'titleEn', 'contentAr', 'contentEn',
-            'authorAr', 'authorEn', 'image', 'imagePosition', 'password', 'captchaToken', 'captchaAnswer'];
+            'authorAr', 'authorEn', 'authorBioAr', 'authorBioEn', 'images', 'slug', 'image', 'imagePosition', 'password', 'captchaToken', 'captchaAnswer'];
         var keys = Object.keys(req.body);
         for (var j = 0; j < keys.length; j++) {
             if (allowedFields.indexOf(keys[j]) === -1 && keys[j].charAt(0) !== '_') {
@@ -636,32 +636,66 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
+// Serve index.html for article paths to enable client-side routing
+app.get('/article/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Database Connection & Seeding
 const DB_Data_Path = path.join(__dirname, 'database');
 
 async function connectDB() {
-    try {
-        const uri = process.env.MONGODB_URI;
-        if (!uri || uri.includes('<password>')) {
-            console.warn('⚠️ MONGODB_URI is likely invalid or default. Using In-Memory fallback or waiting for config.');
-            if (!uri) return; // Skip connection if no string
-        }
-
-        await mongoose.connect(uri);
-        console.log('✅ Connected to MongoDB');
-        await seedData();
-    } catch (err) {
-        console.error('');
-        console.error('❌ MongoDB Connection Failed!');
-        console.error(`   Error: ${err.message}`);
-        console.error('---------------------------------------------------');
-        console.error('⚠️  ACTION REQUIRED:');
-        console.error('   1. Open the .env file in your project folder.');
-        console.error('   2. Replace MONGODB_URI with your REAL connection string.');
-        console.error('   3. Restart the server.');
-        console.error('---------------------------------------------------');
-        console.error('');
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+        console.error('❌ MONGODB_URI is missing in .env file!');
+        return;
     }
+
+    const options = {
+        serverSelectionTimeoutMS: 5000, // Timeout after 5s (faster retry)
+        socketTimeoutMS: 30000, // Close sockets after 30s of inactivity
+    };
+
+    let retryCount = 0;
+    const maxRetries = 5;
+
+    async function attemptConnection() {
+        try {
+            console.log(`🔌 Attempting MongoDB connection (Attempt ${retryCount + 1}/${maxRetries})...`);
+            await mongoose.connect(uri, options);
+            console.log('✅ Connected to MongoDB successfully');
+            await seedData();
+        } catch (err) {
+            console.error(`❌ MongoDB Connection Attempt ${retryCount + 1} Failed: ${err.message}`);
+
+            if (err.message.includes('ENOTFOUND')) {
+                console.warn('⚠️ DNS Resolution issue detected. This might be a temporary network glitch.');
+            }
+
+            if (retryCount < maxRetries - 1) {
+                retryCount++;
+                const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
+                console.log(`⏳ Retrying in ${delay / 1000} seconds...`);
+                setTimeout(attemptConnection, delay);
+            } else {
+                console.error('---------------------------------------------------');
+                console.error('⚠️  CRITICAL: All MongoDB connection attempts failed.');
+                console.error('   Please check your internet connection or IP whitelist in MongoDB Atlas.');
+                console.error('---------------------------------------------------');
+            }
+        }
+    }
+
+    // Listen for connection events
+    mongoose.connection.on('disconnected', () => {
+        console.warn('📡 MongoDB disconnected! Mongoose will attempt to reconnect automatically.');
+    });
+
+    mongoose.connection.on('error', (err) => {
+        console.error('🚨 MongoDB Connection Error:', err.message);
+    });
+
+    await attemptConnection();
 }
 
 async function seedData() {
@@ -959,10 +993,14 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
         var titleEn = req.body.titleEn;
         var authorAr = req.body.authorAr;
         var authorEn = req.body.authorEn;
+        var authorBioAr = req.body.authorBioAr;
+        var authorBioEn = req.body.authorBioEn;
         var contentAr = req.body.contentAr;
         var contentEn = req.body.contentEn;
         var image = req.body.image;
+        var slug = req.body.slug;
         var imagePosition = parseInt(req.body.imagePosition) || 50;
+        var images = req.body.images || []; // Array of {url, caption: {ar, en}, alignment, position}
 
         // Validate imagePosition (0-100)
         if (isNaN(imagePosition) || imagePosition < 0 || imagePosition > 100) {
@@ -993,19 +1031,105 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
                 ar: authorAr || 'مجهول',
                 en: authorEn || authorAr || 'Anonymous'
             },
+            authorBio: {
+                ar: authorBioAr || '',
+                en: authorBioEn || authorBioAr || ''
+            },
             content: {
                 ar: contentAr,
                 en: contentEn || contentAr
             },
             image: image || '',
             imagePosition: imagePosition,
-            likes: 0,
-            comments: []
+            images: images,
+            slug: slug || undefined // Schema will handle uniqueness if provided
         });
         await newArticle.save();
         res.json(newArticle);
     } catch (error) {
         console.error('Article POST error:', error.message);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+// Update article (admin only)
+app.put('/api/articles/:id', requireAdmin, async (req, res) => {
+    try {
+        // Validate MongoDB ObjectId format
+        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ error: 'Invalid article ID' });
+        }
+
+        var titleAr = req.body.titleAr;
+        var titleEn = req.body.titleEn;
+        var authorAr = req.body.authorAr;
+        var authorEn = req.body.authorEn;
+        var authorBioAr = req.body.authorBioAr;
+        var authorBioEn = req.body.authorBioEn;
+        var contentAr = req.body.contentAr;
+        var contentEn = req.body.contentEn;
+        var image = req.body.image;
+        var slug = req.body.slug;
+        var imagePosition = req.body.imagePosition;
+        var images = req.body.images;
+
+        // Validate required fields
+        if (!titleAr || !contentAr) {
+            return res.status(400).json({ error: 'Missing required fields (titleAr, contentAr)' });
+        }
+
+        // Title length validation
+        if (titleAr.length > 200 || (titleEn && titleEn.length > 200)) {
+            return res.status(400).json({ error: 'Title too long (max 200 characters)' });
+        }
+
+        // Validate image if provided
+        if (image && image.length > 0) {
+            if (!image.startsWith('http://') && !image.startsWith('https://') && !image.startsWith('data:image/')) {
+                return res.status(400).json({ error: 'Invalid image URL' });
+            }
+        }
+
+        var article = await Article.findById(req.params.id);
+        if (!article) {
+            return res.status(404).json({ error: 'Article not found' });
+        }
+
+        // Update fields
+        article.title = {
+            ar: titleAr,
+            en: titleEn || titleAr
+        };
+        article.author = {
+            ar: authorAr || 'مجهول',
+            en: authorEn || authorAr || 'Anonymous'
+        };
+        article.authorBio = {
+            ar: authorBioAr || '',
+            en: authorBioEn || authorBioAr || ''
+        };
+        article.content = {
+            ar: contentAr,
+            en: contentEn || contentAr
+        };
+        if (image !== undefined) {
+            article.image = image || '';
+        }
+        if (imagePosition !== undefined) {
+            article.imagePosition = imagePosition;
+        }
+        if (images !== undefined) {
+            article.images = images;
+        }
+        if (slug !== undefined) {
+            article.slug = slug || undefined;
+        }
+
+        await article.save();
+        console.log('✅ Article updated by admin:', req.params.id);
+        res.json(article);
+    } catch (error) {
+        console.error('Article PUT error:', error.message);
         res.status(500).json({ error: 'Server Error' });
     }
 });
@@ -1030,65 +1154,151 @@ app.delete('/api/articles/:id', requireAdmin, async (req, res) => {
     }
 });
 
-// Article Likes
-app.post('/api/articles/:id/like', postLimiter, async (req, res) => {
+// --- Related Articles ---
+app.get('/api/articles/related/:id', async (req, res) => {
     try {
-        // Validate MongoDB ObjectId format
-        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).json({ error: 'Invalid article ID' });
-        }
-
-        var article = await Article.findById(req.params.id);
-        if (article) {
-            article.likes += 1;
-            await article.save();
-            res.json({ likes: article.likes });
-        } else {
-            res.status(404).json({ error: 'Article not found' });
-        }
+        // Fetch 3 recent articles except the current one
+        var articles = await Article.find({ _id: { $ne: req.params.id } })
+            .sort({ timestamp: -1 })
+            .limit(3);
+        res.json(articles);
     } catch (error) {
-        console.error('Article like error:', error.message);
+        console.error('Related Articles GET error:', error.message);
         res.status(500).json({ error: 'Server Error' });
     }
 });
 
-// Article Comments
-app.post('/api/articles/:id/comments', postLimiter, async (req, res) => {
+// Get single article by slug or ID
+app.get('/api/articles/detail/:idOrSlug', async (req, res) => {
     try {
-        // Validate MongoDB ObjectId format
-        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).json({ error: 'Invalid article ID' });
-        }
-
-        var name = req.body.name;
-        var text = req.body.text;
-
-        // Validate input
-        if (!text || typeof text !== 'string') {
-            return res.status(400).json({ error: 'Comment text is required' });
-        }
-
-        if (text.length > 500 || (name && name.length > 50)) {
-            return res.status(400).json({ error: 'Input too long' });
-        }
-
-        var article = await Article.findById(req.params.id);
-        if (article) {
-            var newComment = {
-                name: name || 'زائر',
-                text: text,
-                timestamp: Date.now()
-            };
-            article.comments.push(newComment);
-            await article.save();
-            res.json(newComment);
+        var query = {};
+        if (req.params.idOrSlug.match(/^[0-9a-fA-F]{24}$/)) {
+            query = { _id: req.params.idOrSlug };
         } else {
-            res.status(404).json({ error: 'Article not found' });
+            query = { slug: req.params.idOrSlug };
         }
+
+        var article = await Article.findOne(query);
+        if (!article) return res.status(404).json({ error: 'Article not found' });
+        res.json(article);
     } catch (error) {
-        console.error('Article comment error:', error.message);
         res.status(500).json({ error: 'Server Error' });
     }
+});
+
+// ==========================================
+// Poll API
+// ==========================================
+
+// Get poll results
+app.get('/api/poll', async (req, res) => {
+    try {
+        // Find or create the poll
+        var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
+        if (!poll) {
+            poll = new Poll({
+                question: 'minimum_marriage_age',
+                votes: { agree18: 0, disagree: 0 },
+                voters: []
+            });
+            await poll.save();
+        }
+
+        var total = poll.votes.agree18 + poll.votes.disagree;
+        res.json({
+            agree18: poll.votes.agree18,
+            disagree: poll.votes.disagree,
+            total: total
+        });
+    } catch (error) {
+        console.error('Poll GET error:', error.message);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+// Submit a vote
+app.post('/api/poll/vote', postLimiter, async (req, res) => {
+    try {
+        var choice = req.body.choice;
+
+        // Validate choice
+        if (!choice || (choice !== 'agree18' && choice !== 'disagree')) {
+            return res.status(400).json({ error: 'Invalid choice' });
+        }
+
+        // Get voter IP
+        var voterIP = req.ip || req.connection.remoteAddress || 'unknown';
+
+        // Find or create the poll
+        var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
+        if (!poll) {
+            poll = new Poll({
+                question: 'minimum_marriage_age',
+                votes: { agree18: 0, disagree: 0 },
+                voters: []
+            });
+        }
+
+        // Check if already voted (by IP)
+        if (poll.voters.includes(voterIP)) {
+            // Return current results without adding vote
+            var total = poll.votes.agree18 + poll.votes.disagree;
+            return res.json({
+                agree18: poll.votes.agree18,
+                disagree: poll.votes.disagree,
+                total: total,
+                alreadyVoted: true
+            });
+        }
+
+        // Add vote
+        if (choice === 'agree18') {
+            poll.votes.agree18 += 1;
+        } else {
+            poll.votes.disagree += 1;
+        }
+
+        // Record voter IP
+        poll.voters.push(voterIP);
+        await poll.save();
+
+        var total = poll.votes.agree18 + poll.votes.disagree;
+        console.log('✅ New poll vote:', choice, 'Total:', total);
+
+        res.json({
+            agree18: poll.votes.agree18,
+            disagree: poll.votes.disagree,
+            total: total
+        });
+    } catch (error) {
+        console.error('Poll vote error:', error.message);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+// Reset poll (admin only)
+app.delete('/api/poll/reset', requireAdmin, async (req, res) => {
+    try {
+        var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
+        if (poll) {
+            poll.votes.agree18 = 0;
+            poll.votes.disagree = 0;
+            poll.voters = [];
+            await poll.save();
+            console.log('✅ Poll reset by admin');
+            res.json({ success: true, message: 'Poll reset successfully' });
+        } else {
+            res.status(404).json({ error: 'Poll not found' });
+        }
+    } catch (error) {
+        console.error('Poll reset error:', error.message);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+// Serve index.html for article paths to support client-side routing
+app.get('/article/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ==========================================
