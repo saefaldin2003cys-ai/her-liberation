@@ -593,8 +593,14 @@
         </div>
     </section>
 
-    <!-- Details Modal (Keep for small alerts if needed, or remove) -->
-    <!-- Removed for true independent pages -->
+    <!-- Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-content glass-card">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
 
     <!-- Scripts - Load in correct order for all browsers -->
     <!-- i18n System (must load before main script) -->

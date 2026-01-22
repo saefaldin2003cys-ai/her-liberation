@@ -4899,7 +4899,7 @@ textarea:focus-visible {
 
 .suggested-grid .article-content-wrapper {
     padding: var(--space-lg);
-    text-align: right;
+    text-align: start;
 }
 
 .suggested-grid .article-card-title {
@@ -4927,7 +4927,7 @@ textarea:focus-visible {
 .inline-article-image.align-left {
     float: left;
     width: 40%;
-    margin-right: var(--space-xl);
+    margin-inline-end: var(--space-xl);
     margin-bottom: var(--space-md);
     clear: none;
 }
@@ -4935,7 +4935,7 @@ textarea:focus-visible {
 .inline-article-image.align-right {
     float: right;
     width: 40%;
-    margin-left: var(--space-xl);
+    margin-inline-start: var(--space-xl);
     margin-bottom: var(--space-md);
     clear: none;
 }
