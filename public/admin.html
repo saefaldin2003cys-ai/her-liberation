@@ -622,6 +622,24 @@
                             placeholder="atleast-3-words-with-dashes" dir="ltr">
                     </div>
 
+                    <div class="form-group">
+                        <label>حجم خط العنوان (Title Font Size)</label>
+                        <div
+                            style="display: flex; align-items: center; gap: 1rem; background: var(--bg-secondary); padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                            <span>A-</span>
+                            <input type="range" id="titleFontSize" min="1.5" max="6" step="0.1" value="3.5"
+                                style="flex: 1; accent-color: var(--accent-primary);">
+                            <span>A+</span>
+                            <span id="titleFontSizeVal"
+                                style="font-weight: bold; color: var(--accent-primary); min-width: 50px; text-align: center;">3.5rem</span>
+                        </div>
+                        <script>
+                            document.getElementById('titleFontSize').oninput = function () {
+                                document.getElementById('titleFontSizeVal').textContent = this.value + 'rem';
+                            };
+                        </script>
+                    </div>
+
                     <!-- Author Fields -->
                     <div class="row" style="display: flex; gap: 1rem;">
                         <div class="form-group" style="flex: 1;">
@@ -659,8 +677,40 @@
                         <textarea id="contentAr" class="input-field textarea-field" dir="rtl" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="contentEn">Article Content (English)</label>
                         <textarea id="contentEn" class="input-field textarea-field" dir="ltr"></textarea>
+                    </div>
+
+                    <!-- Simple Formatting Toolbar for English -->
+                    <div class="formatting-toolbar"
+                        style="margin-bottom: 2rem; display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                        <button type="button" class="toolbar-btn" onclick="formatText('contentEn', 'bold')" title="Bold"
+                            style="font-weight: bold; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">B</button>
+                        <button type="button" class="toolbar-btn" onclick="formatText('contentEn', 'italic')"
+                            title="Italic"
+                            style="font-style: italic; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">I</button>
+                        <button type="button" class="toolbar-btn" onclick="formatText('contentEn', 'underline')"
+                            title="Underline"
+                            style="text-decoration: underline; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">U</button>
+                        <span style="border-left: 1px solid var(--border-color); margin: 0 0.5rem;"></span>
+                        <span style="color: var(--text-muted); font-size: 0.8rem; align-self: center;">Format English
+                            Content</span>
+                    </div>
+
+                    <!-- Simple Formatting Toolbar -->
+                    <div class="formatting-toolbar"
+                        style="margin-bottom: 1rem; display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                        <button type="button" class="toolbar-btn" onclick="formatText('contentAr', 'bold')"
+                            title="خط غامق"
+                            style="font-weight: bold; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">B</button>
+                        <button type="button" class="toolbar-btn" onclick="formatText('contentAr', 'italic')"
+                            title="خط مائل"
+                            style="font-style: italic; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">I</button>
+                        <button type="button" class="toolbar-btn" onclick="formatText('contentAr', 'underline')"
+                            title="خط أسفله خط"
+                            style="text-decoration: underline; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">U</button>
+                        <span style="border-left: 1px solid var(--border-color); margin: 0 0.5rem;"></span>
+                        <span style="color: var(--text-muted); font-size: 0.8rem; align-self: center;">تنسيق المحتوى
+                            العربي</span>
                     </div>
 
                     <!-- Main Image (Original) -->
@@ -760,6 +810,24 @@
                     <label for="editArticleSlug">الرابط الثابت (Slug)</label>
                     <input type="text" id="editArticleSlug" class="input-field" dir="ltr">
                 </div>
+                <!-- Edit Title Font Size -->
+                <div class="form-group">
+                    <label>حجم خط العنوان (Title Font Size)</label>
+                    <div
+                        style="display: flex; align-items: center; gap: 1rem; background: var(--bg-secondary); padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                        <span>A-</span>
+                        <input type="range" id="editTitleFontSize" min="1.5" max="6" step="0.1" value="3.5"
+                            style="flex: 1; accent-color: var(--accent-primary);">
+                        <span>A+</span>
+                        <span id="editTitleFontSizeVal"
+                            style="font-weight: bold; color: var(--accent-primary); min-width: 50px; text-align: center;">3.5rem</span>
+                    </div>
+                    <script>
+                        document.getElementById('editTitleFontSize').oninput = function () {
+                            document.getElementById('editTitleFontSizeVal').textContent = this.value + 'rem';
+                        };
+                    </script>
+                </div>
                 <!-- Author Fields -->
                 <div class="row" style="display: flex; gap: 1rem;">
                     <div class="form-group" style="flex: 1;">
@@ -791,8 +859,40 @@
                     <textarea id="editContentAr" class="input-field textarea-field" dir="rtl" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="editContentEn">Article Content (English)</label>
                     <textarea id="editContentEn" class="input-field textarea-field" dir="ltr"></textarea>
+                </div>
+
+                <!-- Simple Formatting Toolbar for English (Edit) -->
+                <div class="formatting-toolbar"
+                    style="margin-bottom: 2rem; display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                    <button type="button" class="toolbar-btn" onclick="formatText('editContentEn', 'bold')" title="Bold"
+                        style="font-weight: bold; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">B</button>
+                    <button type="button" class="toolbar-btn" onclick="formatText('editContentEn', 'italic')"
+                        title="Italic"
+                        style="font-style: italic; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">I</button>
+                    <button type="button" class="toolbar-btn" onclick="formatText('editContentEn', 'underline')"
+                        title="Underline"
+                        style="text-decoration: underline; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">U</button>
+                    <span style="border-left: 1px solid var(--border-color); margin: 0 0.5rem;"></span>
+                    <span style="color: var(--text-muted); font-size: 0.8rem; align-self: center;">Format English
+                        Content</span>
+                </div>
+
+                <!-- Simple Formatting Toolbar for Edit -->
+                <div class="formatting-toolbar"
+                    style="margin-bottom: 1rem; display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                    <button type="button" class="toolbar-btn" onclick="formatText('editContentAr', 'bold')"
+                        title="خط غامق"
+                        style="font-weight: bold; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">B</button>
+                    <button type="button" class="toolbar-btn" onclick="formatText('editContentAr', 'italic')"
+                        title="خط مائل"
+                        style="font-style: italic; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">I</button>
+                    <button type="button" class="toolbar-btn" onclick="formatText('editContentAr', 'underline')"
+                        title="خط أسفله خط"
+                        style="text-decoration: underline; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">U</button>
+                    <span style="border-left: 1px solid var(--border-color); margin: 0 0.5rem;"></span>
+                    <span style="color: var(--text-muted); font-size: 0.8rem; align-self: center;">تنسيق المحتوى
+                        العربي</span>
                 </div>
                 <!-- Image URL -->
                 <div class="form-group">
@@ -1070,7 +1170,8 @@
                     contentAr, contentEn,
                     image, imagePosition,
                     images: images,
-                    slug: slug
+                    slug: slug,
+                    titleFontSize: parseFloat(document.getElementById('titleFontSize').value)
                 })
             })
                 .then(res => {
@@ -1278,6 +1379,11 @@
             document.getElementById('editArticleSlug').value = article.slug || '';
             document.getElementById('editImageUrl').value = article.image || '';
 
+            // Set Font Size
+            const fontSize = article.titleFontSize || 3.5;
+            document.getElementById('editTitleFontSize').value = fontSize;
+            document.getElementById('editTitleFontSizeVal').textContent = fontSize + 'rem';
+
             // Populate additional images
             const imagesContainer = document.getElementById('editAdditionalImagesContainer');
             imagesContainer.innerHTML = '';
@@ -1356,7 +1462,8 @@
                     contentAr, contentEn,
                     image,
                     images: images,
-                    slug: slug
+                    slug: slug,
+                    titleFontSize: parseFloat(document.getElementById('editTitleFontSize').value)
                 })
             })
                 .then(res => {
@@ -1440,6 +1547,29 @@
             field.value = val.substring(0, start) + text + val.substring(end);
             field.focus();
             field.selectionStart = field.selectionEnd = start + text.length;
+        }
+
+        function formatText(fieldId, type) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+
+            const start = field.selectionStart;
+            const end = field.selectionEnd;
+            const selectedText = field.value.substring(start, end);
+
+            let before = '';
+            let after = '';
+
+            if (type === 'bold') { before = '**'; after = '**'; }
+            if (type === 'italic') { before = '*'; after = '*'; }
+            if (type === 'underline') { before = '__'; after = '__'; }
+
+            const newText = before + selectedText + after;
+            field.value = field.value.substring(0, start) + newText + field.value.substring(end);
+
+            field.focus();
+            field.selectionStart = start + before.length;
+            field.selectionEnd = field.selectionStart + selectedText.length;
         }
 
         // Show message

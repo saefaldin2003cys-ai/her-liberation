@@ -307,9 +307,17 @@ function getTimeAgo(date) {
 }
 
 function escapeHTML(str) {
+    if (!str) return '';
     var div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+function decodeEntities(html) {
+    if (!html) return '';
+    var txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
 }
 
 // Convert URLs in text to clickable links
@@ -321,6 +329,16 @@ function linkifyText(text) {
         var decodedUrl = url.replace(/&amp;/g, '&').replace(/&#x2F;/g, '/');
         return '<a href="' + decodedUrl + '" target="_blank" rel="noopener noreferrer" class="article-link">' + url + '</a>';
     });
+}
+
+function stripMarkdown(text) {
+    if (!text) return '';
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '$1') // Bold
+        .replace(/\*(.*?)\*/g, '$1')   // Italic
+        .replace(/__(.*?)__/g, '$1')  // Underline
+        .replace(/\[IMAGE_\d+\]/g, '') // Image placeholders
+        .replace(/\[COVER\]/g, '');    // Cover placeholder
 }
 
 // ============================================
@@ -579,7 +597,13 @@ function getArticleContent(article) {
     var content = typeof article.content === 'object' ? (article.content[lang] || article.content.ar) : article.content;
     var authorBio = article.authorBio ? (article.authorBio[lang] || article.authorBio.ar) : '';
 
-    return { title: title, author: author, content: content, authorBio: authorBio };
+    // Normalize: decode any pre-escaped entities from DB to avoid double-escaping
+    return {
+        title: decodeEntities(title),
+        author: decodeEntities(author),
+        content: decodeEntities(content),
+        authorBio: decodeEntities(authorBio)
+    };
 }
 
 function renderArticleCard(article) {
@@ -595,7 +619,7 @@ function renderArticleCard(article) {
     var title = articleContent.title;
     var author = articleContent.author;
     var content = articleContent.content;
-    var excerpt = content.substring(0, 100) + '...';
+    var excerpt = stripMarkdown(content).substring(0, 100) + '...';
     var readMoreText = lang === 'en' ? 'Read More' : 'قراءة المزيد';
 
     var imagePosition = article.imagePosition !== undefined ? article.imagePosition : 50;
@@ -670,6 +694,13 @@ function openArticle(articleId, fromPopState) {
 
     // Process content with placeholders
     var processedContent = escapeHTML(content).replace(/\n/g, '<br>');
+
+    // Handle Bold Text: **text** -> <strong>text</strong>
+    processedContent = processedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Handle Italic Text: *text* -> <em>text</em>
+    processedContent = processedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // Handle Underline: __text__ -> <u>text</u>
+    processedContent = processedContent.replace(/__(.*?)__/g, '<u>$1</u>');
     var usedImages = new Set();
     var mainImagePlaced = false;
 
@@ -748,16 +779,18 @@ function openArticle(articleId, fromPopState) {
         '</div>' +
         '</div>';
 
+    var titleFontSize = article.titleFontSize || 3.5;
+
     articleViewContent.innerHTML = '<div class="premium-reader">' +
         breadcrumbHtml +
-        '<h1 class="article-page-title">' + escapeHTML(title) + '</h1>' +
+        '<h1 class="article-page-title" dir="auto" style="font-size: ' + titleFontSize + 'rem;">' + escapeHTML(title) + '</h1>' +
         '<div class="article-modal-meta">' +
         '<div class="author-meta-item">' +
         '<span class="meta-icon">✍️</span>' +
         '<div class="author-details">' +
         '<span class="author-name">' + (author ? escapeHTML(author) : (lang === 'en' ? 'HerLiberation' : 'تحريرها')) + '</span>' +
         '<span class="article-date-inline">' + formattedDate + '</span>' +
-        '</div>' +
+        (authorBio ? '<p class="author-bio-inline">' + escapeHTML(authorBio) + '</p>' : '') +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -765,7 +798,6 @@ function openArticle(articleId, fromPopState) {
         (!mainImagePlaced ? '<div class="main-modal-image-wrapper">' + imageHtml + '</div>' : '') +
         '<div class="article-modal-body">' + linkifyText(processedContent) + '</div>' +
         additionalImagesHtml +
-        authorBioHtml +
         shareSectionHtml +
         '<div class="article-modal-footer">' +
         deleteBtn +

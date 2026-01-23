@@ -31,6 +31,7 @@ const articleSchema = new mongoose.Schema({
         position: { type: Number, default: 50, min: 0, max: 100 }
     }],
     slug: { type: String, unique: true, sparse: true },
+    titleFontSize: { type: Number, default: 3.5 }, // Default size in rem or relative units
     timestamp: { type: Date, default: Date.now }
 });
 
