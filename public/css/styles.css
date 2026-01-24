@@ -2131,7 +2131,6 @@ html[dir] * {
     margin: 0 auto;
     padding: var(--space-2xl);
     position: relative;
-    border: 1px solid var(--border-color);
 }
 
 .article-header-controls {
