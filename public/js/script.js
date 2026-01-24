@@ -695,6 +695,11 @@ function openArticle(articleId, fromPopState) {
     if (!articlePage || !articleViewContent) return;
 
     var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+    
+    // Update page direction based on language
+    document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    document.documentElement.setAttribute('lang', lang);
+    
     var articleContent = getArticleContent(article);
     var title = articleContent.title;
     var author = articleContent.author;
