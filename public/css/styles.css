@@ -2235,21 +2235,23 @@ html[dir] * {
 
 .article-modal-title,
 .article-page-title {
-    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-size: clamp(1.75rem, 6vw, 2.8rem);
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.4;
     margin-bottom: var(--space-xl);
     text-align: center;
     color: var(--text-primary);
     background: none;
     -webkit-text-fill-color: initial;
-    max-width: 1000px;
+    max-width: 900px;
     margin-inline: auto;
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
     display: block;
     width: 100%;
+    padding: 0 var(--space-lg);
+    letter-spacing: -0.02em;
 }
 
 [dir="rtl"] .article-page-title {
@@ -4438,8 +4440,11 @@ textarea:focus-visible {
         border-radius: var(--radius-lg);
     }
 
-    .article-modal-title {
-        font-size: 1.4rem;
+    .article-modal-title,
+    .article-page-title {
+        font-size: 1.35rem;
+        line-height: 1.5;
+        padding: 0 var(--space-md);
     }
 
     .article-modal-meta {

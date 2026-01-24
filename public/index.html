@@ -165,6 +165,29 @@
 </head>
 
 <body>
+    <!-- Hide main content immediately if article link - runs before body renders -->
+    <script>
+        if (window.location.pathname.startsWith('/article/')) {
+            document.body.classList.add('article-mode');
+        }
+    </script>
+    <style>
+        body.article-mode #startScreen,
+        body.article-mode #ageSelectionScreen,
+        body.article-mode #detailsScreen,
+        body.article-mode .start-screen,
+        body.article-mode .age-selection-screen,
+        body.article-mode .details-screen {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+        body.article-mode #articlePage {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    </style>
     <!-- Theme Toggle -->
     <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع">
         <span class="theme-icon">🌙</span>

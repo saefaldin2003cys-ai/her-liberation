@@ -1083,17 +1083,42 @@ app.get('/api/articles/related/:id', async (req, res) => {
 // Get single article by slug or ID
 app.get('/api/articles/detail/:idOrSlug', async (req, res) => {
     try {
+        var idOrSlug = decodeURIComponent(req.params.idOrSlug);
         var query = {};
-        if (req.params.idOrSlug.match(/^[0-9a-fA-F]{24}$/)) {
-            query = { _id: req.params.idOrSlug };
+        
+        if (idOrSlug.match(/^[0-9a-fA-F]{24}$/)) {
+            query = { _id: idOrSlug };
+            var article = await Article.findOne(query);
+            if (!article) return res.status(404).json({ error: 'Article not found' });
+            return res.json(article);
         } else {
-            query = { slug: req.params.idOrSlug };
+            // Try to find by slug, considering both clean and dirty versions
+            // First try exact match
+            var article = await Article.findOne({ slug: idOrSlug });
+            
+            // If not found, try matching slugs that end with the provided slug
+            // This handles cases where DB has "domain.com/article/slug" but we search for "slug"
+            if (!article) {
+                // Escape special regex characters in idOrSlug
+                var escapedSlug = idOrSlug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                article = await Article.findOne({ 
+                    slug: { $regex: escapedSlug + '$', $options: 'i' } 
+                });
+            }
+            
+            // If still not found, try searching for slugs that contain the search term
+            if (!article) {
+                var escapedSlug = idOrSlug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                article = await Article.findOne({ 
+                    slug: { $regex: escapedSlug, $options: 'i' } 
+                });
+            }
+            
+            if (!article) return res.status(404).json({ error: 'Article not found' });
+            return res.json(article);
         }
-
-        var article = await Article.findOne(query);
-        if (!article) return res.status(404).json({ error: 'Article not found' });
-        res.json(article);
     } catch (error) {
+        console.error('Article detail error:', error);
         res.status(500).json({ error: 'Server Error' });
     }
 });

@@ -561,7 +561,11 @@ function loadArticles() {
             var path = window.location.pathname;
             if (path.startsWith('/article/')) {
                 var slugOrId = path.split('/article/')[1];
-                if (slugOrId) openArticle(slugOrId, true);
+                if (slugOrId) {
+                    // Clean the slug to remove any domain/article prefix
+                    slugOrId = cleanSlug(decodeURIComponent(slugOrId));
+                    openArticle(slugOrId, true);
+                }
             }
         })
         .catch(function (err) {
@@ -654,6 +658,15 @@ function openArticle(articleId, fromPopState) {
     }
 
     if (!article) {
+        // Show loading in article page while fetching
+        var articlePage = document.getElementById('articlePage');
+        var articleViewContent = document.getElementById('articleViewContent');
+        if (articlePage && articleViewContent) {
+            articlePage.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            articleViewContent.innerHTML = '<div style="text-align: center; padding: 50px;"><div class="loading-spinner"></div><p>جاري التحميل...</p></div>';
+        }
+        
         // Try fetching specifically if not in list
         fetch(API_URL + '/articles/detail/' + articleId)
             .then(function (r) { return r.json(); })
@@ -662,6 +675,15 @@ function openArticle(articleId, fromPopState) {
                     // Temporarily add to list and open
                     articles.push(data);
                     openArticle(data._id, fromPopState);
+                } else {
+                    if (articleViewContent) {
+                        articleViewContent.innerHTML = '<div style="text-align: center; padding: 50px;"><p>❌ المقالة غير موجودة</p></div>';
+                    }
+                }
+            })
+            .catch(function() {
+                if (articleViewContent) {
+                    articleViewContent.innerHTML = '<div style="text-align: center; padding: 50px;"><p>❌ حدث خطأ في التحميل</p></div>';
                 }
             });
         return;
@@ -813,7 +835,8 @@ function openArticle(articleId, fromPopState) {
     // Update URL if needed
     if (!fromPopState) {
         var slug = article.slug || article._id;
-        history.pushState({ articleId: article._id }, '', '/article/' + slug);
+        var cleanedSlug = cleanSlug(slug);
+        history.pushState({ articleId: article._id }, '', '/article/' + cleanedSlug);
     }
 
     loadSuggestedArticles(article._id);
@@ -821,6 +844,13 @@ function openArticle(articleId, fromPopState) {
 
 function closeArticlePage(fromPopState) {
     var articlePage = document.getElementById('articlePage');
+    
+    // If we came from a direct link (article-mode), reload to home page
+    if (document.body.classList.contains('article-mode')) {
+        window.location.href = '/';
+        return;
+    }
+    
     if (articlePage) {
         articlePage.classList.add('hidden');
         document.body.style.overflow = '';
@@ -867,8 +897,19 @@ function loadSuggestedArticles(currentId) {
 }
 
 
+function cleanSlug(slugOrId) {
+    // Remove domain and /article/ prefix if present
+    var cleaned = slugOrId;
+    // Remove http:// or https:// and domain
+    cleaned = cleaned.replace(/^https?:\/\/[^\/]+\/?/, '');
+    // Remove /article/ prefix
+    cleaned = cleaned.replace(/^article\//, '');
+    return cleaned;
+}
+
 function copyArticleLink(slugOrId) {
-    var url = window.location.origin + '/article/' + slugOrId;
+    var cleanedSlug = cleanSlug(slugOrId);
+    var url = window.location.origin + '/article/' + cleanedSlug;
     var tempInput = document.createElement('input');
     tempInput.value = url;
     document.body.appendChild(tempInput);
@@ -1136,6 +1177,17 @@ function loadDeferredContent() {
 // ============================================
 document.addEventListener('DOMContentLoaded', function () {
     console.log('🚀 DOM Content Loaded - Initializing...');
+
+    // Check if this is a direct article link - hide main content immediately
+    var path = window.location.pathname;
+    if (path.startsWith('/article/')) {
+        document.body.classList.add('article-mode');
+        var articlePage = document.getElementById('articlePage');
+        if (articlePage) {
+            articlePage.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    }
 
     // Critical: Initialize theme and UI immediately
     initTheme();
