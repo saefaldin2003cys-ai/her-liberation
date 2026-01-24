@@ -1510,6 +1510,7 @@
             const count = container.querySelectorAll('.additional-image-item').length + 1;
             const targetAr = containerId === 'additionalImagesContainer' ? 'contentAr' : 'editContentAr';
             const targetEn = containerId === 'additionalImagesContainer' ? 'contentEn' : 'editContentEn';
+            const uniqueId = 'addImg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
             div.innerHTML = `
                 <div style="display: flex; gap: 0.5rem; flex-direction: column;">
@@ -1522,13 +1523,15 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
-                        <input type="text" class="input-field img-url" placeholder="رابط الصورة (URL)" value="${data ? escapeHtml(data.url) : ''}" style="flex: 1;">
+                        <input type="file" class="input-field img-file" id="${uniqueId}" accept="image/*" style="flex: 1;" onchange="handleAdditionalImageUpload(this)">
+                        <input type="hidden" class="img-url" value="${data ? escapeHtml(data.url) : ''}">
                         <select class="input-field img-alignment" style="width: auto; min-width: 100px;">
                             <option value="full" ${data && data.alignment === 'full' ? 'selected' : ''}>عرض كامل</option>
                             <option value="left" ${data && data.alignment === 'left' ? 'selected' : ''}>يسار (نص جانبي)</option>
                             <option value="right" ${data && data.alignment === 'right' ? 'selected' : ''}>يمين (نص جانبي)</option>
                         </select>
                     </div>
+                    ${data && data.url ? `<div style="margin-bottom: 0.5rem;"><img src="${escapeHtml(data.url)}" style="max-width: 200px; max-height: 150px; border-radius: 4px;"></div>` : ''}
                     <div style="display: flex; gap: 0.5rem;">
                         <input type="text" class="input-field img-caption-ar" placeholder="الوصف (عربي)" value="${data && data.caption ? escapeHtml(data.caption.ar || '') : ''}" style="flex: 1;">
                         <input type="text" class="input-field img-caption-en" placeholder="Caption (English)" value="${data && data.caption ? escapeHtml(data.caption.en || '') : ''}" style="flex: 1;">
@@ -1536,6 +1539,43 @@
                 </div>
             `;
             container.appendChild(div);
+        }
+
+        async function handleAdditionalImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                input.disabled = true;
+                const response = await fetch('/api/articles/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('فشل رفع الصورة');
+
+                const data = await response.json();
+                const hiddenInput = input.parentElement.querySelector('.img-url');
+                if (hiddenInput) {
+                    hiddenInput.value = data.url;
+                }
+
+                // Show preview
+                const previewDiv = document.createElement('div');
+                previewDiv.style.marginBottom = '0.5rem';
+                previewDiv.innerHTML = `<img src="${data.url}" style="max-width: 200px; max-height: 150px; border-radius: 4px;">`;
+                input.parentElement.parentElement.insertBefore(previewDiv, input.parentElement.nextSibling);
+
+                showMessage('تم رفع الصورة بنجاح ✓', 'success');
+            } catch (error) {
+                showMessage('خطأ في رفع الصورة: ' + error.message, 'error');
+            } finally {
+                input.disabled = false;
+            }
         }
 
         function insertAtCursor(fieldId, text) {
