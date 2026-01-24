@@ -2379,6 +2379,12 @@ html[dir] * {
     text-align: justify;
 }
 
+[dir="rtl"] .article-modal-body em,
+[dir="rtl"] .article-modal-body i {
+    direction: rtl;
+    unicode-bidi: plaintext;
+}
+
 .article-modal-body p {
     margin-bottom: var(--space-xl);
 }
