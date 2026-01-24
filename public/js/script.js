@@ -842,6 +842,133 @@ function openArticle(articleId, fromPopState) {
     loadSuggestedArticles(article._id);
 }
 
+// Separate function to render article content (used for language switching)
+function renderArticleContent(article) {
+    var articleViewContent = document.getElementById('articleViewContent');
+    if (!articleViewContent) return;
+
+    var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+    var articleContent = getArticleContent(article);
+    var title = articleContent.title;
+    var author = articleContent.author;
+    var content = articleContent.content;
+    var authorBio = articleContent.authorBio;
+
+    var date = new Date(article.timestamp);
+    var formattedDate = date.toLocaleDateString(lang === 'en' ? 'en-US' : 'ar-IQ', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    var modalImagePosition = article.imagePosition !== undefined ? article.imagePosition : 50;
+    var imageHtml = article.image ? '<img src="' + escapeHTML(article.image) + '" alt="" class="article-modal-image" style="object-position: center ' + modalImagePosition + '%;">' : '';
+
+    var processedContent = escapeHTML(content).replace(/\n/g, '<br>');
+    processedContent = processedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    processedContent = processedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    processedContent = processedContent.replace(/__(.*?)__/g, '<u>$1</u>');
+    
+    var usedImages = new Set();
+    var mainImagePlaced = false;
+
+    if (processedContent.includes('[COVER]')) {
+        if (article.image) {
+            processedContent = processedContent.replace('[COVER]', imageHtml);
+            mainImagePlaced = true;
+        } else {
+            processedContent = processedContent.replace('[COVER]', '');
+        }
+    }
+
+    if (article.images && article.images.length > 0) {
+        for (var k = 0; k < article.images.length; k++) {
+            var placeholder = '[IMAGE_' + (k + 1) + ']';
+            if (processedContent.includes(placeholder)) {
+                var img = article.images[k];
+                var caption = img.caption ? (img.caption[lang] || img.caption.ar) : '';
+                var alignClass = (img.alignment || 'full') === 'full' ? 'align-full' : ('align-' + img.alignment);
+                var inlineImgHtml = '<div class="inline-article-image ' + alignClass + '">' +
+                    '<img src="' + escapeHTML(img.url) + '" alt="' + escapeHTML(caption) + '" class="additional-img">' +
+                    (caption ? '<p class="img-caption">' + escapeHTML(caption) + '</p>' : '') +
+                    '</div>';
+                processedContent = processedContent.replace(placeholder, inlineImgHtml);
+                usedImages.add(k);
+            }
+        }
+    }
+
+    var additionalImagesHtml = '';
+    var remainingImages = [];
+    if (article.images && article.images.length > 0) {
+        for (var j = 0; j < article.images.length; j++) {
+            if (!usedImages.has(j)) {
+                remainingImages.push(article.images[j]);
+            }
+        }
+        if (remainingImages.length > 0) {
+            additionalImagesHtml = '<div class="article-additional-images">';
+            for (var m = 0; m < remainingImages.length; m++) {
+                var rImg = remainingImages[m];
+                var rCaption = rImg.caption ? (rImg.caption[lang] || rImg.caption.ar) : '';
+                additionalImagesHtml += '<div class="additional-image-wrapper">' +
+                    '<img src="' + escapeHTML(rImg.url) + '" alt="' + escapeHTML(rCaption) + '" class="additional-img">' +
+                    (rCaption ? '<p class="img-caption">' + escapeHTML(rCaption) + '</p>' : '') +
+                    '</div>';
+            }
+            additionalImagesHtml += '</div>';
+        }
+    }
+
+    var authorBioHtml = authorBio ? '<div class="author-bio-section">' +
+        '<h4>' + (lang === 'en' ? 'About the Author' : 'عن الكاتبة') + '</h4>' +
+        '<p>' + escapeHTML(authorBio) + '</p>' +
+        '</div>' : '';
+
+    var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
+    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" onclick="deleteArticle(\'' + article._id + '\')"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
+
+    var breadcrumbHtml = '<div class="article-breadcrumb">' +
+        '<span>' + (lang === 'en' ? 'Editorial' : 'قضايا ومقالات') + '</span>' +
+        '<span> / </span>' +
+        '<span class="breadcrumb-active">' + (lang === 'en' ? 'Deep Dive' : 'نظرة معمقة') + '</span>' +
+        '</div>';
+
+    var shareSectionHtml = '<div class="article-end-share">' +
+        '<h4 class="share-title">' + (lang === 'en' ? 'Share this story' : 'شارك هذه القصة') + '</h4>' +
+        '<div class="share-buttons-row">' +
+        '<button class="share-btn-big copy" onclick="copyArticleLink(\'' + (article.slug || article._id) + '\')">' +
+        '<span class="btn-icon">🔗</span> <span id="copyLinkTextContent">' + (lang === 'en' ? 'Copy Link' : 'نسخ الرابط') + '</span>' +
+        '</button>' +
+        '</div>' +
+        '</div>';
+
+    var titleFontSize = article.titleFontSize || 3.5;
+
+    articleViewContent.innerHTML = '<div class="premium-reader">' +
+        breadcrumbHtml +
+        '<h1 class="article-page-title" dir="auto" style="font-size: ' + titleFontSize + 'rem;">' + escapeHTML(title) + '</h1>' +
+        '<div class="article-modal-meta">' +
+        '<div class="author-meta-item">' +
+        '<span class="meta-icon">✍️</span>' +
+        '<div class="author-details">' +
+        '<span class="author-name">' + (author ? escapeHTML(author) : (lang === 'en' ? 'HerLiberation' : 'تحريرها')) + '</span>' +
+        '<span class="article-date-inline">' + formattedDate + '</span>' +
+        (authorBio ? '<p class="author-bio-inline">' + escapeHTML(authorBio) + '</p>' : '') +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        (!mainImagePlaced ? '<div class="main-modal-image-wrapper">' + imageHtml + '</div>' : '') +
+        '<div class="article-modal-body">' + linkifyText(processedContent) + '</div>' +
+        additionalImagesHtml +
+        shareSectionHtml +
+        '<div class="article-modal-footer">' +
+        deleteBtn +
+        '</div>' +
+        '</div>';
+}
+
 function closeArticlePage(fromPopState) {
     var articlePage = document.getElementById('articlePage');
     
@@ -1521,6 +1648,38 @@ document.addEventListener('DOMContentLoaded', function () {
     var backBtn = document.getElementById('articleBack');
     if (backBtn) {
         backBtn.onclick = function () { closeArticlePage(); };
+    }
+
+    // Article language toggle
+    var articleLangToggle = document.getElementById('articleLangToggle');
+    if (articleLangToggle) {
+        articleLangToggle.onclick = function () {
+            if (window.i18n) {
+                var currentLang = window.i18n.getCurrentLanguage();
+                var newLang = currentLang === 'ar' ? 'en' : 'ar';
+                window.i18n.setLanguage(newLang);
+                
+                // Update icon
+                var icon = document.getElementById('articleLangIcon');
+                if (icon) icon.textContent = newLang === 'ar' ? 'EN' : 'ع';
+                
+                // Reload article content with new language
+                var currentPath = window.location.pathname;
+                if (currentPath.startsWith('/article/')) {
+                    var slugOrId = currentPath.split('/article/')[1];
+                    if (slugOrId) {
+                        slugOrId = cleanSlug(decodeURIComponent(slugOrId));
+                        // Find and re-render article
+                        for (var i = 0; i < articles.length; i++) {
+                            if (articles[i]._id === slugOrId || articles[i].slug === slugOrId) {
+                                renderArticleContent(articles[i]);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        };
     }
 
     window.addEventListener('popstate', function (event) {

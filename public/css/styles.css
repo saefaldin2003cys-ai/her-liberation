@@ -2134,6 +2134,14 @@ html[dir] * {
     border: 1px solid var(--border-color);
 }
 
+.article-header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2xl);
+    gap: var(--space-md);
+}
+
 .article-back-btn {
     display: inline-flex;
     align-items: center;
@@ -2144,7 +2152,6 @@ html[dir] * {
     border-radius: var(--radius-md);
     color: var(--text-primary);
     cursor: pointer;
-    margin-bottom: var(--space-2xl);
     transition: all var(--transition-base);
     font-family: inherit;
     font-weight: 600;
@@ -2163,6 +2170,34 @@ html[dir] * {
 
 [dir="rtl"] .back-icon {
     transform: rotate(180deg);
+}
+
+.article-lang-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--accent-gradient-soft);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.article-lang-toggle:hover {
+    border-color: var(--accent-primary);
+    background: var(--accent-gradient);
+    color: white;
+    transform: scale(1.05);
+}
+
+.article-lang-toggle .lang-icon {
+    font-size: 0.9rem;
 }
 
 .suggested-articles-section {
@@ -2252,6 +2287,9 @@ html[dir] * {
     width: 100%;
     padding: 0 var(--space-lg);
     letter-spacing: -0.02em;
+    white-space: normal;
+    word-break: keep-all;
+    writing-mode: horizontal-tb;
 }
 
 [dir="rtl"] .article-page-title {
@@ -4445,6 +4483,8 @@ textarea:focus-visible {
         font-size: 1.35rem;
         line-height: 1.5;
         padding: 0 var(--space-md);
+        word-break: normal;
+        overflow-wrap: anywhere;
     }
 
     .article-modal-meta {
@@ -4604,8 +4644,11 @@ textarea:focus-visible {
         padding: var(--space-md);
     }
 
-    .article-modal-title {
+    .article-modal-title,
+    .article-page-title {
         font-size: 1.2rem;
+        line-height: 1.6;
+        word-spacing: 0.05em;
     }
 
     .article-modal-body {

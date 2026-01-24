@@ -598,10 +598,15 @@
     <!-- Article Page (Independent View) -->
     <section id="articlePage" class="article-page hidden">
         <div class="article-page-container glass-card">
-            <button class="article-back-btn" id="articleBack">
-                <span class="back-icon">←</span>
-                <span data-i18n="article.back_to_blog">العودة للمدونة</span>
-            </button>
+            <div class="article-header-controls">
+                <button class="article-back-btn" id="articleBack">
+                    <span class="back-icon">←</span>
+                    <span data-i18n="article.back_to_blog">العودة للمدونة</span>
+                </button>
+                <button class="article-lang-toggle" id="articleLangToggle" aria-label="تبديل اللغة">
+                    <span class="lang-icon" id="articleLangIcon">EN</span>
+                </button>
+            </div>
             <div id="articleViewContent">
                 <!-- Content will be injected by JS -->
             </div>
