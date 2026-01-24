@@ -1659,6 +1659,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 var newLang = currentLang === 'ar' ? 'en' : 'ar';
                 window.i18n.setLanguage(newLang);
                 
+                // Update direction
+                document.documentElement.setAttribute('dir', newLang === 'ar' ? 'rtl' : 'ltr');
+                document.documentElement.setAttribute('lang', newLang);
+                
                 // Update icon
                 var icon = document.getElementById('articleLangIcon');
                 if (icon) icon.textContent = newLang === 'ar' ? 'EN' : 'ع';
