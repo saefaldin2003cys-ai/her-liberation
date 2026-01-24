@@ -2122,14 +2122,14 @@ html[dir] * {
     background: var(--bg-primary);
     z-index: 2000;
     overflow-y: auto;
-    padding: var(--space-xl) var(--space-lg);
+    padding: 0;
     animation: fadeIn var(--transition-base);
 }
 
 .article-page-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: var(--space-2xl);
+    max-width: 100%;
+    margin: 0;
+    padding: var(--space-lg);
     position: relative;
 }
 
