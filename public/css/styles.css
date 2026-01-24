@@ -3152,6 +3152,11 @@ html[dir="ltr"] .modal-close {
     color: white;
 }
 
+[dir="rtl"] ::selection {
+    direction: rtl;
+    unicode-bidi: plaintext;
+}
+
 /* Footer Logos */
 .footer {
     padding: var(--space-md) var(--space-lg);
@@ -3346,6 +3351,11 @@ html[dir="ltr"] .modal-close {
 ::selection {
     background: var(--accent-primary);
     color: white;
+}
+
+[dir="rtl"] ::selection {
+    direction: rtl;
+    unicode-bidi: plaintext;
 }
 
 /* Footer Logos */
@@ -4655,6 +4665,8 @@ textarea:focus-visible {
         text-orientation: mixed !important;
         display: block !important;
         width: 100% !important;
+        padding: 0 var(--space-sm) !important;
+        margin-bottom: var(--space-md) !important;
     }
 
     [dir="rtl"] .article-modal-title,
@@ -4669,6 +4681,12 @@ textarea:focus-visible {
 
     .article-modal-body {
         font-size: 0.95rem;
+        line-height: 1.8;
+        padding: 0 var(--space-sm);
+    }
+
+    .article-modal-body p {
+        margin-bottom: var(--space-md);
     }
 
     /* Hero */
