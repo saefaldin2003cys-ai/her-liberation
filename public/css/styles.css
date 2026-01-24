@@ -4650,12 +4650,21 @@ textarea:focus-visible {
         line-height: 1.6 !important;
         word-spacing: 0.05em;
         white-space: normal !important;
-        word-break: keep-all !important;
+        word-break: normal !important;
         writing-mode: horizontal-tb !important;
-        direction: rtl !important;
         text-orientation: mixed !important;
         display: block !important;
         width: 100% !important;
+    }
+
+    [dir="rtl"] .article-modal-title,
+    [dir="rtl"] .article-page-title {
+        direction: rtl !important;
+    }
+
+    [dir="ltr"] .article-modal-title,
+    [dir="ltr"] .article-page-title {
+        direction: ltr !important;
     }
 
     .article-modal-body {
