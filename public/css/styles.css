@@ -4646,9 +4646,16 @@ textarea:focus-visible {
 
     .article-modal-title,
     .article-page-title {
-        font-size: 1.2rem;
-        line-height: 1.6;
+        font-size: 1.2rem !important;
+        line-height: 1.6 !important;
         word-spacing: 0.05em;
+        white-space: normal !important;
+        word-break: keep-all !important;
+        writing-mode: horizontal-tb !important;
+        direction: rtl !important;
+        text-orientation: mixed !important;
+        display: block !important;
+        width: 100% !important;
     }
 
     .article-modal-body {
