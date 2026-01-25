@@ -1662,31 +1662,30 @@ document.addEventListener('DOMContentLoaded', function () {
             if (window.i18n) {
                 var currentLang = window.i18n.getCurrentLanguage();
                 var newLang = currentLang === 'ar' ? 'en' : 'ar';
-                window.i18n.setLanguage(newLang);
                 
-                // Update direction
-                document.documentElement.setAttribute('dir', newLang === 'ar' ? 'rtl' : 'ltr');
-                document.documentElement.setAttribute('lang', newLang);
-                
-                // Update icon
+                // Update icon first
                 var icon = document.getElementById('articleLangIcon');
                 if (icon) icon.textContent = newLang === 'ar' ? 'EN' : 'ع';
                 
-                // Reload article content with new language
-                var currentPath = window.location.pathname;
-                if (currentPath.startsWith('/article/')) {
-                    var slugOrId = currentPath.split('/article/')[1];
-                    if (slugOrId) {
-                        slugOrId = cleanSlug(decodeURIComponent(slugOrId));
-                        // Find and re-render article
-                        for (var i = 0; i < articles.length; i++) {
-                            if (articles[i]._id === slugOrId || articles[i].slug === slugOrId) {
-                                renderArticleContent(articles[i]);
-                                break;
+                // Set language and wait for it to complete
+                window.i18n.setLanguage(newLang).then(function() {
+                    // The direction is already updated by i18n.updateHTMLAttributes()
+                    // Now reload article content with new language
+                    var currentPath = window.location.pathname;
+                    if (currentPath.startsWith('/article/')) {
+                        var slugOrId = currentPath.split('/article/')[1];
+                        if (slugOrId) {
+                            slugOrId = cleanSlug(decodeURIComponent(slugOrId));
+                            // Find and re-render article
+                            for (var i = 0; i < articles.length; i++) {
+                                if (articles[i]._id === slugOrId || articles[i].slug === slugOrId) {
+                                    renderArticleContent(articles[i]);
+                                    break;
+                                }
                             }
                         }
                     }
-                }
+                });
             }
         };
     }
