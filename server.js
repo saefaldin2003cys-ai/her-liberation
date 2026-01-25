@@ -874,12 +874,24 @@ app.post('/api/upload', requireAdmin, function (req, res) {
         console.log('📤 File received:', req.file.originalname, 'Size:', req.file.size);
 
         try {
-            // حفظ الصورة بأبعادها الطبيعية بدون أي تعديل
-            const base64Image = req.file.buffer.toString('base64');
-            const dataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+            // Save file to disk
+            const timestamp = Date.now();
+            const ext = path.extname(req.file.originalname);
+            const filename = `image_${timestamp}${ext}`;
+            const filepath = path.join(__dirname, 'public', 'uploads', filename);
 
-            console.log('✅ Image uploaded at ORIGINAL dimensions (size:', Math.round(dataUrl.length / 1024), 'KB)');
-            return res.json({ success: true, url: dataUrl });
+            // Ensure uploads directory exists
+            const uploadsDir = path.join(__dirname, 'public', 'uploads');
+            if (!fs.existsSync(uploadsDir)) {
+                fs.mkdirSync(uploadsDir, { recursive: true });
+            }
+
+            // Write file
+            fs.writeFileSync(filepath, req.file.buffer);
+
+            const url = `/uploads/${filename}`;
+            console.log('✅ Image saved to:', url, '(size:', Math.round(req.file.size / 1024), 'KB)');
+            return res.json({ success: true, url: url });
 
         } catch (processError) {
             console.error('❌ Image processing error:', processError.message);
