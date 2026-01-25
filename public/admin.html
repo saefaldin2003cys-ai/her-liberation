@@ -1122,6 +1122,7 @@
                 const captionAr = item.querySelector('.img-caption-ar').value.trim();
                 const captionEn = item.querySelector('.img-caption-en').value.trim();
                 const alignment = item.querySelector('.img-alignment').value;
+                console.log('📸 Found additional image:', { url, captionAr, captionEn, alignment });
                 if (url) {
                     images.push({
                         url: url,
@@ -1131,6 +1132,7 @@
                     });
                 }
             });
+            console.log('📸 Total additional images:', images.length, images);
 
             // Get image from upload or URL
             let image = '';
@@ -1545,15 +1547,21 @@
             const file = input.files[0];
             if (!file) return;
 
+            console.log('🖼️ Starting additional image upload:', file.name);
+
             try {
                 input.disabled = true;
                 showMessage('جاري رفع الصورة...', 'success');
                 
                 const imageUrl = await uploadImage(file);
+                console.log('✅ Image uploaded successfully:', imageUrl);
                 
                 const hiddenInput = input.parentElement.querySelector('.img-url');
                 if (hiddenInput) {
                     hiddenInput.value = imageUrl;
+                    console.log('✅ Hidden input updated with URL');
+                } else {
+                    console.error('❌ Hidden input not found!');
                 }
 
                 // Remove existing preview if any
@@ -1571,6 +1579,7 @@
 
                 showMessage('تم رفع الصورة بنجاح ✓', 'success');
             } catch (error) {
+                console.error('❌ Error uploading image:', error);
                 showMessage('خطأ في رفع الصورة: ' + error.message, 'error');
             } finally {
                 input.disabled = false;
