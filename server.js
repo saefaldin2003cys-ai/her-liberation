@@ -1009,7 +1009,7 @@ app.put('/api/articles/:id', requireAdmin, async (req, res) => {
 
         // Validate image if provided
         if (image && image.length > 0) {
-            if (!image.startsWith('http://') && !image.startsWith('https://') && !image.startsWith('data:image/')) {
+            if (!image.startsWith('http://') && !image.startsWith('https://') && !image.startsWith('/uploads/') && !image.startsWith('data:image/')) {
                 return res.status(400).json({ error: 'Invalid image URL' });
             }
         }
