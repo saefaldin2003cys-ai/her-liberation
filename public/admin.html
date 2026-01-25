@@ -728,12 +728,6 @@
                             </div>
                         </div>
                         <div class="image-upload-options">
-                            <div class="upload-tabs">
-                                <button type="button" class="tab-btn active" onclick="switchImageTab('upload')">📤 رفع
-                                    صورة</button>
-                                <button type="button" class="tab-btn" onclick="switchImageTab('url')">🔗 رابط
-                                    صورة</button>
-                            </div>
                             <div id="uploadTab" class="tab-content active">
                                 <div class="file-upload-wrapper">
                                     <input type="file" id="imageFile" accept="image/*" onchange="previewImage(this)">
@@ -759,9 +753,6 @@
                                     <button type="button" class="remove-image" onclick="removeImage()">✕</button>
                                 </div>
                                 <input type="hidden" id="imagePosition" value="50">
-                            </div>
-                            <div id="urlTab" class="tab-content">
-                                <input type="text" id="imageUrl" class="input-field" placeholder="https://...">
                             </div>
                         </div>
                     </div>
@@ -1134,10 +1125,9 @@
             });
             console.log('📸 Total additional images:', images.length, images);
 
-            // Get image from upload or URL
+            // Get image from upload only
             let image = '';
             const imageFile = document.getElementById('imageFile').files[0];
-            const imageUrl = document.getElementById('imageUrl').value.trim();
 
             if (imageFile) {
                 // Upload image first
@@ -1148,8 +1138,6 @@
                     showMessage('فشل في رفع الصورة: ' + err.message, 'error');
                     return;
                 }
-            } else if (imageUrl) {
-                image = imageUrl;
             }
 
             // Get image position
@@ -1225,19 +1213,6 @@
         }
 
         // Switch between upload and URL tabs
-        function switchImageTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-            if (tab === 'upload') {
-                document.querySelector('.tab-btn:first-child').classList.add('active');
-                document.getElementById('uploadTab').classList.add('active');
-            } else {
-                document.querySelector('.tab-btn:last-child').classList.add('active');
-                document.getElementById('urlTab').classList.add('active');
-            }
-        }
-
         // Preview uploaded image
         function previewImage(input) {
             if (input.files && input.files[0]) {
