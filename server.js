@@ -2,12 +2,19 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const dns = require('dns');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const multer = require('multer');
 // Sharp disabled - images will be stored as-is
 const sharp = null;
 require('dotenv').config();
+
+// ==========================================
+// DNS Fix for MongoDB Atlas SRV Lookups
+// ==========================================
+// Some networks block SRV DNS lookups. Use Google Public DNS as fallback.
+dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
 
 // ==========================================
 // Security Packages
@@ -58,6 +65,69 @@ setInterval(function () {
 const Stats = require('./models/Stats');
 const Article = require('./models/Article');
 const Poll = require('./models/Poll');
+
+// ==========================================
+// Local Database Fallback for Database-Free Mode
+// ==========================================
+const LOCAL_DB_FILE = path.join(__dirname, 'local_db.json');
+
+function getLocalDB() {
+    try {
+        if (fs.existsSync(LOCAL_DB_FILE)) {
+            const raw = fs.readFileSync(LOCAL_DB_FILE, 'utf8');
+            return JSON.parse(raw);
+        }
+    } catch (e) {
+        console.error('Error reading local DB:', e);
+    }
+    
+    // Default initial data if file doesn't exist
+    const defaultData = {
+        stats: { views: 247, likes: 58 },
+        poll: {
+            question: 'minimum_marriage_age',
+            votes: { agree18: 34, disagree: 12 },
+            voters: []
+        },
+        articles: [
+            {
+                _id: "local-art-1",
+                slug: "legal-age-iraq",
+                title: {
+                    ar: "السن القانوني للزواج في العراق والجدل المستمر",
+                    en: "The Legal Age of Marriage in Iraq and the Ongoing Debate"
+                },
+                author: {
+                    ar: "حملة تحريرها",
+                    en: "HerLiberation Campaign"
+                },
+                authorBio: {
+                    ar: "منصة وطنية عراقية تسعى لرفع الوعي بحقوق الطفولة.",
+                    en: "A national Iraqi platform raising awareness on children's rights."
+                },
+                content: {
+                    ar: "يهدف هذا المقال إلى استعراض نصوص القوانين العراقية ومقارنتها بالواقع المعاش للفتيات في مختلف المحافظات.\n\nإن زواج الأطفال يسلب الفتاة حقها الطبيعي في التعليم والنمو السليم، ويضعها في مسؤولية تفوق عمرها بكثير.\n\nتعديل المادة 8 من قانون الأحوال الشخصية أصبح ضرورة ملحة لحماية القاصرات من مخاطر عقود الزواج خارج المحكمة.",
+                    en: "This article aims to review Iraqi legal texts and compare them with the reality of girls in different provinces.\n\nChild marriage deprives a girl of her natural right to education and sound development, placing a heavy responsibility on her.\n\nAmending Article 8 of the Personal Status Law has become an urgent necessity to protect minors."
+                },
+                image: "/assets/images/happy-schoolgirls.png",
+                imagePosition: 50,
+                images: [],
+                timestamp: new Date().toISOString()
+            }
+        ]
+    };
+    saveLocalDB(defaultData);
+    return defaultData;
+}
+
+function saveLocalDB(data) {
+    try {
+        fs.writeFileSync(LOCAL_DB_FILE, JSON.stringify(data, null, 4), 'utf8');
+    } catch (e) {
+        console.error('Error writing local DB:', e);
+    }
+}
+
 
 const app = express();
 const PORT = process.env.PORT || 5500;
@@ -640,6 +710,29 @@ app.get('/article/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Multi-page routes
+app.get('/about-us', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'about-us.html'));
+});
+app.get('/blog', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'blog.html'));
+});
+app.get('/donate', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'donate.html'));
+});
+app.get('/contact', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'contact.html'));
+});
+app.get('/programs', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'programs.html'));
+});
+app.get('/campaigns', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'campaigns.html'));
+});
+app.get('/campaigns/before-18', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'before-18.html'));
+});
+
 // Database Connection & Seeding
 const DB_Data_Path = path.join(__dirname, 'database');
 
@@ -650,7 +743,11 @@ async function connectDB() {
             console.warn('⚠️ MONGODB_URI is likely invalid or default. Using In-Memory fallback or waiting for config.');
             if (!uri) return;
         }
-        await mongoose.connect(uri);
+        console.log('🔄 Connecting to MongoDB...');
+        await mongoose.connect(uri, {
+            serverSelectionTimeoutMS: 15000, // 15 seconds timeout
+            connectTimeoutMS: 15000,
+        });
         console.log('✅ Connected to MongoDB');
         await seedData();
     } catch (err) {
@@ -681,19 +778,23 @@ async function seedData() {
         }
 
 
-        // Seed Articles - DISABLED (use admin panel to add articles)
-        // Articles should be managed through the admin panel only
-        // const articlesCount = await Article.countDocuments();
-        // if (articlesCount === 0) {
-        //     const articlesPath = path.join(DB_Data_Path, 'articles.json');
-        //     if (fs.existsSync(articlesPath)) {
-        //         const articlesData = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
-        //         if (articlesData.length > 0) {
-        //             await Article.create(articlesData);
-        //             console.log('🌱 Seeded Articles from JSON');
-        //         }
-        //     }
-        // }
+        // Seed Articles from local_db.json if collection is empty
+        const articlesCount = await Article.countDocuments();
+        if (articlesCount === 0) {
+            if (fs.existsSync(LOCAL_DB_FILE)) {
+                const db = JSON.parse(fs.readFileSync(LOCAL_DB_FILE, 'utf8'));
+                if (db.articles && db.articles.length > 0) {
+                    // Clean local _ids to let MongoDB assign ObjectIds
+                    const seedArticles = db.articles.map(art => {
+                        const cleanArt = { ...art };
+                        delete cleanArt._id;
+                        return cleanArt;
+                    });
+                    await Article.create(seedArticles);
+                    console.log('🌱 Seeded Articles from local_db.json');
+                }
+            }
+        }
     } catch (error) {
         console.warn('⚠️ Error seeding data (normal if files missing or models mismatch):', error.message);
     }
@@ -706,6 +807,10 @@ async function seedData() {
 // --- Statistics ---
 app.get('/api/stats', async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            return res.json(db.stats);
+        }
         var stats = await Stats.findOne();
         if (!stats) {
             stats = await Stats.create({ views: 150, likes: 42 });
@@ -719,6 +824,12 @@ app.get('/api/stats', async (req, res) => {
 
 app.post('/api/stats/view', postLimiter, async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            db.stats.views = (db.stats.views || 0) + 1;
+            saveLocalDB(db);
+            return res.json(db.stats);
+        }
         var stats = await Stats.findOne();
         if (!stats) stats = await Stats.create({ views: 0, likes: 0 });
 
@@ -733,6 +844,12 @@ app.post('/api/stats/view', postLimiter, async (req, res) => {
 
 app.post('/api/stats/like', postLimiter, async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            db.stats.likes = (db.stats.likes || 0) + 1;
+            saveLocalDB(db);
+            return res.json(db.stats);
+        }
         var stats = await Stats.findOne();
         if (!stats) stats = await Stats.create({ views: 0, likes: 0 });
 
@@ -744,77 +861,6 @@ app.post('/api/stats/like', postLimiter, async (req, res) => {
         res.status(500).json({ error: 'Server Error' });
     }
 });
-
-// --- Poll (Marriage Age Referendum) ---
-app.get('/api/poll', async (req, res) => {
-    try {
-        var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
-        if (!poll) {
-            poll = await Poll.create({
-                question: 'minimum_marriage_age',
-                votes: { agree18: 0, disagree: 0 },
-                voters: []
-            });
-        }
-        // Return only vote counts, not voter IPs
-        res.json({
-            agree18: poll.votes.agree18,
-            disagree: poll.votes.disagree,
-            total: poll.votes.agree18 + poll.votes.disagree
-        });
-    } catch (error) {
-        console.error('Poll GET error:', error.message);
-        res.status(500).json({ error: 'Server Error' });
-    }
-});
-
-app.post('/api/poll/vote', postLimiter, async (req, res) => {
-    try {
-        var choice = req.body.choice; // 'agree18' or 'disagree'
-        var voterIP = req.ip || req.connection.remoteAddress;
-
-        // Validate choice
-        if (!['agree18', 'disagree'].includes(choice)) {
-            return res.status(400).json({ error: 'Invalid vote choice' });
-        }
-
-        var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
-        if (!poll) {
-            poll = await Poll.create({
-                question: 'minimum_marriage_age',
-                votes: { agree18: 0, disagree: 0 },
-                voters: []
-            });
-        }
-
-        // Check if already voted
-        if (poll.voters.includes(voterIP)) {
-            return res.status(400).json({
-                error: 'لقد صوّتت مسبقاً',
-                alreadyVoted: true,
-                agree18: poll.votes.agree18,
-                disagree: poll.votes.disagree,
-                total: poll.votes.agree18 + poll.votes.disagree
-            });
-        }
-
-        // Record vote
-        poll.votes[choice] += 1;
-        poll.voters.push(voterIP);
-        await poll.save();
-
-        res.json({
-            success: true,
-            agree18: poll.votes.agree18,
-            disagree: poll.votes.disagree,
-            total: poll.votes.agree18 + poll.votes.disagree
-        });
-    } catch (error) {
-        console.error('Poll vote error:', error.message);
-        res.status(500).json({ error: 'Server Error' });
-    }
-});
-
 
 // ==========================================
 // Image Upload Configuration (MongoDB Base64 Storage)
@@ -903,6 +949,11 @@ app.post('/api/upload', requireAdmin, function (req, res) {
 // --- Articles ---
 app.get('/api/articles', async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            const sorted = [...db.articles].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            return res.json(sorted);
+        }
         var articles = await Article.find().sort({ timestamp: -1 });
         res.json(articles);
     } catch (error) {
@@ -946,6 +997,25 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
             return res.status(400).json({ error: 'Invalid image URL' });
         }
 
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            const newArticle = {
+                _id: `art-${Date.now()}`,
+                slug: slug || `art-${Date.now()}`,
+                title: { ar: titleAr, en: titleEn || titleAr },
+                author: { ar: authorAr || 'مجهول', en: authorEn || authorAr || 'Anonymous' },
+                authorBio: { ar: authorBioAr || '', en: authorBioEn || authorBioAr || '' },
+                content: { ar: contentAr, en: contentEn || contentAr },
+                image: image || '',
+                imagePosition: imagePosition,
+                images: images,
+                timestamp: new Date().toISOString()
+            };
+            db.articles.push(newArticle);
+            saveLocalDB(db);
+            return res.json(newArticle);
+        }
+
         var newArticle = new Article({
             title: {
                 ar: titleAr,
@@ -979,11 +1049,6 @@ app.post('/api/articles', requireAdmin, async (req, res) => {
 // Update article (admin only)
 app.put('/api/articles/:id', requireAdmin, async (req, res) => {
     try {
-        // Validate MongoDB ObjectId format
-        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).json({ error: 'Invalid article ID' });
-        }
-
         var titleAr = req.body.titleAr;
         var titleEn = req.body.titleEn;
         var authorAr = req.body.authorAr;
@@ -1012,6 +1077,31 @@ app.put('/api/articles/:id', requireAdmin, async (req, res) => {
             if (!image.startsWith('http://') && !image.startsWith('https://') && !image.startsWith('/uploads/') && !image.startsWith('data:image/')) {
                 return res.status(400).json({ error: 'Invalid image URL' });
             }
+        }
+
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            const articleIndex = db.articles.findIndex(a => a._id === req.params.id);
+            if (articleIndex === -1) {
+                return res.status(404).json({ error: 'Article not found' });
+            }
+            const art = db.articles[articleIndex];
+            art.title = { ar: titleAr, en: titleEn || titleAr };
+            art.author = { ar: authorAr || 'مجهول', en: authorEn || authorAr || 'Anonymous' };
+            art.authorBio = { ar: authorBioAr || '', en: authorBioEn || authorBioAr || '' };
+            art.content = { ar: contentAr, en: contentEn || contentAr };
+            if (image !== undefined) art.image = image || '';
+            if (imagePosition !== undefined) art.imagePosition = imagePosition;
+            if (images !== undefined) art.images = images;
+            if (slug !== undefined) art.slug = slug;
+            db.articles[articleIndex] = art;
+            saveLocalDB(db);
+            return res.json(art);
+        }
+
+        // Validate MongoDB ObjectId format
+        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ error: 'Invalid article ID' });
         }
 
         var article = await Article.findById(req.params.id);
@@ -1060,6 +1150,17 @@ app.put('/api/articles/:id', requireAdmin, async (req, res) => {
 
 app.delete('/api/articles/:id', requireAdmin, async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            const articleIndex = db.articles.findIndex(a => a._id === req.params.id);
+            if (articleIndex === -1) {
+                return res.status(404).json({ error: 'Article not found' });
+            }
+            db.articles.splice(articleIndex, 1);
+            saveLocalDB(db);
+            return res.json({ success: true });
+        }
+
         // Validate MongoDB ObjectId format
         if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ error: 'Invalid article ID' });
@@ -1081,6 +1182,13 @@ app.delete('/api/articles/:id', requireAdmin, async (req, res) => {
 // --- Related Articles ---
 app.get('/api/articles/related/:id', async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            const related = db.articles
+                .filter(a => a._id !== req.params.id)
+                .slice(0, 3);
+            return res.json(related);
+        }
         // Fetch 3 recent articles except the current one
         var articles = await Article.find({ _id: { $ne: req.params.id } })
             .sort({ timestamp: -1 })
@@ -1096,6 +1204,14 @@ app.get('/api/articles/related/:id', async (req, res) => {
 app.get('/api/articles/detail/:idOrSlug', async (req, res) => {
     try {
         var idOrSlug = decodeURIComponent(req.params.idOrSlug);
+        
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            const article = db.articles.find(a => a._id === idOrSlug || a.slug === idOrSlug);
+            if (!article) return res.status(404).json({ error: 'Article not found' });
+            return res.json(article);
+        }
+
         var query = {};
         
         if (idOrSlug.match(/^[0-9a-fA-F]{24}$/)) {
@@ -1142,6 +1258,16 @@ app.get('/api/articles/detail/:idOrSlug', async (req, res) => {
 // Get poll results
 app.get('/api/poll', async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            const poll = db.poll || { question: 'minimum_marriage_age', votes: { agree18: 0, disagree: 0 } };
+            return res.json({
+                agree18: poll.votes.agree18,
+                disagree: poll.votes.disagree,
+                total: poll.votes.agree18 + poll.votes.disagree
+            });
+        }
+
         // Find or create the poll
         var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
         if (!poll) {
@@ -1177,6 +1303,35 @@ app.post('/api/poll/vote', postLimiter, async (req, res) => {
 
         // Get voter IP
         var voterIP = req.ip || req.connection.remoteAddress || 'unknown';
+
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            if (!db.poll) {
+                db.poll = { question: 'minimum_marriage_age', votes: { agree18: 0, disagree: 0 }, voters: [] };
+            }
+            if (!db.poll.voters) db.poll.voters = [];
+            
+            if (db.poll.voters.includes(voterIP)) {
+                const total = db.poll.votes.agree18 + db.poll.votes.disagree;
+                return res.json({
+                    agree18: db.poll.votes.agree18,
+                    disagree: db.poll.votes.disagree,
+                    total: total,
+                    alreadyVoted: true
+                });
+            }
+            
+            db.poll.votes[choice] = (db.poll.votes[choice] || 0) + 1;
+            db.poll.voters.push(voterIP);
+            saveLocalDB(db);
+            
+            const total = db.poll.votes.agree18 + db.poll.votes.disagree;
+            return res.json({
+                agree18: db.poll.votes.agree18,
+                disagree: db.poll.votes.disagree,
+                total: total
+            });
+        }
 
         // Find or create the poll
         var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
@@ -1228,6 +1383,17 @@ app.post('/api/poll/vote', postLimiter, async (req, res) => {
 // Reset poll (admin only)
 app.delete('/api/poll/reset', requireAdmin, async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            const db = getLocalDB();
+            db.poll = {
+                question: 'minimum_marriage_age',
+                votes: { agree18: 0, disagree: 0 },
+                voters: []
+            };
+            saveLocalDB(db);
+            return res.json({ success: true, message: 'Poll reset successfully' });
+        }
+
         var poll = await Poll.findOne({ question: 'minimum_marriage_age' });
         if (poll) {
             poll.votes.agree18 = 0;
@@ -1245,11 +1411,6 @@ app.delete('/api/poll/reset', requireAdmin, async (req, res) => {
     }
 });
 
-// Serve index.html for article paths to support client-side routing
-app.get('/article/*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 // ==========================================
 // Error Handling Middleware
 // ==========================================
@@ -1257,6 +1418,11 @@ app.get('/article/*', function (req, res) {
 // 404 Handler for API routes
 app.use('/api/*', function (req, res) {
     res.status(404).json({ error: 'API endpoint not found' });
+});
+
+// 404 fallback handler for non-API routes
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
 // CORS error handler

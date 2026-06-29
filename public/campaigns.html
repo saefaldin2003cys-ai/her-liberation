@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الحملات | تحريرها</title>
+    <meta name="description" content="حملات تحريرها للمناصرة وحماية حقوق الطفولة وتمكين المجتمعات.">
+    <!-- Theme flash prevention script (inline) -->
+    <script>
+        (function(){
+            var t=localStorage.getItem('theme');
+            if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+                document.documentElement.classList.add('dark-mode');
+            }
+            var l=localStorage.getItem('preferred_language');
+            if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}
+        })();
+    </script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/" class="nav-logo"><img src="/assets/images/1_20251127_202518.png" alt="HerLiberation"></a>
+            <ul class="nav-links" role="menubar">
+                <li><a href="/" class="nav-link" data-page="home" data-i18n="nav.home">الرئيسية</a></li>
+                <li><a href="/campaigns" class="nav-link" data-page="campaigns" data-i18n="nav.campaign">الحملات</a></li>
+                <li><a href="/blog" class="nav-link" data-page="blog" data-i18n="nav.blog">المدونة</a></li>
+                <li><a href="/programs" class="nav-link" data-page="programs" data-i18n="nav.tracks">البرامج</a></li>
+                <li><a href="/about-us" class="nav-link" data-page="about" data-i18n="nav.about">من نحن</a></li>
+                <li><a href="/contact" class="nav-link" data-page="contact" data-i18n="nav.contact">تواصل</a></li>
+                <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">تبرع</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+                <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language"><span class="lang-icon">EN</span></button>
+                <button class="nav-hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="pageContent">
+        <!-- Hero Section -->
+        <section class="campaigns-hero reveal-on-scroll">
+            <h1 class="campaigns-hero-title" data-i18n="campaigns_page.title">حملاتنا</h1>
+            <p class="campaigns-hero-desc" data-i18n="campaigns_page.description">حملات المناصرة والتوعية التي نطلقها لحماية حقوق الطفولة وتمكين المجتمعات.</p>
+        </section>
+
+        <!-- Campaigns Grid -->
+        <section class="campaigns-grid-section">
+            <div class="campaigns-grid">
+                <a href="/campaigns/before-18" class="campaign-list-card glass-card reveal-on-scroll">
+                    <div class="campaign-list-card-media">
+                        <img src="/assets/images/happy-schoolgirls.png" alt="حملة قبل الـ18 عامًا">
+                        <span class="campaign-list-badge" data-i18n="campaigns_page.status_active">حملة نشطة</span>
+                    </div>
+                    <div class="campaign-list-card-body">
+                        <h3 class="campaign-list-card-title" data-i18n="campaign.slogan_ar">قبل الـ18 عامًا: طفلة لا زوجة</h3>
+                        <p class="campaign-list-card-desc" data-i18n="age_selector_extra.description">اكتشف كيف يحدد القانون العراقي حقوق الفتاة بناءً على سنها ومفارقة أهليتها للزواج المبكر.</p>
+                        <span class="campaign-list-card-cta" data-i18n="campaigns_page.view_campaign">استعرض الحملة ←</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-nav">
+                <a href="/" data-i18n="nav.home">الرئيسية</a>
+                <a href="/about-us" data-i18n="nav.about">من نحن</a>
+                <a href="/blog" data-i18n="nav.blog">المدونة</a>
+                <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
+                <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
+                <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
+            </div>
+            <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Shared Scripts -->
+    <script src="/js/i18n.js"></script>
+    <script src="/js/i18n-integration.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/reveal.js"></script>
+</body>
+</html>

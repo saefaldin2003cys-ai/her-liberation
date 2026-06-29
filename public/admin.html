@@ -5,9 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة الإدارة | تحريرها</title>
+    <script>
+        (function(){
+            var t=localStorage.getItem('theme');
+            if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+                document.documentElement.classList.add('dark-mode');
+            }
+            var l=localStorage.getItem('preferred_language');
+            if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Quill stylesheet and library CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <style>
         :root {
             --bg-primary: #0C0A1D;
@@ -549,10 +563,112 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Quill Custom Styling for dark mode and pink/purple theme */
+        .quill-editor-container {
+            min-height: 400px;
+            background: var(--bg-primary);
+            border-bottom-left-radius: var(--radius-md);
+            border-bottom-right-radius: var(--radius-md);
+        }
+        .ql-toolbar.ql-snow {
+            background-color: var(--bg-secondary) !important;
+            border: 1px solid var(--border-color) !important;
+            border-top-left-radius: var(--radius-md);
+            border-top-right-radius: var(--radius-md);
+            padding: 8px !important;
+        }
+        .ql-toolbar.ql-snow .ql-stroke {
+            stroke: var(--text-secondary) !important;
+        }
+        .ql-toolbar.ql-snow .ql-fill {
+            fill: var(--text-secondary) !important;
+        }
+        .ql-toolbar.ql-snow .ql-picker {
+            color: var(--text-secondary) !important;
+        }
+        .ql-toolbar.ql-snow .ql-picker-options {
+            background-color: var(--bg-secondary) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+        }
+        .ql-toolbar.ql-snow button:hover .ql-stroke,
+        .ql-toolbar.ql-snow button.ql-active .ql-stroke {
+            stroke: var(--accent-primary) !important;
+        }
+        .ql-toolbar.ql-snow button:hover .ql-fill,
+        .ql-toolbar.ql-snow button.ql-active .ql-fill {
+            fill: var(--accent-primary) !important;
+        }
+        .ql-toolbar.ql-snow .ql-picker-label:hover,
+        .ql-toolbar.ql-snow .ql-picker-label.ql-active {
+            color: var(--accent-primary) !important;
+        }
+        .ql-toolbar.ql-snow .ql-picker-item:hover,
+        .ql-toolbar.ql-snow .ql-picker-item.ql-selected {
+            color: var(--accent-primary) !important;
+        }
+        .ql-container.ql-snow {
+            background-color: var(--bg-primary) !important;
+            border: 1px solid var(--border-color) !important;
+            border-top: none !important;
+            border-bottom-left-radius: var(--radius-md) !important;
+            border-bottom-right-radius: var(--radius-md) !important;
+            font-family: 'Tajawal', sans-serif !important;
+            font-size: 1rem;
+            color: var(--text-primary) !important;
+        }
+        .ql-editor {
+            min-height: 400px;
+            height: auto;
+            font-family: 'Tajawal', sans-serif !important;
+            line-height: 1.6;
+        }
+        .ql-editor.ql-blank::before {
+            color: var(--text-muted) !important;
+            font-style: normal !important;
+            opacity: 0.7;
+        }
+        /* RTL for Arabic Editor */
+        #editorAr .ql-editor, #editEditorAr .ql-editor {
+            direction: rtl;
+            text-align: right;
+        }
+        /* LTR for English Editor */
+        #editorEn .ql-editor, #editEditorEn .ql-editor {
+            direction: ltr;
+            text-align: left;
+        }
+        /* Add spacing above editors */
+        .form-group .quill-editor-container {
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 
 <body>
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/" class="nav-logo"><img src="/assets/images/1_20251127_202518.png" alt="HerLiberation"></a>
+            <ul class="nav-links" role="menubar">
+                <li><a href="/" class="nav-link" data-page="home" data-i18n="nav.home">الرئيسية</a></li>
+                <li><a href="/campaigns" class="nav-link" data-page="campaigns" data-i18n="nav.campaign">الحملات</a></li>
+                <li><a href="/blog" class="nav-link" data-page="blog" data-i18n="nav.blog">المدونة</a></li>
+                <li><a href="/programs" class="nav-link" data-page="programs" data-i18n="nav.tracks">البرامج</a></li>
+                <li><a href="/about-us" class="nav-link" data-page="about" data-i18n="nav.about">من نحن</a></li>
+                <li><a href="/contact" class="nav-link" data-page="contact" data-i18n="nav.contact">تواصل</a></li>
+                <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">التبرع</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+                <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language"><span class="lang-icon">EN</span></button>
+                <button class="nav-hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="pageContent">
     <div class="container">
         <!-- Login Screen -->
         <div id="loginScreen" class="login-screen">
@@ -668,49 +784,12 @@
 
                     <!-- Content Fields -->
                     <div class="form-group">
-                        <label for="contentAr">محتوى المقال (بالعربية) *</label>
-                        <p class="field-hint"
-                            style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-                            💡 يمكنك وضع الصور داخل النص باستخدام: <code>[COVER]</code> للصورة الرئيسية، أو
-                            <code>[IMAGE_1]</code>، <code>[IMAGE_2]</code> للصور الإضافية.
-                        </p>
-                        <textarea id="contentAr" class="input-field textarea-field" dir="rtl" required></textarea>
+                        <label for="editorAr">محتوى المقال (بالعربية) *</label>
+                        <div id="editorAr" class="quill-editor-container"></div>
                     </div>
                     <div class="form-group">
-                        <textarea id="contentEn" class="input-field textarea-field" dir="ltr"></textarea>
-                    </div>
-
-                    <!-- Simple Formatting Toolbar for English -->
-                    <div class="formatting-toolbar"
-                        style="margin-bottom: 2rem; display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-                        <button type="button" class="toolbar-btn" onclick="formatText('contentEn', 'bold')" title="Bold"
-                            style="font-weight: bold; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">B</button>
-                        <button type="button" class="toolbar-btn" onclick="formatText('contentEn', 'italic')"
-                            title="Italic"
-                            style="font-style: italic; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">I</button>
-                        <button type="button" class="toolbar-btn" onclick="formatText('contentEn', 'underline')"
-                            title="Underline"
-                            style="text-decoration: underline; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">U</button>
-                        <span style="border-left: 1px solid var(--border-color); margin: 0 0.5rem;"></span>
-                        <span style="color: var(--text-muted); font-size: 0.8rem; align-self: center;">Format English
-                            Content</span>
-                    </div>
-
-                    <!-- Simple Formatting Toolbar -->
-                    <div class="formatting-toolbar"
-                        style="margin-bottom: 1rem; display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-                        <button type="button" class="toolbar-btn" onclick="formatText('contentAr', 'bold')"
-                            title="خط غامق"
-                            style="font-weight: bold; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">B</button>
-                        <button type="button" class="toolbar-btn" onclick="formatText('contentAr', 'italic')"
-                            title="خط مائل"
-                            style="font-style: italic; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">I</button>
-                        <button type="button" class="toolbar-btn" onclick="formatText('contentAr', 'underline')"
-                            title="خط أسفله خط"
-                            style="text-decoration: underline; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">U</button>
-                        <span style="border-left: 1px solid var(--border-color); margin: 0 0.5rem;"></span>
-                        <span style="color: var(--text-muted); font-size: 0.8rem; align-self: center;">تنسيق المحتوى
-                            العربي</span>
+                        <label for="editorEn">Content (English)</label>
+                        <div id="editorEn" class="quill-editor-container"></div>
                     </div>
 
                     <!-- Main Image (Original) -->
@@ -718,14 +797,6 @@
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                             <label style="margin-bottom: 0;">صورة المقال الرئيسية</label>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <button type="button" class="btn btn-secondary btn-sm"
-                                    onclick="insertAtCursor('contentAr', '[COVER]')" title="إدراج في العربي">AR
-                                    ➕</button>
-                                <button type="button" class="btn btn-secondary btn-sm"
-                                    onclick="insertAtCursor('contentEn', '[COVER]')" title="Insert into English">EN
-                                    ➕</button>
-                            </div>
                         </div>
                         <div class="image-upload-options">
                             <div id="uploadTab" class="tab-content active">
@@ -750,19 +821,11 @@
                                             <span id="positionValue" class="position-value">50%</span>
                                         </div>
                                     </div>
-                                    <button type="button" class="remove-image" onclick="removeImage()">✕</button>
+                                    <button type="button" class="remove-image" onclick="removeImage()" aria-label="Remove image">✕</button>
                                 </div>
                                 <input type="hidden" id="imagePosition" value="50">
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>صور إضافية للمقال</label>
-                        <div id="additionalImagesContainer" class="additional-images-list">
-                            <!-- Dynamically added images -->
-                        </div>
-                        <button type="button" class="btn btn-secondary btn-sm"
-                            onclick="addAdditionalImageField('additionalImagesContainer')">➕ إضافة صورة أخرى</button>
                     </div>
                     <button type="submit" class="btn btn-primary">نشر المقال</button>
                 </form>
@@ -777,6 +840,24 @@
             </div>
         </div>
     </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-nav">
+                <a href="/" data-i18n="nav.home">الرئيسية</a>
+                <a href="/about-us" data-i18n="nav.about">من نحن</a>
+                <a href="/blog" data-i18n="nav.blog">المدونة</a>
+                <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
+                <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
+                <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
+            </div>
+            <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
 
     <!-- Edit Article Modal -->
     <div id="editModal" class="edit-modal" style="display: none;">
@@ -843,61 +924,18 @@
                 </div>
                 <!-- Content Fields -->
                 <div class="form-group">
-                    <label for="editContentAr">محتوى المقال (بالعربية) *</label>
-                    <p class="field-hint" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-                        💡 استخدم <code>[COVER]</code> أو <code>[IMAGE_1]</code> لتحديد مكان ظهور الصور في النص.
-                    </p>
-                    <textarea id="editContentAr" class="input-field textarea-field" dir="rtl" required></textarea>
+                    <label for="editEditorAr">محتوى المقال (بالعربية) *</label>
+                    <div id="editEditorAr" class="quill-editor-container"></div>
                 </div>
                 <div class="form-group">
-                    <textarea id="editContentEn" class="input-field textarea-field" dir="ltr"></textarea>
-                </div>
-
-                <!-- Simple Formatting Toolbar for English (Edit) -->
-                <div class="formatting-toolbar"
-                    style="margin-bottom: 2rem; display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-                    <button type="button" class="toolbar-btn" onclick="formatText('editContentEn', 'bold')" title="Bold"
-                        style="font-weight: bold; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">B</button>
-                    <button type="button" class="toolbar-btn" onclick="formatText('editContentEn', 'italic')"
-                        title="Italic"
-                        style="font-style: italic; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">I</button>
-                    <button type="button" class="toolbar-btn" onclick="formatText('editContentEn', 'underline')"
-                        title="Underline"
-                        style="text-decoration: underline; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">U</button>
-                    <span style="border-left: 1px solid var(--border-color); margin: 0 0.5rem;"></span>
-                    <span style="color: var(--text-muted); font-size: 0.8rem; align-self: center;">Format English
-                        Content</span>
-                </div>
-
-                <!-- Simple Formatting Toolbar for Edit -->
-                <div class="formatting-toolbar"
-                    style="margin-bottom: 1rem; display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-                    <button type="button" class="toolbar-btn" onclick="formatText('editContentAr', 'bold')"
-                        title="خط غامق"
-                        style="font-weight: bold; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">B</button>
-                    <button type="button" class="toolbar-btn" onclick="formatText('editContentAr', 'italic')"
-                        title="خط مائل"
-                        style="font-style: italic; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">I</button>
-                    <button type="button" class="toolbar-btn" onclick="formatText('editContentAr', 'underline')"
-                        title="خط أسفله خط"
-                        style="text-decoration: underline; width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: white; cursor: pointer;">U</button>
-                    <span style="border-left: 1px solid var(--border-color); margin: 0 0.5rem;"></span>
-                    <span style="color: var(--text-muted); font-size: 0.8rem; align-self: center;">تنسيق المحتوى
-                        العربي</span>
+                    <label for="editEditorEn">Content (English)</label>
+                    <div id="editEditorEn" class="quill-editor-container"></div>
                 </div>
                 <!-- Image Upload -->
                 <div class="form-group">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                         <label style="margin-bottom: 0;">الصورة الرئيسية</label>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button type="button" class="btn btn-secondary btn-sm"
-                                onclick="insertAtCursor('editContentAr', '[COVER]')" title="إدراج في العربي">AR
-                                ➕</button>
-                            <button type="button" class="btn btn-secondary btn-sm"
-                                onclick="insertAtCursor('editContentEn', '[COVER]')" title="Insert into English">EN
-                                ➕</button>
-                        </div>
                     </div>
                     <div class="file-upload-wrapper">
                         <input type="file" id="editImageFile" accept="image/*" onchange="previewEditImage(this)">
@@ -908,13 +946,6 @@
                     </div>
                     <input type="hidden" id="editImageUrl" value="">
                     <div id="editImagePreview" style="margin-top: 0.5rem;"></div>
-                </div>
-                <!-- Additional Images -->
-                <div class="form-group">
-                    <label>صور إضافية</label>
-                    <div id="editAdditionalImagesContainer" class="additional-images-list"></div>
-                    <button type="button" class="btn btn-secondary btn-sm"
-                        onclick="addAdditionalImageField('editAdditionalImagesContainer')">➕ إضافة صورة أخرى</button>
                 </div>
                 <!-- Buttons -->
                 <div style="display: flex; gap: 1rem; margin-top: 1rem;">
@@ -966,12 +997,82 @@
         }
     </style>
 
+    <script src="/js/i18n.js"></script>
+    <script src="/js/i18n-integration.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/reveal.js"></script>
+
     <script>
         const API_URL = '/api';
         let authToken = null;
+        let quillAr, quillEn, editQuillAr, editQuillEn;
+
+        // Custom image uploader selector function
+        function selectLocalImage(quillInstance) {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+
+            input.onchange = async () => {
+                const file = input.files[0];
+                if (/^image\//.test(file.type)) {
+                    try {
+                        showMessage('جاري رفع الصورة...', 'success');
+                        const url = await uploadImage(file);
+                        const range = quillInstance.getSelection(true);
+                        quillInstance.insertEmbed(range.index, 'image', url);
+                        showMessage('تم رفع الصورة وإدراجها بنجاح!', 'success');
+                    } catch (err) {
+                        showMessage('فشل في رفع الصورة: ' + err.message, 'error');
+                    }
+                } else {
+                    showMessage('يرجى اختيار ملف صورة صالح', 'error');
+                }
+            };
+        }
 
         // Check if already logged in (verify with server)
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Quill Editors
+            const toolbarOptions = [
+                ['bold', 'italic', 'underline', 'blockquote'],
+                [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': false }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                ['link', 'image'],
+                ['clean']
+            ];
+
+            quillAr = new Quill('#editorAr', {
+                theme: 'snow',
+                modules: { toolbar: toolbarOptions },
+                placeholder: 'المحتوى بالعربية...'
+            });
+            quillAr.getModule('toolbar').addHandler('image', () => selectLocalImage(quillAr));
+
+            quillEn = new Quill('#editorEn', {
+                theme: 'snow',
+                modules: { toolbar: toolbarOptions },
+                placeholder: 'Content in English...'
+            });
+            quillEn.getModule('toolbar').addHandler('image', () => selectLocalImage(quillEn));
+
+            editQuillAr = new Quill('#editEditorAr', {
+                theme: 'snow',
+                modules: { toolbar: toolbarOptions },
+                placeholder: 'المحتوى بالعربية...'
+            });
+            editQuillAr.getModule('toolbar').addHandler('image', () => selectLocalImage(editQuillAr));
+
+            editQuillEn = new Quill('#editEditorEn', {
+                theme: 'snow',
+                modules: { toolbar: toolbarOptions },
+                placeholder: 'Content in English...'
+            });
+            editQuillEn.getModule('toolbar').addHandler('image', () => selectLocalImage(editQuillEn));
+
             const savedToken = sessionStorage.getItem('adminToken');
             if (savedToken) {
                 // Verify token with server
@@ -1109,28 +1210,13 @@
             const authorEn = document.getElementById('authorEn').value.trim();
             const authorBioAr = document.getElementById('authorBioAr').value.trim();
             const authorBioEn = document.getElementById('authorBioEn').value.trim();
-            const contentAr = document.getElementById('contentAr').value.trim();
-            const contentEn = document.getElementById('contentEn').value.trim();
+            const isContentArEmpty = quillAr.getText().trim() === '';
+            const contentAr = isContentArEmpty ? '' : quillAr.root.innerHTML;
+            const isContentEnEmpty = quillEn.getText().trim() === '';
+            const contentEn = isContentEnEmpty ? '' : quillEn.root.innerHTML;
             const slug = document.getElementById('articleSlug').value.trim();
 
-            // Get images
             const images = [];
-            document.querySelectorAll('#additionalImagesContainer .additional-image-item').forEach(item => {
-                const url = item.querySelector('.img-url').value.trim();
-                const captionAr = item.querySelector('.img-caption-ar').value.trim();
-                const captionEn = item.querySelector('.img-caption-en').value.trim();
-                const alignment = item.querySelector('.img-alignment').value;
-                console.log('📸 Found additional image:', { url, captionAr, captionEn, alignment });
-                if (url) {
-                    images.push({
-                        url: url,
-                        caption: { ar: captionAr, en: captionEn || captionAr },
-                        alignment: alignment,
-                        position: 50
-                    });
-                }
-            });
-            console.log('📸 Total additional images:', images.length, images);
 
             // Get image from upload only
             let image = '';
@@ -1184,6 +1270,8 @@
                     } else {
                         showMessage('تم نشر المقال بنجاح! ✅', 'success');
                         document.getElementById('articleForm').reset();
+                        quillAr.setContents([]);
+                        quillEn.setContents([]);
                         removeImage();
                         loadArticles();
                     }
@@ -1386,8 +1474,14 @@
             document.getElementById('editAuthorEn').value = article.author.en || '';
             document.getElementById('editAuthorBioAr').value = (article.authorBio && article.authorBio.ar) || '';
             document.getElementById('editAuthorBioEn').value = (article.authorBio && article.authorBio.en) || '';
-            document.getElementById('editContentAr').value = article.content.ar || article.content || '';
-            document.getElementById('editContentEn').value = article.content.en || '';
+            // Load content into Quill editors
+            const rawContentAr = article.content.ar || article.content || '';
+            const rawContentEn = article.content.en || '';
+            const isHtmlAr = /<[a-z][\s\S]*>/i.test(rawContentAr);
+            const isHtmlEn = /<[a-z][\s\S]*>/i.test(rawContentEn);
+            editQuillAr.root.innerHTML = isHtmlAr ? rawContentAr : rawContentAr.replace(/\n/g, '<br>');
+            editQuillEn.root.innerHTML = isHtmlEn ? rawContentEn : rawContentEn.replace(/\n/g, '<br>');
+
             document.getElementById('editArticleSlug').value = article.slug || '';
             document.getElementById('editImageUrl').value = article.image || '';
 
@@ -1395,15 +1489,6 @@
             const fontSize = article.titleFontSize || 3.5;
             document.getElementById('editTitleFontSize').value = fontSize;
             document.getElementById('editTitleFontSizeVal').textContent = fontSize + 'rem';
-
-            // Populate additional images
-            const imagesContainer = document.getElementById('editAdditionalImagesContainer');
-            imagesContainer.innerHTML = '';
-            if (article.images && article.images.length > 0) {
-                article.images.forEach(img => {
-                    addAdditionalImageField('editAdditionalImagesContainer', img);
-                });
-            }
 
             // Show image preview if exists
             const preview = document.getElementById('editImagePreview');
@@ -1421,6 +1506,8 @@
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
             document.getElementById('editArticleForm').reset();
+            editQuillAr.setContents([]);
+            editQuillEn.setContents([]);
             document.getElementById('editImagePreview').innerHTML = '';
         }
 
@@ -1435,8 +1522,10 @@
             const authorEn = document.getElementById('editAuthorEn').value.trim();
             const authorBioAr = document.getElementById('editAuthorBioAr').value.trim();
             const authorBioEn = document.getElementById('editAuthorBioEn').value.trim();
-            const contentAr = document.getElementById('editContentAr').value.trim();
-            const contentEn = document.getElementById('editContentEn').value.trim();
+            const isContentArEmpty = editQuillAr.getText().trim() === '';
+            const contentAr = isContentArEmpty ? '' : editQuillAr.root.innerHTML;
+            const isContentEnEmpty = editQuillEn.getText().trim() === '';
+            const contentEn = isContentEnEmpty ? '' : editQuillEn.root.innerHTML;
             const slug = document.getElementById('editArticleSlug').value.trim();
             
             // Get image - upload new one if selected, otherwise keep current
@@ -1455,20 +1544,6 @@
 
             // Get images
             const images = [];
-            document.querySelectorAll('#editAdditionalImagesContainer .additional-image-item').forEach(item => {
-                const url = item.querySelector('.img-url').value.trim();
-                const captionAr = item.querySelector('.img-caption-ar').value.trim();
-                const captionEn = item.querySelector('.img-caption-en').value.trim();
-                const alignment = item.querySelector('.img-alignment').value;
-                if (url) {
-                    images.push({
-                        url: url,
-                        caption: { ar: captionAr, en: captionEn || captionAr },
-                        alignment: alignment,
-                        position: 50
-                    });
-                }
-            });
 
             if (!titleAr || !contentAr) {
                 showMessage('يرجى ملء الحقول المطلوبة', 'error');
@@ -1523,125 +1598,6 @@
             }
         });
 
-        function addAdditionalImageField(containerId, data = null) {
-            const container = document.getElementById(containerId);
-            const div = document.createElement('div');
-            div.className = 'additional-image-item card';
-            div.style.padding = '0.75rem';
-            div.style.marginBottom = '1rem';
-            div.style.border = '1px solid var(--border-color)';
-            div.style.background = 'var(--bg-secondary)';
-
-            const count = container.querySelectorAll('.additional-image-item').length + 1;
-            const targetAr = containerId === 'additionalImagesContainer' ? 'contentAr' : 'editContentAr';
-            const targetEn = containerId === 'additionalImagesContainer' ? 'contentEn' : 'editContentEn';
-            const uniqueId = 'addImg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-
-            div.innerHTML = `
-                <div style="display: flex; gap: 0.5rem; flex-direction: column;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <span style="font-weight: bold; color: var(--accent-primary);">📸 صورة إضافية #${count}</span>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="insertAtCursor('${targetAr}', '[IMAGE_${count}]')" title="إدراج في العربي">AR ➕</button>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="insertAtCursor('${targetEn}', '[IMAGE_${count}]')" title="Insert into English">EN ➕</button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.additional-image-item').remove()">✕</button>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
-                        <input type="file" class="input-field img-file" id="${uniqueId}" accept="image/*" style="flex: 1;" onchange="handleAdditionalImageUpload(this)">
-                        <input type="hidden" class="img-url" value="${data ? escapeHtml(data.url) : ''}">
-                        <select class="input-field img-alignment" style="width: auto; min-width: 100px;">
-                            <option value="full" ${data && data.alignment === 'full' ? 'selected' : ''}>عرض كامل</option>
-                            <option value="left" ${data && data.alignment === 'left' ? 'selected' : ''}>يسار (نص جانبي)</option>
-                            <option value="right" ${data && data.alignment === 'right' ? 'selected' : ''}>يمين (نص جانبي)</option>
-                        </select>
-                    </div>
-                    ${data && data.url ? `<div style="margin-bottom: 0.5rem;"><img src="${escapeHtml(data.url)}" style="max-width: 200px; max-height: 150px; border-radius: 4px;"></div>` : ''}
-                    <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" class="input-field img-caption-ar" placeholder="الوصف (عربي)" value="${data && data.caption ? escapeHtml(data.caption.ar || '') : ''}" style="flex: 1;">
-                        <input type="text" class="input-field img-caption-en" placeholder="Caption (English)" value="${data && data.caption ? escapeHtml(data.caption.en || '') : ''}" style="flex: 1;">
-                    </div>
-                </div>
-            `;
-            container.appendChild(div);
-        }
-
-        async function handleAdditionalImageUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            console.log('🖼️ Starting additional image upload:', file.name);
-
-            try {
-                input.disabled = true;
-                showMessage('جاري رفع الصورة...', 'success');
-                
-                const imageUrl = await uploadImage(file);
-                console.log('✅ Image uploaded successfully:', imageUrl);
-                
-                const hiddenInput = input.parentElement.querySelector('.img-url');
-                if (hiddenInput) {
-                    hiddenInput.value = imageUrl;
-                    console.log('✅ Hidden input updated with URL');
-                } else {
-                    console.error('❌ Hidden input not found!');
-                }
-
-                // Remove existing preview if any
-                const existingPreview = input.parentElement.parentElement.querySelector('.img-preview');
-                if (existingPreview) {
-                    existingPreview.remove();
-                }
-
-                // Show preview
-                const previewDiv = document.createElement('div');
-                previewDiv.className = 'img-preview';
-                previewDiv.style.marginBottom = '0.5rem';
-                previewDiv.innerHTML = `<img src="${imageUrl}" style="max-width: 200px; max-height: 150px; border-radius: 4px; border: 1px solid var(--border-color);">`;
-                input.parentElement.parentElement.insertBefore(previewDiv, input.parentElement.nextSibling);
-
-                showMessage('تم رفع الصورة بنجاح ✓', 'success');
-            } catch (error) {
-                console.error('❌ Error uploading image:', error);
-                showMessage('خطأ في رفع الصورة: ' + error.message, 'error');
-            } finally {
-                input.disabled = false;
-            }
-        }
-
-        function insertAtCursor(fieldId, text) {
-            const field = document.getElementById(fieldId);
-            if (!field) return;
-            const start = field.selectionStart;
-            const end = field.selectionEnd;
-            const val = field.value;
-            field.value = val.substring(0, start) + text + val.substring(end);
-            field.focus();
-            field.selectionStart = field.selectionEnd = start + text.length;
-        }
-
-        function formatText(fieldId, type) {
-            const field = document.getElementById(fieldId);
-            if (!field) return;
-
-            const start = field.selectionStart;
-            const end = field.selectionEnd;
-            const selectedText = field.value.substring(start, end);
-
-            let before = '';
-            let after = '';
-
-            if (type === 'bold') { before = '**'; after = '**'; }
-            if (type === 'italic') { before = '*'; after = '*'; }
-            if (type === 'underline') { before = '__'; after = '__'; }
-
-            const newText = before + selectedText + after;
-            field.value = field.value.substring(0, start) + newText + field.value.substring(end);
-
-            field.focus();
-            field.selectionStart = start + before.length;
-            field.selectionEnd = field.selectionStart + selectedText.length;
-        }
 
         // Show message
         function showMessage(text, type) {

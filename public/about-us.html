@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحريرها | من نحن</title>
+    <meta name="description" content="تعرّف على مهمة حملة تحريرها ونهجنا والفريق وراء الحملة الوطنية لحماية الطفولة.">
+
+    <!-- Theme flash prevention script (inline) -->
+    <script>
+        (function(){
+            var t=localStorage.getItem('theme');
+            if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+                document.documentElement.classList.add('dark-mode');
+            }
+            var l=localStorage.getItem('preferred_language');
+            if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}
+        })();
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation (shared structure) -->
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/" class="nav-logo"><img src="/assets/images/1_20251127_202518.png" alt="HerLiberation"></a>
+            <ul class="nav-links" role="menubar">
+                <li><a href="/" class="nav-link" data-page="home" data-i18n="nav.home">الرئيسية</a></li>
+                <li><a href="/campaigns" class="nav-link" data-page="campaigns" data-i18n="nav.campaign">الحملات</a></li>
+                <li><a href="/blog" class="nav-link" data-page="blog" data-i18n="nav.blog">المدونة</a></li>
+                <li><a href="/programs" class="nav-link" data-page="programs" data-i18n="nav.tracks">البرامج</a></li>
+                <li><a href="/about-us" class="nav-link" data-page="about" data-i18n="nav.about">من نحن</a></li>
+                <li><a href="/contact" class="nav-link" data-page="contact" data-i18n="nav.contact">تواصل</a></li>
+                <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">تبرع</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+                <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language"><span class="lang-icon">EN</span></button>
+                <button class="nav-hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Content -->
+    <main id="pageContent">
+
+        <!-- About Page Header -->
+        <section class="about-hero-section reveal-on-scroll">
+            <div class="about-hero-content">
+                <h1 class="about-hero-title" data-i18n="about_page.title">منظمة تحريرها</h1>
+                <p class="about-hero-description" data-i18n="about_page.description">رسالتنا وأهدافنا ونهجنا في العمل</p>
+            </div>
+        </section>
+
+        <!-- Mission Statement Section (reuses .mission-section-premium design) -->
+        <section class="mission-section-premium">
+            <div class="mission-container">
+                <div class="mission-visual-grid reveal-on-scroll">
+                    <div class="mission-img-card card-large">
+                        <img src="/assets/images/happy-schoolgirls.png" alt="Happy school girls running and smiling">
+                    </div>
+                  
+                  
+                </div>
+
+                <div class="mission-text-content reveal-on-scroll">
+                    <span class="section-subtitle-text" data-i18n="mission.subtitle">رسالتنا وأهدافنا</span>
+                    <h2 class="mission-header-title" data-i18n="mission.title">نحن في مهمة لحماية <span>مستقبل الطفولة</span></h2>
+                    <p class="hero-description-main" data-i18n="mission.description">نسعى من خلال حملة تحريرها إلى حشد الدعم والمناصرة لإصلاح الثغرات القانونية التي تسمح بزواج الأطفال والفتيات دون سن 18 عاماً في العراق، وتثقيف المجتمع لضمان حقوق الطفلة كاملة.</p>
+
+                    <div class="mission-blocks-grid">
+                        <div class="mission-block-item">
+                            <div class="mission-block-num">01</div>
+                            <div class="mission-block-text">
+                                <h4 data-i18n="mission.point1_title">التوعية القانونية</h4>
+                                <p data-i18n="mission.point1_desc">شرح وتبسيط نصوص القوانين وإظهار المفارقات التشريعية التي تسلب القاصرات حريتهن الأهلية.</p>
+                            </div>
+                        </div>
+
+                        <div class="mission-block-item">
+                            <div class="mission-block-num">02</div>
+                            <div class="mission-block-text">
+                                <h4 data-i18n="mission.point2_title">قصص واقعية ونشر الأثر</h4>
+                                <p data-i18n="mission.point2_desc">توثيق الواقع المؤلم في المحافظات ونقل أصوات الضحايا لكسر حاجز الصمت المجتمعي.</p>
+                            </div>
+                        </div>
+
+                        <div class="mission-block-item">
+                            <div class="mission-block-num">03</div>
+                            <div class="mission-block-text">
+                                <h4 data-i18n="mission.point3_title">الاستفتاء والمناصرة</h4>
+                                <p data-i18n="mission.point3_desc">إتاحة منصة تفاعلية للاستفتاء الشعبي لجمع وتوثيق آراء المواطنين الداعمة للحد الأدنى لسن الزواج.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team / Approach Section -->
+        <section class="about-approach-section">
+            <div class="about-approach-container">
+                <div class="about-approach-header reveal-on-scroll">
+                    <span class="section-subtitle-text" data-i18n="about_page.approach_subtitle">نهجنا في العمل</span>
+                    <h2 class="about-approach-title" data-i18n="about_page.approach_title">كيف نعمل من أجل التغيير</h2>
+                </div>
+
+                <div class="about-cards-grid">
+                    <div class="about-card reveal-on-scroll">
+                        <div class="about-card-icon">📢</div>
+                        <h3 class="about-card-title" data-i18n="about_page.card1_title">المناصرة الرقمية</h3>
+                        <p class="about-card-desc" data-i18n="about_page.card1_desc">نستخدم المنصات الرقمية لنشر الوعي وتحفيز النقاش المجتمعي حول حقوق الطفلة والتشريعات القانونية.</p>
+                    </div>
+
+                    <div class="about-card reveal-on-scroll">
+                        <div class="about-card-icon">🤝</div>
+                        <h3 class="about-card-title" data-i18n="about_page.card2_title">الشراكات المجتمعية</h3>
+                        <p class="about-card-desc" data-i18n="about_page.card2_desc">نتعاون مع منظمات المجتمع المدني والمؤسسات الحكومية لتعزيز حماية الطفولة وتفعيل القوانين.</p>
+                    </div>
+
+                    <div class="about-card reveal-on-scroll">
+                        <div class="about-card-icon">📊</div>
+                        <h3 class="about-card-title" data-i18n="about_page.card3_title">البحث والتوثيق</h3>
+                        <p class="about-card-desc" data-i18n="about_page.card3_desc">نجمع البيانات ونوثق القصص الواقعية لتقديم أدلة قوية تدعم مطالب الإصلاح التشريعي.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer (shared structure) -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-nav">
+                <a href="/" data-i18n="nav.home">الرئيسية</a>
+                <a href="/about-us" data-i18n="nav.about">من نحن</a>
+                <a href="/blog" data-i18n="nav.blog">المدونة</a>
+                <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
+                <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
+                <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
+            </div>
+            <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Shared Scripts -->
+    <script src="/js/i18n.js"></script>
+    <script src="/js/i18n-integration.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/reveal.js"></script>
+</body>
+</html>

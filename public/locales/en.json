@@ -13,6 +13,20 @@
         "slogan_ar": "Before 18: A Child, Not a Wife",
         "slogan_en": "Under 18: A Child, Not a Wife"
     },
+    "campaigns_page": {
+        "title": "Our Campaigns",
+        "description": "The advocacy and awareness campaigns we launch to protect children's rights and empower communities.",
+        "status_active": "Active Campaign",
+        "view_campaign": "View Campaign →",
+        "back": "← Back to Campaigns"
+    },
+    "home_hero": {
+        "tagline": "HerLiberation Platform",
+        "title": "Toward a society that protects its children and safeguards girls' rights",
+        "description": "A national advocacy and awareness platform working to protect children's rights and empower communities through campaigns, educational content, and programs.",
+        "cta_primary": "Explore Our Campaigns",
+        "cta_secondary": "About Us"
+    },
     "hero": {
         "title_word1": "A Wife",
         "title_word2": "or",
@@ -30,13 +44,15 @@
         "percentage_text": "Rate of child marriage (under 18)",
         "source": "Source: Central Statistical Organization / UNICEF",
         "detail1": "1 in 4 Iraqi girls is married as a child",
+        "detail1_desc": "Married while still a child under the legal age",
         "detail2": "Southern provinces recorded the highest rates",
         "continue_button": "Understand How the Law Allows This"
     },
     "navigation": {
-        "rights": "Rights",
-        "map": "Map",
-        "articles": "Blog"
+        "rights": "Rights & Capacity",
+        "map": "Provinces Reality",
+        "articles": "Blog & Facts",
+        "cta_btn": "Join Campaign"
     },
     "age_selector": {
         "title": "Select the child's age",
@@ -184,6 +200,7 @@
         "title": "Map of Pain Across Provinces",
         "select_province": "Click on a province name to view the reality",
         "type_label": "Pattern:",
+        "rate_label": "Child marriage rate (under 18)",
         "consequences_title": "⚠️ What Does This Reality Mean for Girls?",
         "consequence1": "🔴 Increased sexual and physical violence",
         "consequence2": "🔴 Significant health risks during pregnancy and childbirth",
@@ -219,10 +236,89 @@
             "rate": "15.9%",
             "type": "Traditions",
             "story": "Samar (15 years old) was married by her father to an older man with an unregistered contract, and the marriage ended quickly for her to enter a legal struggle to prove her rights and the rights of her child."
+        },
+        {
+            "name": "Al-Anbar",
+            "rate": "12.4%",
+            "type": "[Sample] Tribal",
+            "story": "[Sample] Amna (14 years old) dropped out of school after being married to her cousin, and dreams of returning to complete her education."
+        },
+        {
+            "name": "Najaf",
+            "rate": "17.1%",
+            "type": "[Sample] Social",
+            "story": "[Sample] Zahraa (13 years old) was forced into marriage to pay off her family's debt, and suffers from isolation from her friends."
+        },
+        {
+            "name": "Babil",
+            "rate": "19.8%",
+            "type": "[Sample] Economic",
+            "story": "[Sample] Ruqaya (15 years old) was deprived of her dream of becoming a doctor after an early marriage imposed by circumstances."
+        },
+        {
+            "name": "Baghdad",
+            "rate": "14.2%",
+            "type": "[Sample] Urban",
+            "story": "[Sample] Maryam (16 years old) faced family pressure to marry despite her academic excellence."
+        },
+        {
+            "name": "Al-Qadisiyah",
+            "rate": "20.3%",
+            "type": "[Sample] Rural",
+            "story": "[Sample] Fatima (13 years old) was married in a remote village far from any healthcare or education."
+        },
+        {
+            "name": "Al-Muthanna",
+            "rate": "22.7%",
+            "type": "[Sample] Poverty",
+            "story": "[Sample] Noor (14 years old) was married early due to poverty, and gave birth before her body fully developed."
+        },
+        {
+            "name": "Dhi Qar",
+            "rate": "24.1%",
+            "type": "[Sample] Tribal",
+            "story": "[Sample] Huda (12 years old) was forced into marriage to end a tribal dispute between two families."
+        },
+        {
+            "name": "Wasit",
+            "rate": "16.6%",
+            "type": "[Sample] Social",
+            "story": "[Sample] Saja (15 years old) was prevented by her husband from completing her studies after early marriage."
+        },
+        {
+            "name": "Ninawa",
+            "rate": "13.9%",
+            "type": "[Sample] Displacement",
+            "story": "[Sample] Reem (14 years old) was married during displacement fleeing war conditions and loss of shelter."
+        },
+        {
+            "name": "Salah al-Din",
+            "rate": "15.2%",
+            "type": "[Sample] Traditions",
+            "story": "[Sample] Duaa (13 years old) was pulled from school and married under pressure from local traditions."
+        },
+        {
+            "name": "Diyala",
+            "rate": "18.5%",
+            "type": "[Sample] Social",
+            "story": "[Sample] Lama (15 years old) suffered health problems due to early pregnancy after marriage."
+        },
+        {
+            "name": "Erbil",
+            "rate": "9.7%",
+            "type": "[Sample] Legal",
+            "story": "[Sample] Shereen (16 years old) received early marriage permission but regrets losing her youth years."
+        },
+        {
+            "name": "Sulaymaniyah",
+            "rate": "8.9%",
+            "type": "[Sample] Social",
+            "story": "[Sample] Avin (15 years old) left her sports ambitions after an early marriage that changed her life path."
         }
     ],
     "articles": {
-        "title": "Our Blog ✨",
+        "title": "Our Blog",
+        "subtitle": "Articles and awareness facts on children's rights and protecting girls.",
         "loading": "Loading blog...",
         "no_articles": "No articles currently available",
         "read_more": "Read More",
@@ -233,9 +329,19 @@
         "description": "Share this website to raise community awareness about the dangers of child marriage",
         "copy_link": "Copy Link",
         "link_copied": "Copied!",
-        "whatsapp": "WhatsApp"
+        "share_whatsapp": "WhatsApp"
+    },
+    "nav": {
+        "home": "Home",
+        "about": "About Us",
+        "blog": "Blog",
+        "donate": "Donate",
+        "contact": "Contact",
+        "tracks": "Programs",
+        "campaign": "Campaigns"
     },
     "footer": {
+        "copyright": "© 2025 HerLiberation. All rights reserved.",
         "follow_us": "Follow Us"
     },
     "share": {
@@ -243,13 +349,123 @@
         "whatsapp_text": "Discover children's rights under the law and the dangers of early marriage"
     },
     "poll": {
-        "title": "Poll: Minimum Marriage Age 18 without any judicial exceptions?",
-        "question": "Do you agree that the minimum age for marriage should be 18?",
+        "title": "Minimum Marriage Age Referendum",
+        "title_short": "Poll",
+        "question": "Do you agree that the minimum age for marriage should be 18 without any judicial exceptions?",
         "agree": "Yes, I agree (18+)",
         "disagree": "No, I disagree",
         "thanks": "Thank you for sharing your opinion!",
         "results_title": "Voting Results:",
         "agree_label": "Supporters",
         "disagree_label": "Opponents"
+    },
+    "hero_extra": {
+        "visual_quote": "When a child marries, she loses her right to dream and shape her own future.",
+        "visual_sub": "HerLiberation National Campaign"
+    },
+    "stats_extra": {
+        "deprivation_title": "Deprivation of Rights",
+        "deprivation_desc": "Deprived of education, ownership, and legal autonomy"
+    },
+    "age_selector_extra": {
+        "description": "Discover how Iraqi law defines a girl's rights based on her age and the paradox of her eligibility for early marriage.",
+        "years_9": "9 Years",
+        "years_15": "15 Years",
+        "years_18": "18 Years"
+    },
+    "supporters": {
+        "title": "Partners & Campaigns Supporting Child Protection"
+    },
+    "mission": {
+        "subtitle": "Our Mission & Goals",
+        "title": "We are on a mission to protect the future of childhood",
+        "description": "Through HerLiberation, we seek to mobilize support and advocacy to reform legal loopholes that allow child marriage in Iraq, and educate the community to guarantee girls' full rights.",
+        "point1_title": "Legal Awareness",
+        "point1_desc": "Explaining and simplifying legal texts, exposing legislative paradoxes that strip minors of their capacity.",
+        "point2_title": "Real Stories & Impact",
+        "point2_desc": "Documenting the painful reality in provinces and amplifying survivors' voices to break the societal silence.",
+        "point3_title": "Referendum & Advocacy",
+        "point3_desc": "Providing an interactive referendum platform to collect and document citizens' support for a minimum marriage age."
+    },
+    "testimonials": {
+        "quote1": "I dreamed of becoming a teacher, but they took my books and school bag, and dressed me in a white dress I didn't understand. I became a mother while I still needed my mother's hug.",
+        "author1_name": "Warda",
+        "author1_title": "Married at 13 - Maysan Province",
+        "quote2": "Early marriage is not just a social contract; it is a complete elimination of childhood and a girl's legal capacity. We must stop this bleeding and firmly amend the laws.",
+        "author2_name": "Dr. Sara Al-Ali",
+        "author2_title": "Human rights activist and social researcher - Baghdad"
+    },
+    "article": {
+        "back_to_blog": "Back to Blog",
+        "suggested_title": "Suggested articles for you"
+    },
+    "donate_page": {
+        "title": "Support Our Organization",
+        "description": "Your contribution helps protect childhood and empower communities.",
+        "purposes_title": "How Your Donation Makes a Difference",
+        "purpose1_title": "Education & Awareness",
+        "purpose1_desc": "Supporting legal awareness and educational programs for girls and local communities.",
+        "purpose2_title": "Legal Advocacy",
+        "purpose2_desc": "Funding advocacy campaigns to reform legislative loopholes that allow child marriage.",
+        "purpose3_title": "Community Programs",
+        "purpose3_desc": "Empowering local communities through workshops and support programs for survivors.",
+        "how_to_title": "How to Donate",
+        "how_to_desc": "To donate or inquire about ways to contribute, please contact us directly.",
+        "contact_btn": "Contact Us to Donate"
+    },
+    "contact_page": {
+        "title": "Contact",
+        "description": "Reach out to collaborate with us on advocacy and education.",
+        "info_title": "Contact Information",
+        "follow_btn": "Follow",
+        "email_btn": "Email Us",
+        "email_title": "Email",
+        "facebook_title": "Facebook",
+        "facebook_link": "Our Facebook Page",
+        "twitter_title": "Twitter / X",
+        "instagram_title": "Instagram",
+        "partnerships_title": "Partnership Opportunities",
+        "partnerships_desc": "We believe collaboration is the key to change. We welcome partnerships with organizations and institutions that share our vision for childhood protection and community empowerment.",
+        "partner_ngo_title": "NGOs",
+        "partner_ngo_desc": "Collaborating on joint awareness and advocacy programs to combat child marriage.",
+        "partner_edu_title": "Educational Institutions",
+        "partner_edu_desc": "Developing awareness curricula and educational workshops on children's rights.",
+        "partner_media_title": "Media",
+        "partner_media_desc": "Media coverage and press reports to highlight childhood protection issues.",
+        "partner_tech_title": "Tech Companies",
+        "partner_tech_desc": "Technical support and developing digital tools to enhance reach and community impact.",
+        "collaborate_title": "How We Collaborate",
+        "collaborate_desc": "Reach out via email or social media to discuss collaboration opportunities. We are open to new ideas and joint initiatives.",
+        "collaborate_btn": "Send Us a Message"
+    },
+    "tracks_page": {
+        "title": "Our Programs",
+        "description": "Educational programs and workshops designed to build skills and digital empowerment.",
+        "coming_soon": "Programs are under development... Stay tuned! 🚀",
+        "track1_title": "Web Development",
+        "track1_desc": "Learn to build modern, responsive websites using HTML, CSS, and JavaScript fundamentals.",
+        "track2_title": "Digital Skills",
+        "track2_desc": "Master essential digital literacy tools for productivity, communication, and online safety.",
+        "track3_title": "Data & Analytics",
+        "track3_desc": "Explore data analysis, visualization, and evidence-based decision-making techniques.",
+        "track4_title": "Mobile Development",
+        "track4_desc": "Build mobile applications to reach communities and create impact on the go."
+    },
+    "error_page": {
+        "title": "404",
+        "message": "The page you're looking for doesn't exist.",
+        "back_home": "Back to Home"
+    },
+    "about_page": {
+        "title": "HerLiberation Organization",
+        "description": "Our mission, goals, and our approach to work",
+        "approach_subtitle": "Our Approach",
+        "approach_title": "How We Work for Change",
+        "card1_title": "Digital Advocacy",
+        "card1_desc": "We use digital platforms to spread awareness and spark community dialogue about children's rights and legislation.",
+        "card2_title": "Community Partnerships",
+        "card2_desc": "We collaborate with civil society organizations and government institutions to strengthen childhood protection and enforce laws.",
+        "card3_title": "Research & Documentation",
+        "card3_desc": "We collect data and document real stories to provide strong evidence supporting legislative reform demands."
     }
 }

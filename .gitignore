@@ -6,6 +6,8 @@ node_modules/
 
 # Database Fallbacks (Optional to ignore)
 database/
+local_db.json
 
 # IDE files
 .vscode/
+.kiro/

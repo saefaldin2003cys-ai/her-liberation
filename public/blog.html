@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحريرها | المدونة</title>
+    <script>
+        (function(){
+            var t=localStorage.getItem('theme');
+            if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+                document.documentElement.classList.add('dark-mode');
+            }
+            var l=localStorage.getItem('preferred_language');
+            if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}
+        })();
+    </script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/" class="nav-logo">
+                <img src="/assets/images/1_20251127_202518.png" alt="HerLiberation">
+            </a>
+            <ul class="nav-links" role="menubar">
+                <li><a href="/" class="nav-link" data-page="home" data-i18n="nav.home">الرئيسية</a></li>
+                <li><a href="/campaigns" class="nav-link" data-page="campaigns" data-i18n="nav.campaign">الحملات</a></li>
+                <li><a href="/blog" class="nav-link" data-page="blog" data-i18n="nav.blog">المدونة</a></li>
+                <li><a href="/programs" class="nav-link" data-page="programs" data-i18n="nav.tracks">البرامج</a></li>
+                <li><a href="/about-us" class="nav-link" data-page="about" data-i18n="nav.about">من نحن</a></li>
+                <li><a href="/contact" class="nav-link" data-page="contact" data-i18n="nav.contact">تواصل</a></li>
+                <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">تبرع</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language">
+                    <span class="lang-icon">EN</span>
+                </button>
+                <button class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="pageContent">
+        <!-- Blog Hero (card, consistent with other pages) -->
+        <section class="blog-hero reveal-on-scroll">
+            <h1 class="blog-hero-title" data-i18n="articles.title">مدونتنا</h1>
+            <p class="blog-hero-desc" data-i18n="articles.subtitle">مقالات وحقائق توعوية حول حقوق الطفولة وحماية الفتيات.</p>
+        </section>
+
+        <!-- Articles Section -->
+        <section id="articles-section" class="articles-section">
+            <div class="articles-browse">
+                <div id="articlesGrid" class="articles-grid">
+                    <p class="articles-loading" data-i18n="articles.loading">جاري تحميل المدونة...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Article Detail Page (Independent Reader Panel — shown via JS) -->
+        <section id="articlePage" class="article-page hidden">
+            <div class="article-page-container">
+                <div class="article-header-controls">
+                    <button class="article-back-btn" id="articleBack">
+                        <span class="back-icon">←</span>
+                        <span data-i18n="article.back_to_blog">العودة للمدونة</span>
+                    </button>
+                </div>
+                <div id="articleViewContent">
+                    <!-- Content injected dynamically via script.js -->
+                </div>
+                <div class="suggested-articles-section">
+                    <h4 class="suggested-title" data-i18n="article.suggested_title">مقالات مقترحة للقارئ ✨</h4>
+                    <div class="suggested-grid" id="suggestedArticlesGrid">
+                        <!-- Cards injected dynamically via script.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-nav">
+                <a href="/" data-i18n="nav.home">الرئيسية</a>
+                <a href="/about-us" data-i18n="nav.about">من نحن</a>
+                <a href="/blog" data-i18n="nav.blog">المدونة</a>
+                <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
+                <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
+                <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
+            </div>
+            <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="/js/i18n.js"></script>
+    <script src="/js/i18n-integration.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
+    <script src="/js/script.js"></script>
+    <script>
+        // Client-side article routing support
+        if (window.location.pathname.startsWith('/article/')) {
+            document.getElementById('articles-section').style.display = 'none';
+            document.getElementById('articlePage').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

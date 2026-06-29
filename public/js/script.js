@@ -170,7 +170,20 @@ var provincesData = [
     { id: 2, name: 'البصرة', rate: '31.5%', type: 'عشائري', story: '   سارة (12 سنة) أُجبرت على الزواج بسبب ضغوط العائلة والحالة الاقتصادية، واضطرت لترك المدرسة قبل بداية المراهقة' },
     { id: 3, name: 'كربلاء', rate: '31.2%', type: 'اجتماعي', story: 'هالة (14 سنة) زُوّجت لتخفيف أعباء العائلة المالية، وأُبعدت عن أصدقاء المدرسة وحياتها الطبيعية' },
     { id: 4, name: 'دهوك', rate: '18.3%', type: 'قانوني/اجتماعي', story: ' نور (16 سنة) حصلت على إذن قضائي للزواج، لكنها نادمة بسبب فقدان حرية اختيارها والضغوط الاجتماعية المحيطة' },
-    { id: 5, name: 'كركوك', rate: '15.9%', type: 'تقاليد', story: 'سمر (15 سنة) زوّجها والدها لرجل أكبر منها بعقد غير مسجّل، وانتهى الزواج سريعًا لتدخل في صراع قانوني لإثبات حقوقها وحقوق طفلها.' }
+    { id: 5, name: 'كركوك', rate: '15.9%', type: 'تقاليد', story: 'سمر (15 سنة) زوّجها والدها لرجل أكبر منها بعقد غير مسجّل، وانتهى الزواج سريعًا لتدخل في صراع قانوني لإثبات حقوقها وحقوق طفلها.' },
+    { id: 6, name: 'الأنبار', rate: '12.4%', type: '[وهمي] عشائري', story: '[قصة تجريبية] آمنة (14 سنة) تركت المدرسة بعد تزويجها لابن عمها، وتحلم بالعودة لإكمال دراستها.' },
+    { id: 7, name: 'النجف', rate: '17.1%', type: '[وهمي] اجتماعي', story: '[قصة تجريبية] زهراء (13 سنة) أُجبرت على الزواج لتسديد دين العائلة، وتعاني من العزلة عن صديقاتها.' },
+    { id: 8, name: 'بابل', rate: '19.8%', type: '[وهمي] اقتصادي', story: '[قصة تجريبية] رقية (15 سنة) حُرمت من حلمها بأن تصبح طبيبة بعد زواج مبكر فرضته الظروف.' },
+    { id: 9, name: 'بغداد', rate: '14.2%', type: '[وهمي] حضري', story: '[قصة تجريبية] مريم (16 سنة) واجهت ضغوطًا أسرية للزواج رغم تفوقها الدراسي.' },
+    { id: 10, name: 'القادسية', rate: '20.3%', type: '[وهمي] ريفي', story: '[قصة تجريبية] فاطمة (13 سنة) زُوّجت في قرية نائية بعيدًا عن أي رعاية صحية أو تعليمية.' },
+    { id: 11, name: 'المثنى', rate: '22.7%', type: '[وهمي] فقر', story: '[قصة تجريبية] نور (14 سنة) تزوجت مبكرًا بسبب الفقر، وأنجبت قبل أن تكمل نموها الجسدي.' },
+    { id: 12, name: 'ذي قار', rate: '24.1%', type: '[وهمي] عشائري', story: '[قصة تجريبية] هدى (12 سنة) فُرض عليها الزواج لإنهاء نزاع عشائري بين عائلتين.' },
+    { id: 13, name: 'واسط', rate: '16.6%', type: '[وهمي] اجتماعي', story: '[قصة تجريبية] سجى (15 سنة) منعها زوجها من إكمال دراستها بعد زواج مبكر.' },
+    { id: 14, name: 'نينوى', rate: '13.9%', type: '[وهمي] نزوح', story: '[قصة تجريبية] ريم (14 سنة) زُوّجت أثناء النزوح هربًا من ظروف الحرب وفقدان المأوى.' },
+    { id: 15, name: 'صلاح الدين', rate: '15.2%', type: '[وهمي] تقاليد', story: '[قصة تجريبية] دعاء (13 سنة) أُخرجت من المدرسة وزُوّجت تحت ضغط التقاليد المحلية.' },
+    { id: 16, name: 'ديالى', rate: '18.5%', type: '[وهمي] اجتماعي', story: '[قصة تجريبية] لمى (15 سنة) عانت من مشاكل صحية بسبب الحمل المبكر بعد زواجها.' },
+    { id: 17, name: 'أربيل', rate: '9.7%', type: '[وهمي] قانوني', story: '[قصة تجريبية] شيرين (16 سنة) حصلت على إذن زواج مبكر لكنها تأسف لفقدان سنوات شبابها.' },
+    { id: 18, name: 'السليمانية', rate: '8.9%', type: '[وهمي] اجتماعي', story: '[قصة تجريبية] أفين (15 سنة) تركت طموحها في الرياضة بعد زواج مبكر غيّر مسار حياتها.' }
 ];
 
 var statusLabels = {
@@ -199,6 +212,39 @@ function $$(selector) {
 }
 
 // ============================================
+// Toast Notification Helper (Anti-Vibe-Coding)
+// ============================================
+function showToast(message, type) {
+    type = type || 'info';
+    var container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    
+    var icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    if (type === 'error') icon = '❌';
+    if (type === 'warning') icon = '⚠️';
+    
+    toast.innerHTML = '<span>' + icon + '</span><span>' + message + '</span>';
+    container.appendChild(toast);
+    
+    // Auto-remove toast
+    setTimeout(function () {
+        toast.classList.add('fade-out');
+        setTimeout(function () {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
+
+// ============================================
 // Theme
 // ============================================
 function initTheme() {
@@ -210,15 +256,23 @@ function initTheme() {
     }
 }
 
+var lastThemeToggleTime = 0;
 function toggleTheme() {
+    var now = Date.now();
+    if (now - lastThemeToggleTime < 50) {
+        return;
+    }
+    lastThemeToggleTime = now;
     var isDark = document.body.classList.toggle('dark-mode');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     updateThemeIcon(isDark);
 }
 
 function updateThemeIcon(isDark) {
-    var icon = document.querySelector('.theme-icon');
-    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    var icons = document.querySelectorAll('.theme-icon');
+    for (var i = 0; i < icons.length; i++) {
+        icons[i].textContent = isDark ? '☀️' : '🌙';
+    }
 }
 
 // ============================================
@@ -248,11 +302,16 @@ function loadStats() {
 
 function incrementViews() {
     fetch(API_URL + '/stats/view', { method: 'POST' })
-        .then(function (res) { return res.json(); })
+        .then(function (res) {
+            if (!res.ok) throw new Error('API Error');
+            return res.json();
+        })
         .then(function (data) {
-            viewCount = data.views;
-            likeCount = data.likes;
-            updateStatsDisplay();
+            if (data && typeof data.views === 'number') {
+                viewCount = data.views;
+                likeCount = data.likes;
+                updateStatsDisplay();
+            }
         })
         .catch(function () {
             console.warn('⚠️ Could not increment views');
@@ -265,10 +324,15 @@ function toggleLike() {
     localStorage.setItem('hasLiked', 'true');
 
     fetch(API_URL + '/stats/like', { method: 'POST' })
-        .then(function (res) { return res.json(); })
+        .then(function (res) {
+            if (!res.ok) throw new Error('API Error');
+            return res.json();
+        })
         .then(function (data) {
-            likeCount = data.likes;
-            updateStatsDisplay();
+            if (data && typeof data.likes === 'number') {
+                likeCount = data.likes;
+                updateStatsDisplay();
+            }
         })
         .catch(function () {
             likeCount++;
@@ -282,14 +346,34 @@ function toggleLike() {
     }
 }
 
+function animateCounter(element, targetValue) {
+    if (!element) return;
+    var start = 0;
+    var duration = 1500; // 1.5 seconds
+    var startTime = null;
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var progress = Math.min((timestamp - startTime) / duration, 1);
+        var currentValue = Math.floor(progress * targetValue);
+        element.textContent = formatNumber(currentValue);
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            element.textContent = formatNumber(targetValue);
+        }
+    }
+    window.requestAnimationFrame(step);
+}
+
 function updateStatsDisplay() {
     var viewEl = document.getElementById('viewCount');
     var likeEl = document.getElementById('likeCount');
     var headerLikeEl = document.getElementById('headerLikeCount');
 
-    if (viewEl) viewEl.textContent = formatNumber(viewCount);
-    if (likeEl) likeEl.textContent = formatNumber(likeCount);
-    if (headerLikeEl) headerLikeEl.textContent = formatNumber(likeCount);
+    if (viewEl) animateCounter(viewEl, viewCount);
+    if (likeEl) animateCounter(likeEl, likeCount);
+    if (headerLikeEl) animateCounter(headerLikeEl, likeCount);
 }
 
 function formatNumber(num) {
@@ -346,24 +430,45 @@ function stripMarkdown(text) {
 // ============================================
 function startExperience() {
     console.log('🚀 Starting experience - going to Stats Overlay');
-    // Go to Stats Overlay (Page 2)
     var startScreen = document.getElementById('startScreen');
     var statsOverlay = document.getElementById('statsOverlay');
-    if (startScreen) startScreen.classList.add('hidden');
-    if (statsOverlay) statsOverlay.classList.remove('hidden');
+    if (startScreen && statsOverlay) {
+        startScreen.classList.add('fade-out-screen');
+        setTimeout(function() {
+            startScreen.classList.add('hidden');
+            startScreen.classList.remove('fade-out-screen');
+            statsOverlay.classList.remove('hidden');
+            statsOverlay.classList.add('fade-in-screen');
+            setTimeout(function() {
+                statsOverlay.classList.remove('fade-in-screen');
+            }, 500);
+        }, 500);
+    }
 }
 
 function goToMainExperience() {
     console.log('🎯 Going to Main Experience');
-    // Go to Main Experience (Page 3)
     var statsOverlay = document.getElementById('statsOverlay');
     var mainExperience = document.getElementById('mainExperience');
-    if (statsOverlay) statsOverlay.classList.add('hidden');
-    if (mainExperience) mainExperience.classList.remove('hidden');
-    updateRights();
-    updateTimeline();
-    updateImpacts();
-    initMap();
+    if (statsOverlay && mainExperience) {
+        statsOverlay.classList.add('fade-out-screen');
+        setTimeout(function() {
+            statsOverlay.classList.add('hidden');
+            statsOverlay.classList.remove('fade-out-screen');
+            mainExperience.classList.remove('hidden');
+            mainExperience.classList.add('fade-in-screen');
+            setTimeout(function() {
+                mainExperience.classList.remove('fade-in-screen');
+            }, 500);
+            updateRights();
+            updateTimeline();
+            updateImpacts();
+            initMap();
+            loadArticles();
+            loadStats();
+            incrementViews();
+        }, 500);
+    }
 }
 
 // ============================================
@@ -392,23 +497,37 @@ function updateRights() {
         var description = window.i18n ? window.i18n.t('rights_data.' + closestAge + '.' + key + '.description', right.description) : right.description;
         var detailsBtn = window.i18n ? window.i18n.t('rights.view_details', 'عرض التفاصيل') : 'عرض التفاصيل';
 
-        html += '<div class="right-card ' + right.status + '" onclick="showDetails(\'' + key + '\', ' + closestAge + ')">' +
-            '<div class="right-header">' +
-            '<span class="right-icon">' + right.icon + '</span>' +
-            '<div class="right-info">' +
-            '<h4 class="right-title">' + title + '</h4>' +
-            '<span class="right-status status-' + right.status + '">' + statusLabel + '</span>' +
+        html += '<div class="rights-item-card right-card ' + right.status + '" data-right-key="' + key + '" data-right-age="' + closestAge + '">' +
+            '<div class="rights-card-header">' +
+            '<span class="rights-card-icon">' + right.icon + '</span>' +
+            '<h4 class="rights-card-title">' + title + '</h4>' +
             '</div>' +
-            '</div>' +
-            '<p class="right-description">' + description + '</p>' +
-            '<button class="details-btn">' + detailsBtn + '</button>' +
+            '<span class="rights-card-badge status-' + right.status + '">' + statusLabel + '</span>' +
+            '<p class="rights-card-desc">' + description + '</p>' +
+            '<button class="rights-card-action-btn details-btn">' + detailsBtn + '</button>' +
             '</div>';
     }
     container.innerHTML = html;
 }
 
+function updateActiveTabButton(age) {
+    var tabs = document.querySelectorAll('.tab-select-btn');
+    if (tabs.length === 3) {
+        tabs[0].classList.remove('active');
+        tabs[1].classList.remove('active');
+        tabs[2].classList.remove('active');
+        if (age < 15) {
+            tabs[0].classList.add('active');
+        } else if (age < 18) {
+            tabs[1].classList.add('active');
+        } else {
+            tabs[2].classList.add('active');
+        }
+    }
+}
+
 function updateTimeline() {
-    var items = document.querySelectorAll('.timeline-item');
+    var items = document.querySelectorAll('.timeline-item, .timeline-node');
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         var ageRange = item.dataset.age;
@@ -423,6 +542,7 @@ function updateTimeline() {
             item.classList.remove('active');
         }
     }
+    updateActiveTabButton(currentAge);
 }
 
 function updateImpacts() {
@@ -437,9 +557,9 @@ function updateImpacts() {
         // Get translated text
         var text = window.i18n ? window.i18n.t('impact_data.' + closestAge + '.' + i + '.text', impact.text) : impact.text;
 
-        html += '<div class="impact-item ' + impact.type + '">' +
-            '<span class="impact-icon">' + impact.icon + '</span>' +
-            '<span class="impact-text">' + text + '</span>' +
+        html += '<div class="dashboard-impact-item impact-item ' + impact.type + '">' +
+            '<span class="dashboard-impact-icon">' + impact.icon + '</span>' +
+            '<span class="dashboard-impact-text">' + text + '</span>' +
             '</div>';
     }
     container.innerHTML = html;
@@ -538,14 +658,19 @@ var articles = [];
 // ============================================
 // Articles Functions (API)
 // ============================================
-function loadArticles() {
-    console.log('📚 Loading articles...');
+function loadArticles(attempt) {
+    attempt = attempt || 0;
     var grid = document.getElementById('articlesGrid');
     if (!grid) {
-        console.log('⚠️ Articles grid not found, retrying...');
-        setTimeout(loadArticles, 500);
+        // This page has no articles grid (e.g. campaign page). Retry a few
+        // times in case of slow DOM, then stop quietly instead of looping forever.
+        if (attempt < 4) {
+            setTimeout(function () { loadArticles(attempt + 1); }, 500);
+        }
         return;
     }
+
+    console.log('📚 Loading articles...');
 
     fetch(API_URL + '/articles')
         .then(function (res) {
@@ -570,8 +695,10 @@ function loadArticles() {
         })
         .catch(function (err) {
             console.warn('⚠️ Articles API failed:', err);
-            articles = [];
-            renderArticles();
+            // Keep any previously loaded articles instead of wiping them
+            if (articles.length === 0) {
+                renderArticles();
+            }
         });
 }
 
@@ -631,17 +758,17 @@ function renderArticleCard(article) {
         ? '<img src="' + escapeHTML(article.image) + '" alt="' + escapeHTML(title) + '" class="article-image" style="object-position: center ' + imagePosition + '%;">'
         : '<div class="article-image-placeholder"><span class="emoji-icon">📰</span></div>';
 
-    var authorHtml = author ? ' • <span class="emoji-icon">✍️</span> ' + escapeHTML(author) : '';
+    var authorHtml = author ? ' • ' + escapeHTML(author) : '';
 
     return '<article class="article-card">' +
         '<div class="article-image-container">' + imageHtml + '</div>' +
         '<div class="article-body">' +
         '<h4 class="article-title">' + escapeHTML(title) + '</h4>' +
-        '<p class="article-date"><span class="emoji-icon">📅</span> ' + formattedDate + authorHtml + '</p>' +
+        '<p class="article-date">' + formattedDate + authorHtml + '</p>' +
         '<p class="article-excerpt">' + escapeHTML(excerpt) + '</p>' +
         '<hr class="article-divider">' +
         '<div class="article-actions">' +
-        '<button class="read-more-btn" onclick="openArticle(\'' + article._id + '\')">' + readMoreText + '</button>' +
+        '<button class="read-more-btn" data-article-id="' + article._id + '">' + readMoreText + '</button>' +
         '</div>' +
         '</div>' +
         '</article>';
@@ -789,7 +916,7 @@ function openArticle(articleId, fromPopState) {
         '</div>' : '';
 
     var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
-    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" onclick="deleteArticle(\'' + article._id + '\')"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
+    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" data-delete-id="' + article._id + '"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
 
     var breadcrumbHtml = '<div class="article-breadcrumb">' +
         '<span>' + (lang === 'en' ? 'Editorial' : 'قضايا ومقالات') + '</span>' +
@@ -800,7 +927,7 @@ function openArticle(articleId, fromPopState) {
     var shareSectionHtml = '<div class="article-end-share">' +
         '<h4 class="share-title">' + (lang === 'en' ? 'Share this story' : 'شارك هذه القصة') + '</h4>' +
         '<div class="share-buttons-row">' +
-        '<button class="share-btn-big copy" onclick="copyArticleLink(\'' + (article.slug || article._id) + '\')">' +
+        '<button class="share-btn-big copy" data-link-id="' + (article.slug || article._id) + '">' +
         '<span class="btn-icon">🔗</span> <span id="copyLinkTextContent">' + (lang === 'en' ? 'Copy Link' : 'نسخ الرابط') + '</span>' +
         '</button>' +
         '</div>' +
@@ -869,59 +996,69 @@ function renderArticleContent(article) {
     var modalImagePosition = article.imagePosition !== undefined ? article.imagePosition : 50;
     var imageHtml = article.image ? '<img src="' + escapeHTML(article.image) + '" alt="" class="article-modal-image" style="object-position: center ' + modalImagePosition + '%;">' : '';
 
-    var processedContent = escapeHTML(content).replace(/\n/g, '<br>');
-    processedContent = processedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    processedContent = processedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    processedContent = processedContent.replace(/__(.*?)__/g, '<u>$1</u>');
-    
+    var processedContent = '';
     var usedImages = new Set();
     var mainImagePlaced = false;
-
-    if (processedContent.includes('[COVER]')) {
-        if (article.image) {
-            processedContent = processedContent.replace('[COVER]', imageHtml);
-            mainImagePlaced = true;
-        } else {
-            processedContent = processedContent.replace('[COVER]', '');
-        }
-    }
-
-    if (article.images && article.images.length > 0) {
-        for (var k = 0; k < article.images.length; k++) {
-            var placeholder = '[IMAGE_' + (k + 1) + ']';
-            if (processedContent.includes(placeholder)) {
-                var img = article.images[k];
-                var caption = img.caption ? (img.caption[lang] || img.caption.ar) : '';
-                var alignClass = (img.alignment || 'full') === 'full' ? 'align-full' : ('align-' + img.alignment);
-                var inlineImgHtml = '<div class="inline-article-image ' + alignClass + '">' +
-                    '<img src="' + escapeHTML(img.url) + '" alt="' + escapeHTML(caption) + '" class="additional-img">' +
-                    (caption ? '<p class="img-caption">' + escapeHTML(caption) + '</p>' : '') +
-                    '</div>';
-                processedContent = processedContent.replace(placeholder, inlineImgHtml);
-                usedImages.add(k);
-            }
-        }
-    }
-
     var additionalImagesHtml = '';
-    var remainingImages = [];
-    if (article.images && article.images.length > 0) {
-        for (var j = 0; j < article.images.length; j++) {
-            if (!usedImages.has(j)) {
-                remainingImages.push(article.images[j]);
+    var isHtmlContent = /<[a-z][\s\S]*>/i.test(content);
+
+    if (isHtmlContent) {
+        if (window.DOMPurify) {
+            processedContent = DOMPurify.sanitize(content);
+        } else {
+            processedContent = content;
+        }
+    } else {
+        processedContent = escapeHTML(content).replace(/\n/g, '<br>');
+        processedContent = processedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        processedContent = processedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        processedContent = processedContent.replace(/__(.*?)__/g, '<u>$1</u>');
+
+        if (processedContent.includes('[COVER]')) {
+            if (article.image) {
+                processedContent = processedContent.replace('[COVER]', imageHtml);
+                mainImagePlaced = true;
+            } else {
+                processedContent = processedContent.replace('[COVER]', '');
             }
         }
-        if (remainingImages.length > 0) {
-            additionalImagesHtml = '<div class="article-additional-images">';
-            for (var m = 0; m < remainingImages.length; m++) {
-                var rImg = remainingImages[m];
-                var rCaption = rImg.caption ? (rImg.caption[lang] || rImg.caption.ar) : '';
-                additionalImagesHtml += '<div class="additional-image-wrapper">' +
-                    '<img src="' + escapeHTML(rImg.url) + '" alt="' + escapeHTML(rCaption) + '" class="additional-img">' +
-                    (rCaption ? '<p class="img-caption">' + escapeHTML(rCaption) + '</p>' : '') +
-                    '</div>';
+
+        if (article.images && article.images.length > 0) {
+            for (var k = 0; k < article.images.length; k++) {
+                var placeholder = '[IMAGE_' + (k + 1) + ']';
+                if (processedContent.includes(placeholder)) {
+                    var img = article.images[k];
+                    var caption = img.caption ? (img.caption[lang] || img.caption.ar) : '';
+                    var alignClass = (img.alignment || 'full') === 'full' ? 'align-full' : ('align-' + img.alignment);
+                    var inlineImgHtml = '<div class="inline-article-image ' + alignClass + '">' +
+                        '<img src="' + escapeHTML(img.url) + '" alt="' + escapeHTML(caption) + '" class="additional-img">' +
+                        (caption ? '<p class="img-caption">' + escapeHTML(caption) + '</p>' : '') +
+                        '</div>';
+                    processedContent = processedContent.replace(placeholder, inlineImgHtml);
+                    usedImages.add(k);
+                }
             }
-            additionalImagesHtml += '</div>';
+        }
+
+        var remainingImages = [];
+        if (article.images && article.images.length > 0) {
+            for (var j = 0; j < article.images.length; j++) {
+                if (!usedImages.has(j)) {
+                    remainingImages.push(article.images[j]);
+                }
+            }
+            if (remainingImages.length > 0) {
+                additionalImagesHtml = '<div class="article-additional-images">';
+                for (var m = 0; m < remainingImages.length; m++) {
+                    var rImg = remainingImages[m];
+                    var rCaption = rImg.caption ? (rImg.caption[lang] || rImg.caption.ar) : '';
+                    additionalImagesHtml += '<div class="additional-image-wrapper">' +
+                        '<img src="' + escapeHTML(rImg.url) + '" alt="' + escapeHTML(rCaption) + '" class="additional-img">' +
+                        (rCaption ? '<p class="img-caption">' + escapeHTML(rCaption) + '</p>' : '') +
+                        '</div>';
+                }
+                additionalImagesHtml += '</div>';
+            }
         }
     }
 
@@ -931,7 +1068,7 @@ function renderArticleContent(article) {
         '</div>' : '';
 
     var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
-    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" onclick="deleteArticle(\'' + article._id + '\')"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
+    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" data-delete-id="' + article._id + '"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
 
     var breadcrumbHtml = '<div class="article-breadcrumb">' +
         '<span>' + (lang === 'en' ? 'Editorial' : 'قضايا ومقالات') + '</span>' +
@@ -942,7 +1079,7 @@ function renderArticleContent(article) {
     var shareSectionHtml = '<div class="article-end-share">' +
         '<h4 class="share-title">' + (lang === 'en' ? 'Share this story' : 'شارك هذه القصة') + '</h4>' +
         '<div class="share-buttons-row">' +
-        '<button class="share-btn-big copy" onclick="copyArticleLink(\'' + (article.slug || article._id) + '\')">' +
+        '<button class="share-btn-big copy" data-link-id="' + (article.slug || article._id) + '">' +
         '<span class="btn-icon">🔗</span> <span id="copyLinkTextContent">' + (lang === 'en' ? 'Copy Link' : 'نسخ الرابط') + '</span>' +
         '</button>' +
         '</div>' +
@@ -1012,7 +1149,7 @@ function loadSuggestedArticles(currentId) {
                 var content = getArticleContent(article);
                 var card = document.createElement('div');
                 card.className = 'article-card';
-                card.onclick = function () { openArticle(article._id); };
+                card.addEventListener('click', function () { openArticle(article._id); });
 
                 var imageHtml = article.image ?
                     '<div class="article-image-container"><img src="' + escapeHTML(article.image) + '" class="article-image" loading="lazy"></div>' :
@@ -1062,14 +1199,28 @@ function copyArticleLink(slugOrId) {
 
 function deleteArticle(articleId) {
     if (!isAdmin) return;
-    if (!confirm('هل أنت متأكد من حذف هذا المقال؟')) return;
-
-    fetch(API_URL + '/articles/' + articleId, { method: 'DELETE' })
-        .then(function () {
-            closeModal();
-            loadArticles();
-        })
-        .catch(function (err) { console.error(err); });
+    
+    var modal = document.getElementById('detailsModal');
+    var modalBody = document.getElementById('modalBody');
+    if (!modal || !modalBody) return;
+    
+    var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+    var confirmTitle = lang === 'en' ? 'Confirm Deletion' : 'تأكيد الحذف';
+    var confirmDesc = lang === 'en' ? 'Are you sure you want to delete this article?' : 'هل أنت متأكد من حذف هذا المقال؟';
+    var yesText = lang === 'en' ? 'Yes, Delete' : 'نعم، احذف';
+    var noText = lang === 'en' ? 'Cancel' : 'إلغاء';
+    
+    modalBody.innerHTML = '<div class="admin-login-form">' +
+        '<h3>⚠️ ' + confirmTitle + '</h3>' +
+        '<p>' + confirmDesc + '</p>' +
+        '<div style="display: flex; gap: 10px; margin-top: 20px; justify-content: center; width: 100%;">' +
+        '<button class="submit-btn danger admin-delete-confirm-btn" data-article-id="' + articleId + '" style="background:#ef4444; width: calc(50% - 5px);">' + yesText + '</button>' +
+        '<button class="cancel-btn admin-cancel-btn" style="width: calc(50% - 5px);">' + noText + '</button>' +
+        '</div>' +
+        '</div>';
+    
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
 }
 
 // ============================================
@@ -1083,15 +1234,15 @@ function showAdminLogin() {
         modalBody.innerHTML = '<div class="admin-login-form">' +
             '<h3>👋 مرحباً أيها المدير!</h3>' +
             '<p>أنت مسجل الدخول كمدير</p>' +
-            '<button class="submit-btn" onclick="toggleAdminPanel()">✍️ كتابة مقال جديد</button>' +
-            '<button class="cancel-btn" onclick="logoutAdmin()">🚪 تسجيل الخروج</button>' +
+            '<button class="submit-btn admin-write-btn">✍️ كتابة مقال جديد</button>' +
+            '<button class="cancel-btn admin-logout-btn">🚪 تسجيل الخروج</button>' +
             '</div>';
     } else {
         modalBody.innerHTML = '<div class="admin-login-form">' +
             '<h3>🔐 دخول لوحة الإدارة</h3>' +
             '<input type="password" id="adminPassword" placeholder="كلمة المرور" class="input-field">' +
-            '<button class="submit-btn" onclick="loginAdmin()">دخول</button>' +
-            '<button class="cancel-btn" onclick="closeModal()">إلغاء</button>' +
+            '<button class="submit-btn admin-login-submit">دخول</button>' +
+            '<button class="cancel-btn admin-cancel-btn">إلغاء</button>' +
             '</div>';
     }
 
@@ -1106,10 +1257,10 @@ function loginAdmin() {
         isAdmin = true;
         localStorage.setItem('isAdmin', 'true');
         closeModal();
-        alert('تم تسجيل الدخول بنجاح! ✅');
+        showToast('تم تسجيل الدخول بنجاح! ✅', 'success');
         toggleAdminPanel();
     } else {
-        alert('كلمة المرور غير صحيحة! ❌');
+        showToast('كلمة المرور غير صحيحة! ❌', 'error');
     }
 }
 
@@ -1117,7 +1268,7 @@ function logoutAdmin() {
     isAdmin = false;
     localStorage.removeItem('isAdmin');
     closeModal();
-    alert('تم تسجيل الخروج! 👋');
+    showToast('تم تسجيل الخروج! 👋', 'info');
 }
 
 function toggleAdminPanel() {
@@ -1151,7 +1302,10 @@ function submitArticle(e) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: title, author: author, content: content, image: image })
     })
-        .then(function (res) { return res.json(); })
+        .then(function (res) {
+            if (!res.ok) throw new Error('API Error');
+            return res.json();
+        })
         .then(function () {
             loadArticles();
             document.getElementById('articleTitle').value = '';
@@ -1160,9 +1314,12 @@ function submitArticle(e) {
             document.getElementById('articleImage').value = '';
             var adminPanel = document.getElementById('adminPanel');
             if (adminPanel) adminPanel.classList.add('hidden');
-            alert('تم نشر المقال بنجاح! ✅');
+            showToast('تم نشر المقال بنجاح! ✅', 'success');
         })
-        .catch(function (err) { console.error(err); });
+        .catch(function (err) {
+            console.error(err);
+            showToast('فشل نشر المقال ❌', 'error');
+        });
 }
 
 // ============================================
@@ -1185,7 +1342,7 @@ function initMap() {
     for (var i = 0; i < provincesData.length; i++) {
         var prov = provincesData[i];
         var name = window.i18n ? window.i18n.t('provinces.' + i + '.name', prov.name) : prov.name;
-        html += '<button class="province-btn" onclick="selectProvince(' + prov.id + ')">' + name + '</button>';
+        html += '<button class="province-btn" data-province-id="' + prov.id + '">' + name + '</button>';
     }
     grid.innerHTML = html;
 }
@@ -1237,7 +1394,7 @@ function selectProvince(id) {
     var provinceStoryEl = document.getElementById('provinceStory');
 
     if (provinceNameEl) provinceNameEl.textContent = name;
-    if (provinceRateEl) provinceRateEl.textContent = rate + ' ' + childMarriageText;
+    if (provinceRateEl) provinceRateEl.textContent = rate;
     if (provinceTypeEl) provinceTypeEl.textContent = type;
     if (provinceStoryEl) provinceStoryEl.textContent = '"' + story + '"';
 }
@@ -1275,7 +1432,7 @@ function initParticles() {
 // Scroll Reveal Animations
 // ============================================
 function initScrollReveal() {
-    var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    var revealElements = document.querySelectorAll('.reveal, .reveal-up, .reveal-left, .reveal-right');
 
     function revealOnScroll() {
         for (var i = 0; i < revealElements.length; i++) {
@@ -1294,14 +1451,94 @@ function initScrollReveal() {
 }
 
 // ============================================
-// Deferred Content Loading - For better performance
+// Scroll Progress & Scroll to Top Helpers
 // ============================================
+function updateScrollProgress() {
+    var winScroll, height;
+    var articlePage = document.getElementById('articlePage');
+    
+    if (articlePage && !articlePage.classList.contains('hidden')) {
+        winScroll = articlePage.scrollTop;
+        height = articlePage.scrollHeight - articlePage.clientHeight;
+    } else {
+        winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    }
+    
+    var scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+    var progress = document.getElementById('scrollProgress');
+    if (progress) {
+        progress.style.width = scrolled + '%';
+    }
+}
+
+function checkScrollToTop() {
+    var btn = document.getElementById('scrollToTop');
+    if (!btn) return;
+    
+    var winScroll;
+    var articlePage = document.getElementById('articlePage');
+    if (articlePage && !articlePage.classList.contains('hidden')) {
+        winScroll = articlePage.scrollTop;
+    } else {
+        winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    }
+    
+    if (winScroll > 400) {
+        btn.classList.add('show');
+    } else {
+        btn.classList.remove('show');
+    }
+}
+
+// ============================================
+// Typewriter Effect
+// ============================================
+var typewriterTimeoutId = null;
+function startTypewriter() {
+    var descEl = document.querySelector('.hero-description');
+    if (!descEl) return;
+    
+    if (typewriterTimeoutId) {
+        clearTimeout(typewriterTimeoutId);
+    }
+    
+    var key = 'hero.description';
+    var defaultText = "اكتشف كيف يحدد القانون حقوق الطفل بين 9 و18 سنة وكيف يمكن للزواج المبكر أن يسلبه هذه الحقوق";
+    var text = window.i18n ? window.i18n.t(key, defaultText) : defaultText;
+    
+    descEl.innerHTML = '';
+    descEl.classList.add('typewriter');
+    
+    var i = 0;
+    var speed = 30; // ms
+    
+    function type() {
+        if (i < text.length) {
+            if (text.substr(i, 4) === '<br>') {
+                descEl.innerHTML += '<br>';
+                i += 4;
+            } else if (text[i] === '\n') {
+                descEl.innerHTML += '<br>';
+                i++;
+            } else {
+                descEl.innerHTML += text[i];
+                i++;
+            }
+            typewriterTimeoutId = setTimeout(type, speed);
+        } else {
+            descEl.classList.remove('typewriter');
+            typewriterTimeoutId = null;
+        }
+    }
+    type();
+}
+
 function loadDeferredContent() {
-    // Load API content after initial render
-    loadStats();
-    loadArticles();
-    incrementViews();
     initScrollReveal();
+    if (typeof initCountersObserver === 'function') {
+        initCountersObserver();
+    }
 }
 
 // ============================================
@@ -1342,8 +1579,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Theme toggle - with iOS touch support
+    // Skip if nav.js already bound the theme toggle (it owns theme on all pages)
     var themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
+    if (themeToggle && themeToggle.getAttribute('data-nav-bound') !== 'true') {
         themeToggle.addEventListener('click', toggleTheme);
         themeToggle.addEventListener('touchend', function (e) {
             e.preventDefault();
@@ -1370,36 +1608,192 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function updateSliderTrack(val, min, max) {
+        min = min || 9;
+        max = max || 18;
+        var percent = ((val - min) / (max - min)) * 100;
+        var currentLang = window.i18n && window.i18n.getCurrentLanguage ? window.i18n.getCurrentLanguage() : 'ar';
+        var isRTL = currentLang === 'ar';
+        var dir = isRTL ? 'to left' : 'to right';
+        var slider = document.getElementById('ageSlider');
+        if (slider) {
+            slider.style.background = 'linear-gradient(' + dir + ', var(--accent-primary) 0%, var(--accent-secondary) ' + percent + '%, var(--bg-secondary) ' + percent + '%, var(--bg-secondary) 100%)';
+        }
+    }
+
     var ageSlider = document.getElementById('ageSlider');
     if (ageSlider) {
+        updateSliderTrack(ageSlider.value, ageSlider.min, ageSlider.max);
+        
         ageSlider.addEventListener('input', function (e) {
             currentAge = parseInt(e.target.value);
             var ageNumberEl = document.getElementById('ageNumber');
             if (ageNumberEl) ageNumberEl.textContent = currentAge;
-            // Also looking for ageValue in case it wasn't renamed in HTML yet
             var ageValueEl = document.getElementById('ageValue');
             if (ageValueEl) ageValueEl.textContent = currentAge;
             updateRights();
             updateTimeline();
             updateImpacts();
+            updateSliderTrack(currentAge, e.target.min, e.target.max);
+        });
+
+        document.addEventListener('languageChanged', function () {
+            updateSliderTrack(ageSlider.value, ageSlider.min, ageSlider.max);
         });
     }
 
     var likeBtn = document.getElementById('likeBtn');
     if (likeBtn) likeBtn.addEventListener('click', toggleLike);
 
+    // ============================================
+    // Event Delegation (Anti-Vibe-Coding)
+    // ============================================
+    
+    // 1. Rights Cards click event delegation
+    var rightsContainer = document.getElementById('rightsContainer');
+    if (rightsContainer) {
+        rightsContainer.addEventListener('click', function (e) {
+            var card = e.target.closest('.right-card');
+            if (card) {
+                var key = card.dataset.rightKey;
+                var age = parseInt(card.dataset.rightAge);
+                if (key && !isNaN(age)) {
+                    showDetails(key, age);
+                }
+            }
+        });
+    }
+
+    // 2. Provinces Map click event delegation
+    var provincesGrid = document.getElementById('provincesGrid');
+    if (provincesGrid) {
+        provincesGrid.addEventListener('click', function (e) {
+            var btn = e.target.closest('.province-btn');
+            if (btn) {
+                var provinceId = parseInt(btn.dataset.provinceId);
+                if (!isNaN(provinceId)) {
+                    selectProvince(provinceId);
+                }
+            }
+        });
+    }
+
+    // 3. Articles Grid read-more click event delegation
+    var articlesGrid = document.getElementById('articlesGrid');
+    if (articlesGrid) {
+        articlesGrid.addEventListener('click', function (e) {
+            var btn = e.target.closest('.read-more-btn');
+            if (btn) {
+                var articleId = btn.dataset.articleId;
+                if (articleId) {
+                    openArticle(articleId);
+                }
+            }
+        });
+    }
+
+    // 4. Article Page (View Content) delete/copy click event delegation
+    var articleViewContent = document.getElementById('articleViewContent');
+    if (articleViewContent) {
+        articleViewContent.addEventListener('click', function (e) {
+            var deleteBtn = e.target.closest('[data-delete-id]');
+            if (deleteBtn) {
+                var articleId = deleteBtn.dataset.deleteId;
+                if (articleId) deleteArticle(articleId);
+                return;
+            }
+            var copyBtn = e.target.closest('[data-link-id]');
+            if (copyBtn) {
+                var linkId = copyBtn.dataset.linkId;
+                if (linkId) copyArticleLink(linkId);
+                return;
+            }
+        });
+    }
+
+    // 5. Poll Options click event delegation
+    var pollOptions = document.getElementById('pollOptions');
+    if (pollOptions) {
+        pollOptions.addEventListener('click', function (e) {
+            var btn = e.target.closest('.poll-option');
+            if (btn && !btn.disabled) {
+                var voteChoice = btn.dataset.vote;
+                if (voteChoice) {
+                    submitPollVote(voteChoice);
+                }
+            }
+        });
+    }
+
+    // 6. Call to Action Social Share click bindings
+    var ctaShareTwitter = document.getElementById('ctaShareTwitter');
+    if (ctaShareTwitter) {
+        ctaShareTwitter.addEventListener('click', shareTwitter);
+    }
+    var copyLinkBtn = document.getElementById('copyLink');
+    if (copyLinkBtn) {
+        copyLinkBtn.addEventListener('click', copyLink);
+    }
+
+    // 7. Details Modal overlay/close/admin clicks delegation
+    var detailsModal = document.getElementById('detailsModal');
+    var modalBody = document.getElementById('modalBody');
+    if (detailsModal && modalBody) {
+        modalBody.addEventListener('click', function (e) {
+            if (e.target.classList.contains('admin-write-btn')) {
+                toggleAdminPanel();
+            } else if (e.target.classList.contains('admin-logout-btn')) {
+                logoutAdmin();
+            } else if (e.target.classList.contains('admin-login-submit')) {
+                loginAdmin();
+            } else if (e.target.classList.contains('admin-cancel-btn')) {
+                closeModal();
+            } else if (e.target.classList.contains('modal-share-twitter')) {
+                shareTwitter();
+            } else if (e.target.classList.contains('modal-share-copy')) {
+                copyLink();
+            } else if (e.target.classList.contains('admin-delete-confirm-btn')) {
+                var articleId = e.target.dataset.articleId;
+                if (articleId) {
+                    var lang = window.i18n ? window.i18n.getCurrentLanguage() : 'ar';
+                    fetch(API_URL + '/articles/' + articleId, { method: 'DELETE' })
+                        .then(function (res) {
+                            if (!res.ok) throw new Error('API Error');
+                            closeModal();
+                            loadArticles();
+                            showToast(lang === 'en' ? 'Article deleted successfully! ✅' : 'تم حذف المقال بنجاح! ✅', 'success');
+                        })
+                        .catch(function (err) {
+                            console.error(err);
+                            showToast(lang === 'en' ? 'Failed to delete article ❌' : 'فشل حذف المقال ❌', 'error');
+                        });
+                }
+            }
+        });
+        
+        var modalOverlay = document.getElementById('modalOverlay');
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', closeModal);
+        }
+        var modalClose = document.getElementById('modalClose');
+        if (modalClose) {
+            modalClose.addEventListener('click', closeModal);
+        }
+    }
+
     var shareBtn = document.getElementById('shareBtn');
     if (shareBtn) {
         shareBtn.addEventListener('click', function () {
             var modal = document.getElementById('detailsModal');
             var modalBody = document.getElementById('modalBody');
-            modalBody.innerHTML = '<h3 class="modal-title">📤 شارك الموقع</h3>' +
-                '<div class="share-buttons">' +
-                '<button class="share-btn twitter" onclick="shareTwitter()">𝕏 تويتر</button>' +
-                '<button class="share-btn whatsapp" onclick="shareWhatsapp()">واتساب</button>' +
-                '<button class="share-btn copy" id="copyLink" onclick="copyLink()">📋 نسخ الرابط</button>' +
-                '</div>';
-            modal.classList.add('show');
+            if (modal && modalBody) {
+                modalBody.innerHTML = '<h3 class="modal-title">📤 شارك الموقع</h3>' +
+                    '<div class="share-buttons">' +
+                    '<button class="share-btn twitter modal-share-twitter">𝕏 تويتر</button>' +
+                    '<button class="share-btn copy modal-share-copy" id="copyLink">📋 نسخ الرابط</button>' +
+                    '</div>';
+                modal.classList.add('show');
+            }
         });
     }
 
@@ -1445,7 +1839,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('🔧 Setting up language toggle buttons...');
 
         var toggleBtn = document.getElementById('languageToggle');
-        var langIcon = document.getElementById('langIcon');
+        var langIcon = toggleBtn ? toggleBtn.querySelector('.lang-icon') : null;
         var headerToggleBtn = document.getElementById('headerLangToggle');
 
         // Update all button texts based on current language
@@ -1454,7 +1848,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // Show the OTHER language (the one we'll switch TO)
             var newText = currentLang === 'ar' ? 'EN' : 'ع';
 
+            // Update the main toggle button text
             if (langIcon) langIcon.textContent = newText;
+            // Also update if it's in the nav (multi-page)
+            if (toggleBtn) {
+                var navLangIcon = toggleBtn.querySelector('.lang-icon');
+                if (navLangIcon && navLangIcon !== langIcon) navLangIcon.textContent = newText;
+            }
             if (headerToggleBtn) {
                 var headerLangIcon = headerToggleBtn.querySelector('.lang-icon');
                 if (headerLangIcon) headerLangIcon.textContent = newText;
@@ -1483,7 +1883,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Add click listeners to both buttons - with iOS touch support
-        if (toggleBtn) {
+        // Skip #languageToggle if nav.js already bound it
+        if (toggleBtn && toggleBtn.getAttribute('data-nav-bound') !== 'true') {
             toggleBtn.addEventListener('click', handleLanguageToggle);
             toggleBtn.addEventListener('touchend', function (e) {
                 e.preventDefault();
@@ -1515,6 +1916,13 @@ document.addEventListener('DOMContentLoaded', function () {
     setupLanguageToggle();
 
     // ============================================
+    // Load Articles & Stats on page load
+    // ============================================
+    loadArticles();
+    loadStats();
+    incrementViews();
+
+    // ============================================
     // Language Change Handler for Dynamic Content
     // ============================================
     document.addEventListener('languageChanged', function (e) {
@@ -1537,6 +1945,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeof renderArticles === 'function') {
             renderArticles();
         }
+        
+        // Re-type description on language toggle
+        if (typeof startTypewriter === 'function') {
+            startTypewriter();
+        }
 
         console.log('✅ All dynamic content updated');
     });
@@ -1548,8 +1961,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Check if user already voted (from localStorage)
     var hasVoted = localStorage.getItem('poll_voted') === 'true';
 
-    // Load poll on page load
-    loadPoll();
+    // Load poll on page load - disabled for local database-free mode
+    // loadPoll();
 
     function loadPoll() {
         var pollForm = document.getElementById('pollForm');
@@ -1644,21 +2057,54 @@ document.addEventListener('DOMContentLoaded', function () {
             if (disagreeBar) disagreeBar.style.width = disagreePercent + '%';
         }, 100);
     }
-});
 
-// ============================================
-// Independent Article Routing
-// ============================================
-document.addEventListener('DOMContentLoaded', function () {
+    // ============================================
+    // Scroll Progress & Back to Top Event Listeners
+    // ============================================
+    window.addEventListener('scroll', function () {
+        updateScrollProgress();
+        checkScrollToTop();
+    });
+
+    var articlePageScroll = document.getElementById('articlePage');
+    if (articlePageScroll) {
+        articlePageScroll.addEventListener('scroll', function () {
+            updateScrollProgress();
+            checkScrollToTop();
+        });
+    }
+
+    var scrollToTopBtn = document.getElementById('scrollToTop');
+    if (scrollToTopBtn) {
+        var handleScrollToTop = function (e) {
+            e.preventDefault();
+            var articlePage = document.getElementById('articlePage');
+            if (articlePage && !articlePage.classList.contains('hidden')) {
+                articlePage.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+        scrollToTopBtn.addEventListener('click', handleScrollToTop);
+        scrollToTopBtn.addEventListener('touchend', handleScrollToTop);
+    }
+
+    // ============================================
+    // Independent Article Routing
+    // ============================================
     var backBtn = document.getElementById('articleBack');
     if (backBtn) {
-        backBtn.onclick = function () { closeArticlePage(); };
+        backBtn.addEventListener('click', function () { closeArticlePage(); });
+        backBtn.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            closeArticlePage();
+        });
     }
 
     // Article language toggle
     var articleLangToggle = document.getElementById('articleLangToggle');
     if (articleLangToggle) {
-        articleLangToggle.onclick = function () {
+        var handleArticleLangToggle = function () {
             if (window.i18n) {
                 var currentLang = window.i18n.getCurrentLanguage();
                 var newLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -1688,7 +2134,125 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         };
+        articleLangToggle.addEventListener('click', handleArticleLangToggle);
+        articleLangToggle.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            handleArticleLangToggle();
+        });
     }
+
+    // ============================================
+    // Testimonials Carousel Logic
+    // ============================================
+    var activeTestimonialIndex = 1;
+    var totalTestimonials = 2;
+
+    window.nextTestimonial = function() {
+        var currentSlide = document.getElementById('slide-' + activeTestimonialIndex);
+        if (currentSlide) currentSlide.classList.add('hidden');
+        
+        activeTestimonialIndex++;
+        if (activeTestimonialIndex > totalTestimonials) {
+            activeTestimonialIndex = 1;
+        }
+        
+        var nextSlide = document.getElementById('slide-' + activeTestimonialIndex);
+        if (nextSlide) nextSlide.classList.remove('hidden');
+    };
+
+    window.prevTestimonial = function() {
+        var currentSlide = document.getElementById('slide-' + activeTestimonialIndex);
+        if (currentSlide) currentSlide.classList.add('hidden');
+        
+        activeTestimonialIndex--;
+        if (activeTestimonialIndex < 1) {
+            activeTestimonialIndex = totalTestimonials;
+        }
+        
+        var prevSlide = document.getElementById('slide-' + activeTestimonialIndex);
+        if (prevSlide) prevSlide.classList.remove('hidden');
+    };
+
+    // ============================================
+    // Intersection Observer for Metrics Counter Cards
+    // ============================================
+    function animateNumber(el, start, end, suffix) {
+        var duration = 1200;
+        var startTime = null;
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            var val = Math.floor(progress * (end - start) + start);
+            el.textContent = val + suffix;
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                el.textContent = end + suffix;
+            }
+        }
+        window.requestAnimationFrame(step);
+    }
+
+    function initCountersObserver() {
+        var cards = document.querySelectorAll('.metric-card');
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        var numEl = entry.target.querySelector('.metric-number-wrapper');
+                        if (numEl && !numEl.dataset.animated) {
+                            numEl.dataset.animated = 'true';
+                            var text = numEl.textContent;
+                            if (text.indexOf('%') !== -1) {
+                                animateNumber(numEl, 0, parseInt(text), '%');
+                            } else if (text.indexOf('/') !== -1) {
+                                // Fractions
+                            } else {
+                                animateNumber(numEl, 0, parseInt(text), '');
+                            }
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            cards.forEach(function(card) { observer.observe(card); });
+        }
+    }
+
+    // ============================================
+    // Dynamic Content Refresh (i18n Support)
+    // ============================================
+    window.updateAllDynamicContent = function() {
+        console.log('Refreshing all dynamic translations');
+        updateRights();
+        updateTimeline();
+        updateImpacts();
+        initMap();
+        if (activeProvinceId !== null) {
+            selectProvince(activeProvinceId);
+        }
+        // Force refresh articles grid text
+        renderArticles();
+
+        // If an article is currently open, re-render it in the new language
+        var articlePage = document.getElementById('articlePage');
+        if (articlePage && !articlePage.classList.contains('hidden')) {
+            // Find the currently displayed article by checking history state
+            var state = window.history.state;
+            if (state && state.articleId) {
+                var article = null;
+                for (var i = 0; i < articles.length; i++) {
+                    if (articles[i]._id === state.articleId || articles[i].slug === state.articleId) {
+                        article = articles[i];
+                        break;
+                    }
+                }
+                if (article && typeof renderArticleContent === 'function') {
+                    renderArticleContent(article);
+                }
+            }
+        }
+    };
 
     window.addEventListener('popstate', function (event) {
         if (event.state && event.state.articleId) {
@@ -1697,4 +2261,56 @@ document.addEventListener('DOMContentLoaded', function () {
             closeArticlePage(true);
         }
     });
+
+    // ============================================
+    // Loading Screen Fadeout & Typewriter Trigger
+    // ============================================
+    function triggerLoaderFadeOut() {
+        setTimeout(function () {
+            var loader = document.getElementById('loadingScreen');
+            if (loader) {
+                loader.classList.add('fade-out');
+                setTimeout(function () {
+                    loader.classList.add('hidden');
+                    startTypewriter();
+                }, 500);
+            } else {
+                startTypewriter();
+            }
+        }, 800);
+    }
+
+    if (document.readyState === 'complete') {
+        triggerLoaderFadeOut();
+    } else {
+        window.addEventListener('load', triggerLoaderFadeOut);
+    }
 });
+
+// ============================================
+// Reveal Entrance Enhancer (Premium Section Redesign)
+// Progressive enhancement: fades in `.reveal-on-scroll` elements as they
+// enter the viewport. Honors prefers-reduced-motion and degrades gracefully
+// when IntersectionObserver is unavailable by revealing all targets at once.
+// ============================================
+(function () {
+  var targets = document.querySelectorAll('.reveal-on-scroll');
+  var prefersReduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReduced || !('IntersectionObserver' in window)) {
+    for (var i = 0; i < targets.length; i++) targets[i].classList.add('is-revealed');
+    return; // show everything immediately
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+
+  for (var j = 0; j < targets.length; j++) io.observe(targets[j]);
+})();

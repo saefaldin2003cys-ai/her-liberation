@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البرامج | تحريرها</title>
+    <meta name="description" content="برامج تعليمية وورش عمل مصممة لبناء المهارات والتمكين الرقمي.">
+
+    <!-- Theme flash prevention script (inline) -->
+    <script>
+        (function(){
+            var t=localStorage.getItem('theme');
+            if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+                document.documentElement.classList.add('dark-mode');
+            }
+            var l=localStorage.getItem('preferred_language');
+            if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}
+        })();
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation (shared structure) -->
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/" class="nav-logo"><img src="/assets/images/1_20251127_202518.png" alt="HerLiberation"></a>
+            <ul class="nav-links" role="menubar">
+                <li><a href="/" class="nav-link" data-page="home" data-i18n="nav.home">الرئيسية</a></li>
+                <li><a href="/campaigns" class="nav-link" data-page="campaigns" data-i18n="nav.campaign">الحملات</a></li>
+                <li><a href="/blog" class="nav-link" data-page="blog" data-i18n="nav.blog">المدونة</a></li>
+                <li><a href="/programs" class="nav-link" data-page="programs" data-i18n="nav.tracks">البرامج</a></li>
+                <li><a href="/about-us" class="nav-link" data-page="about" data-i18n="nav.about">من نحن</a></li>
+                <li><a href="/contact" class="nav-link" data-page="contact" data-i18n="nav.contact">تواصل</a></li>
+                <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">تبرع</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+                <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language"><span class="lang-icon">EN</span></button>
+                <button class="nav-hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Content -->
+    <main id="pageContent">
+
+        <!-- Tracks Hero Section -->
+        <section class="tracks-hero-section reveal-on-scroll">
+            <div class="tracks-hero-content">
+                <h1 class="tracks-hero-title" data-i18n="tracks_page.title">برامجنا</h1>
+                <p class="tracks-hero-description" data-i18n="tracks_page.description">برامج تعليمية وورش عمل مصممة لبناء المهارات.</p>
+            </div>
+        </section>
+
+        <!-- Tracks Bento Grid Section (Coming Soon) -->
+        <section class="tracks-grid-section">
+            <div class="tracks-coming-soon reveal-on-scroll">
+                <p class="tracks-coming-text" data-i18n="tracks_page.coming_soon">البرامج قيد التطوير... ترقبوا المزيد قريباً 🚀</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer (shared structure) -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-nav">
+                <a href="/" data-i18n="nav.home">الرئيسية</a>
+                <a href="/about-us" data-i18n="nav.about">من نحن</a>
+                <a href="/blog" data-i18n="nav.blog">المدونة</a>
+                <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
+                <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
+                <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
+            </div>
+            <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Shared Scripts -->
+    <script src="/js/i18n.js"></script>
+    <script src="/js/i18n-integration.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/reveal.js"></script>
+</body>
+</html>

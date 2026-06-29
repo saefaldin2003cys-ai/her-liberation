@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تبرع | تحريرها</title>
+    <meta name="description" content="ادعم حملة تحريرها لحماية الطفولة وتمكين المجتمعات من خلال التبرع.">
+    <!-- Theme flash prevention script (inline) -->
+    <script>
+        (function(){
+            var t=localStorage.getItem('theme');
+            if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+                document.documentElement.classList.add('dark-mode');
+            }
+            var l=localStorage.getItem('preferred_language');
+            if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}
+        })();
+    </script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/" class="nav-logo"><img src="/assets/images/1_20251127_202518.png" alt="HerLiberation"></a>
+            <ul class="nav-links" role="menubar">
+                <li><a href="/" class="nav-link" data-page="home" data-i18n="nav.home">الرئيسية</a></li>
+                <li><a href="/campaigns" class="nav-link" data-page="campaigns" data-i18n="nav.campaign">الحملات</a></li>
+                <li><a href="/blog" class="nav-link" data-page="blog" data-i18n="nav.blog">المدونة</a></li>
+                <li><a href="/programs" class="nav-link" data-page="programs" data-i18n="nav.tracks">البرامج</a></li>
+                <li><a href="/about-us" class="nav-link" data-page="about" data-i18n="nav.about">من نحن</a></li>
+                <li><a href="/contact" class="nav-link" data-page="contact" data-i18n="nav.contact">تواصل</a></li>
+                <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">تبرع</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+                <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language"><span class="lang-icon">EN</span></button>
+                <button class="nav-hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="pageContent">
+        <!-- Hero Section -->
+        <section class="donate-hero reveal-on-scroll">
+            <h1 class="donate-hero-title" data-i18n="donate_page.title">ادعم منظمتنا</h1>
+            <p class="donate-hero-desc" data-i18n="donate_page.description">مساهمتك تساعد في حماية الطفولة وتمكين المجتمعات.</p>
+        </section>
+
+        <!-- Donation Purpose Cards -->
+        <section class="donate-purposes">
+            <h2 class="donate-purposes-title reveal-on-scroll" data-i18n="donate_page.purposes_title">كيف يُحدث تبرعك فرقاً</h2>
+            <div class="donate-purposes-grid">
+                <div class="donate-purpose-card glass-card reveal-on-scroll">
+                    <div class="donate-purpose-icon">📚</div>
+                    <h3 data-i18n="donate_page.purpose1_title">التعليم والتوعية</h3>
+                    <p data-i18n="donate_page.purpose1_desc">دعم برامج التوعية القانونية والتعليمية للفتيات والمجتمعات المحلية.</p>
+                </div>
+                <div class="donate-purpose-card glass-card reveal-on-scroll">
+                    <div class="donate-purpose-icon">⚖️</div>
+                    <h3 data-i18n="donate_page.purpose2_title">الوعي القانوني</h3>
+                    <p data-i18n="donate_page.purpose2_desc">تمويل حملات المناصرة لإصلاح الثغرات التشريعية التي تسمح بزواج الأطفال.</p>
+                </div>
+                <div class="donate-purpose-card glass-card reveal-on-scroll">
+                    <div class="donate-purpose-icon">🤝</div>
+                    <h3 data-i18n="donate_page.purpose3_title">البرامج المجتمعية</h3>
+                    <p data-i18n="donate_page.purpose3_desc">تمكين المجتمعات المحلية من خلال ورش العمل وبرامج الدعم للناجيات.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How to Donate Section -->
+        <section class="donate-method reveal-on-scroll">
+            <div class="donate-method-card glass-card">
+                <h2 data-i18n="donate_page.how_to_title">كيف تتبرع</h2>
+                <p data-i18n="donate_page.how_to_desc">للتبرع أو الاستفسار عن طرق المساهمة، يرجى التواصل معنا مباشرة.</p>
+                <a href="/contact" class="donate-contact-btn" data-i18n="donate_page.contact_btn">تواصل معنا للتبرع</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-nav">
+                <a href="/" data-i18n="nav.home">الرئيسية</a>
+                <a href="/about-us" data-i18n="nav.about">من نحن</a>
+                <a href="/blog" data-i18n="nav.blog">المدونة</a>
+                <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
+                <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
+                <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
+            </div>
+            <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Shared Scripts -->
+    <script src="/js/i18n.js"></script>
+    <script src="/js/i18n-integration.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/reveal.js"></script>
+</body>
+</html>
