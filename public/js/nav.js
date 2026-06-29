@@ -72,7 +72,7 @@
         hamburger.addEventListener('click', function() {
             var isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
             hamburger.setAttribute('aria-expanded', String(!isExpanded));
-            navLinks.classList.toggle('nav-open');
+            navLinks.classList.toggle('open');
             hamburger.classList.toggle('is-active');
         });
 
@@ -80,8 +80,8 @@
         var links = navLinks.querySelectorAll('.nav-link');
         for (var i = 0; i < links.length; i++) {
             links[i].addEventListener('click', function() {
-                if (navLinks.classList.contains('nav-open')) {
-                    navLinks.classList.remove('nav-open');
+                if (navLinks.classList.contains('open')) {
+                    navLinks.classList.remove('open');
                     hamburger.classList.remove('is-active');
                     hamburger.setAttribute('aria-expanded', 'false');
                 }
