@@ -155,13 +155,19 @@ npm run verify   # في أخرى
 
 الكود في مجلد فرعي، وهذه أهم نقطة في الإعداد كلّه.
 
-1. [vercel.com](https://vercel.com) → **Add New** → **Project**
+1. [vercel.com/new](https://vercel.com/new)
 2. اختر مستودع `her-liberation`
 3. **Root Directory** → **Edit** → اختر **`web`**
 
 بدون هذه الخطوة يبحث Vercel عن `package.json` في جذر المستودع فلا يجده، ويفشل البناء برسالة لا تشير إلى السبب. الباقي يكتشفه وحده: Framework = Next.js، الأمر `next build`، المخرجات `.next`.
 
-4. **Production Branch** → `rebuild/next-app` ما دام لم يُدمج في `main`
+**فرع الإنتاج.** Vercel يختار `main` تلقائياً، و`main` لا يحتوي مجلد `web/` بعد — فأول بناء **سيفشل، وهذا متوقّع**. بعده:
+
+Settings → **Environments** → **Production** → **Branch Tracking** → اكتب `rebuild/next-app` → **Save**
+
+ثم Deployments → **Create Deployment** → اكتب اسم الفرع → **Create Deployment**.
+
+> ولا تدمج الفرع في `main` لتتفادى هذه الخطوة. الموقع القديم على **Render**، وRender ينشر تلقائياً من `main` — الدمج يُعيد بناءه بلا داعٍ، وإعادة بناء تطبيق لم يُبنَ منذ شهور قد تفشل على تبعية لم تعد تُحلّ. لا تلمس `main` قبل أن تنتهي من الجديد.
 
 ### ب. المتغيّرات
 
