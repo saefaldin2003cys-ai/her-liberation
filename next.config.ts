@@ -5,15 +5,14 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   turbopack: {
-    // Pin the project root to this folder.
+    // Pin the project root here, explicitly.
     //
-    // Turbopack infers the root by walking up for a lockfile, and the
-    // repository has two: one here and one at the top level, left by the old
-    // Express site. Left to guess, it picks the top-level one, treats the whole
-    // repository as the project, and warns about it on every start. Worse, on a
-    // host that serves files from outside this directory the inferred root can
-    // differ from the local one, so module resolution differs between a build
-    // that works here and one that fails there.
+    // Turbopack finds the root by walking up the tree for a lockfile. It stops
+    // at the git boundary, so the stray package-lock.json in the user's home
+    // directory is ignored — but it says so on every build, and "inferred"
+    // is still a guess. Naming the root costs nothing and makes the answer
+    // the same on every machine, including one where that stray file is not
+    // outside the repository.
     root: import.meta.dirname,
   },
   experimental: {

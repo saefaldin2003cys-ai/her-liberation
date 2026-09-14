@@ -1,185 +1,84 @@
-# تحريرها (HerLiberation)
+# تحريرها — HerLiberation
 
-## 🌸 About the Project
+Next.js rebuild of the campaign site.
 
-**تحريرها** is a powerful awareness campaign website highlighting the critical issue of child marriage in Iraq. The platform provides an interactive experience to educate visitors about children's rights and the dangers of early marriage.
+## Stack
 
-### Campaign Slogan
-**قبل الـ18 عامًا: طفلة لا زوجة**  
-*Under 18: A Child, Not a Wife*
+| | |
+|---|---|
+| Framework | Next.js 16 (App Router) + React 19 + TypeScript |
+| Styling | Tailwind CSS v4, tokens derived from the brand mark |
+| i18n | `next-intl` — Arabic and English each have real URLs (`/ar`, `/en`) |
+| Database | MongoDB Atlas (free M0) via the official driver, Node runtime |
+| Images | Cloudinary (free tier) |
+| Editor | Tiptap, bilingual with per-language text direction |
+| Hosting | Render web service; Cloudflare proxies the domain in front of it |
 
----
+MongoDB cannot be reached from the Cloudflare Workers runtime — the driver
+needs `net.Socket`/`tls.TLSSocket`, and the Atlas Data API was retired in
+September 2025. Route handlers therefore run on Node (`export const runtime =
+"nodejs"`), which rules out Cloudflare Pages and calls for an ordinary Node
+host. The site already had one: Render, where the previous version ran, so the
+new app replaces it in the same service and the domain never moves.
 
-## 📁 Project Structure
+## Running locally
 
-```
-HerLiberation/
-├── assets/
-│   └── images/              # Image assets
-│       ├── 1_20251127_202518.png
-│       ├── Logos Placement.png
-│       └── visual-insight.png
-├── css/
-│   └── styles.css           # Main stylesheet
-├── database/
-│   ├── articles.json        # Blog articles data
-│   ├── comments.json        # User comments data
-│   └── stats.json           # Site statistics
-├── js/
-│   └── script.js            # Main JavaScript logic
-├── node_modules/            # Node.js dependencies
-├── .venv/                   # Python virtual environment
-├── admin.html               # Admin dashboard
-├── index.html               # Main entry point
-├── server.js                # Express backend server
-├── package.json             # Node.js configuration
-├── package-lock.json        # Dependency lock file
-└── README.md                # This file
+```bash
+npm install
+cp .env.example .env.local   # then fill in the values
+npm run dev
 ```
 
----
+Open <http://localhost:3000> — `/` redirects to `/ar`.
 
-## 🚀 Getting Started
+### Environment
 
-### Prerequisites
-- **Node.js** (v14 or higher)
-- **npm** (comes with Node.js)
+All values are documented in `.env.example`. The two you must generate:
 
-### Installation
+```bash
+# session signing key
+node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
 
-1. **Clone or download the project**
-   ```bash
-   cd HerLiberation
-   ```
+# admin password hash — store the hash, never the password
+node -e "console.log(require('bcryptjs').hashSync('YOUR-PASSWORD', 12))"
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+The site degrades gracefully without a database: pages render, and the blog
+and API report that no database is configured rather than crashing.
 
-3. **Start the server**
-   ```bash
-   npm start
-   ```
+## Admin
 
-4. **Open your browser**
-   ```
-   http://localhost:3000
-   ```
+`/ar/admin` — password only, no user accounts. The session is a signed,
+httpOnly cookie; nothing about the credential is readable from JavaScript.
 
----
+The editor writes HTML, which is sanitised **on the server, on save**
+(`src/lib/sanitize.ts`). Rendering therefore reads already-safe markup.
 
-## 🎯 Features
+## The map
 
-### Main Website (`index.html`)
-- **Interactive Age Slider**: Explore children's rights at different ages (9-18)
-- **Statistical Dashboard**: View shocking statistics about child marriage in Iraq
-- **Provincial Map**: Explore child marriage rates across Iraqi provinces
-- **Blog Section**: Read articles about child rights and protection
-- **Comments System**: Share opinions and experiences
-- **Social Sharing**: Share the campaign on X (Twitter), WhatsApp, and more
-- **Dark/Light Theme**: Toggle between themes for comfortable viewing
-- **Animated Particles**: Beautiful background effects
+`src/data/iraq-map.ts` is generated, not hand-written.
 
-### Admin Panel (`admin.html`)
-- **Secure Login**: Password-protected admin access
-- **Article Management**: Create, view, and delete blog articles
-- **Statistics Dashboard**: Monitor site views, likes, and engagement
-- **Real-time Updates**: Changes reflect immediately on the main site
+- **Source**: geoBoundaries gbOpen IRQ ADM1 (2022), CC0 1.0 public domain.
+- **Projection**: Albers Equal Area Conic, standard parallels 30.39°N and
+  35.94°N, central meridian 43.70°E.
 
-**Admin Credentials:**
-- Password: `TahrirAdmin@2025`
+Equal-area is deliberate: the map asks the reader to compare rates between
+governorates, so their relative sizes must not be distorted.
 
----
+Only governorates with **both a rate and a source** are shaded
+(`src/data/provinces.ts`). Everything else renders hatched as "no data". The
+previous dataset carried invented rates for 13 of the 18 governorates, tagged
+`[وهمي]` in its own source file while being shown to visitors as findings.
 
-## 🛠️ Technology Stack
+## Project layout
 
-### Frontend
-- **HTML5**: Semantic markup
-- **CSS3**: Modern styling with gradients, animations, and glassmorphism
-- **JavaScript (ES6+)**: Interactive features and API integration
-- **Google Fonts**: Tajawal font family for Arabic text
-
-### Backend
-- **Node.js**: Runtime environment
-- **Express.js**: Web server framework
-- **CORS**: Cross-origin resource sharing
-- **JSON File Storage**: Simple database using JSON files
-
----
-
-## 📊 API Endpoints
-
-### Statistics
-- `GET /api/stats` - Get site statistics (views, likes)
-- `POST /api/stats/view` - Increment view count
-- `POST /api/stats/like` - Toggle like status
-
-### Articles
-- `GET /api/articles` - Get all articles
-- `POST /api/articles` - Create new article
-- `DELETE /api/articles/:id` - Delete article by ID
-
-### Comments
-- `GET /api/comments` - Get all comments
-- `POST /api/comments` - Add new comment
-
----
-
-## 🎨 Design Features
-
-- **RTL Support**: Full right-to-left layout for Arabic content
-- **Responsive Design**: Works on desktop, tablet, and mobile
-- **Glassmorphism**: Modern glass-effect cards
-- **Gradient Accents**: Pink to purple gradient theme
-- **Smooth Animations**: Micro-interactions and transitions
-- **Accessibility**: Semantic HTML and ARIA labels
-
----
-
-## 📝 Development
-
-### File Organization
-- **CSS**: All styles in `css/styles.css`
-- **JavaScript**: Main logic in `js/script.js`
-- **Images**: All images in `assets/images/`
-- **Data**: JSON databases in `database/`
-
-### Adding New Features
-1. Edit `index.html` for structure
-2. Update `css/styles.css` for styling
-3. Modify `js/script.js` for functionality
-4. Update `server.js` for backend logic
-
----
-
-## 🌐 Social Media
-
-Follow the campaign on:
-- **Facebook**: [HerLiberation](https://www.facebook.com/profile.php?id=61584357966361)
-- **X (Twitter)**: [@Herliberation1](https://x.com/Herliberation1)
-- **Instagram**: [@herliberation1](https://www.instagram.com/herliberation1/)
-- **Threads**: [@herliberation1](https://www.threads.com/@herliberation1)
-- **TikTok**: [@herliberation1](https://www.tiktok.com/@herliberation1)
-
----
-
-## 📄 License
-
-This project is created for social awareness purposes.
-
----
-
-## 🤝 Contributing
-
-This is a campaign website focused on raising awareness about child marriage in Iraq. If you'd like to contribute or support the cause, please reach out through our social media channels.
-
----
-
-## 💡 Support
-
-For technical support or inquiries, please contact through the social media channels listed above.
-
----
-
-**Made with ❤️ for a better future**
+```
+src/
+  app/[locale]/         pages — home, blog, blog/[slug], admin
+  app/api/              route handlers (Node runtime)
+  components/           UI, including admin/ for the editor
+  data/                 generated map + province figures
+  i18n/                 routing, navigation, request config
+  lib/                  mongodb, articles, auth, sanitize
+messages/               ar.json, en.json — one key set, kept in sync
+```

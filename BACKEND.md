@@ -42,7 +42,7 @@ Atlas → **Database Access** → **Add New Database User**:
 
 **ج. خذ رابط الاتصال**
 
-Atlas → **Connect** → **Drivers** → Node.js → انسخ الرابط، ثم ضعه في `web/.env.local`:
+Atlas → **Connect** → **Drivers** → Node.js → انسخ الرابط، ثم ضعه في `.env.local`:
 
 ```
 MONGODB_URI=mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
@@ -167,14 +167,14 @@ Render → الخدمة → **Settings** → **Build & Deploy**:
 
 | الحقل | القيمة الجديدة | كان |
 |---|---|---|
-| **Root Directory** | `web` | فارغ (جذر المستودع) |
+| **Root Directory** | فارغ — اتركه كما هو | فارغ |
 | **Build Command** | `npm ci && npm run build` | `npm install` |
 | **Start Command** | `npm start` | `node server.js` |
 | **Branch** | `rebuild/next-app` | `main` |
 
 `npm ci` لا `npm install`: يبني من `package-lock.json` حرفياً، فالنسخ المثبّتة على الخادم هي التي اختُبرت هنا بالضبط. `npm install` يسمح لنفسه بترقية نسخ ثانوية، وهذا يعني بناءً قد ينجح اليوم ويفشل غداً بلا تغيير منك.
 
-`Root Directory = web` يجعل Render يتجاهل `server.js` والمشروع القديم كلّياً.
+المشروع في جذر المستودع، فلا حاجة لـRoot Directory. `server.js` والمشروع القديم لم يعودا في هذا الفرع أصلاً.
 
 ### ج. المتغيّرات
 

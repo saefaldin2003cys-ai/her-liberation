@@ -1,13 +1,52 @@
-# Dependencies
-node_modules/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Environment Variables
-.env
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Database Fallbacks (Optional to ignore)
-database/
-local_db.json
+# testing
+/coverage
 
-# IDE files
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+# ...except the blank template. It holds only the key names, no values,
+# and it is how anyone else gets the project running.
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+.env*.local
+
+# Left over from the old Express site: editor settings and its local data
+# fallback. Harmless, but not part of the project.
 .vscode/
 .kiro/
+local_db.json
+database/
