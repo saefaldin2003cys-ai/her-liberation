@@ -221,6 +221,43 @@ if (serverUp) {
     bad("admin API check failed", String(e.message).slice(0, 60));
   }
 
+  // While the old site is still live on the real domain, this deployment must
+  // not be indexable — a duplicate of the same pages competes with it in
+  // search results. Rather than assume which mode is intended, check that the
+  // two signals agree: a robots.txt that blocks crawlers alongside pages that
+  // invite them is the failure that actually happens, and it is silent.
+  heading("Indexing");
+  {
+    const r = await fetch(BASE + "/robots.txt");
+    const txt = r.ok ? await r.text() : "";
+    const blockedByRobotsTxt = /^\s*Disallow:\s*\/\s*$/mi.test(txt);
+
+    const page = (await fetchText("/ar")).body;
+    const noindexInHead = /<meta[^>]+name="robots"[^>]+content="[^"]*noindex/i.test(page);
+
+    if (!r.ok) {
+      bad("robots.txt missing", `HTTP ${r.status}`);
+    } else if (blockedByRobotsTxt && noindexInHead) {
+      ok("not indexable", "robots.txt blocks crawlers and pages say noindex");
+      console.log("    ↳ correct while the old site holds the real domain.");
+      console.log("      set NEXT_PUBLIC_ALLOW_INDEXING=1 when you switch over.");
+    } else if (!blockedByRobotsTxt && !noindexInHead) {
+      ok("indexable", "robots.txt allows crawlers and pages permit indexing");
+      console.log("    ↳ only correct on the deployment serving the real domain.");
+    } else {
+      bad(
+        "the two indexing signals disagree",
+        `robots.txt ${blockedByRobotsTxt ? "blocks" : "allows"}, ` +
+          `the page says ${noindexInHead ? "noindex" : "index"}`,
+      );
+    }
+
+    if (!blockedByRobotsTxt) {
+      if (/Disallow:\s*\/(ar|en)\/admin/i.test(txt)) ok("admin excluded from crawling");
+      else bad("admin not excluded in robots.txt");
+    }
+  }
+
   heading("Routing");
   const root = await fetchText("/");
   if (root.status === 307 && (root.location || "").includes("/ar")) {

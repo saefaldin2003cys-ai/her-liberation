@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Rubik, IBM_Plex_Sans_Arabic, JetBrains_Mono } from "next/font/google";
 
 import { routing, DIRECTION, type Locale } from "@/i18n/routing";
+import { SITE_URL, INDEXABLE } from "@/lib/site";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import "../globals.css";
@@ -45,11 +46,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
-  const site =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.her-liberation.org";
 
   return {
-    metadataBase: new URL(site),
+    metadataBase: new URL(SITE_URL),
     title: {
       default: t("title"),
       template: `%s | ${locale === "ar" ? "تحريرها" : "HerLiberation"}`,
@@ -73,7 +72,10 @@ export async function generateMetadata({
       title: t("title"),
       description: t("description"),
     },
-    robots: { index: true, follow: true },
+    // Off unless this deployment is the one on the real domain — see lib/site.
+    robots: INDEXABLE
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
   };
 }
 

@@ -5,6 +5,7 @@ import { Section, Wrap, PageHeader } from "@/components/primitives";
 import { ALL_CREDITS } from "@/data/photo-credits";
 import { IRAQ_MAP } from "@/data/iraq-map";
 import { routing } from "@/i18n/routing";
+import { INDEXABLE } from "@/lib/site";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -18,7 +19,12 @@ export async function generateMetadata({
   const { locale } = await params;
   return {
     title: locale === "ar" ? "المصادر والحقوق" : "Credits and sources",
-    robots: { index: true, follow: true },
+    // Attribution is a licence obligation, so this page should stay indexable
+    // wherever the site itself is — but not on a staging deployment that is
+    // meant to be invisible. Inherit the decision rather than hardcoding it.
+    robots: INDEXABLE
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
   };
 }
 
