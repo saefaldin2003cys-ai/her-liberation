@@ -7,6 +7,7 @@
     <!-- Theme flash prevention script (inline) -->
     <script>
         (function(){
+document.documentElement.classList.add('js');
             var t=localStorage.getItem('theme');
             if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
                 document.documentElement.classList.add('dark-mode');
@@ -18,6 +19,8 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <script src="/js/icons.js"></script>
+    <a class="skip-link" href="#pageContent">تخطَّ إلى المحتوى</a>
     <!-- Navigation -->
     <header class="site-header">
         <nav class="site-nav" aria-label="Main navigation">
@@ -32,10 +35,10 @@
                 <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">تبرع</a></li>
             </ul>
             <div class="nav-actions">
-                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon"><svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg></span></button>
                 <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language"><span class="lang-icon">EN</span></button>
                 <button class="nav-hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
-            </div>
+</div>
         </nav>
     </header>
 
@@ -56,14 +59,14 @@
                 <a href="/about-us" data-i18n="nav.about">من نحن</a>
                 <a href="/blog" data-i18n="nav.blog">المدونة</a>
                 <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
-            </div>
+</div>
             <div class="footer-social">
                 <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
                 <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
                 <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
-            </div>
+</div>
             <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
-        </div>
+</div>
     </footer>
 
     <!-- Shared Scripts -->

@@ -20,6 +20,16 @@ if (typeof window.requestIdleCallback !== 'function') {
 }
 
 // ============================================
+// Icons
+// ============================================
+// Returns an inline <svg> string for markup this file builds. icons.js defines
+// window.ICONS and loads before this file; the empty fallback keeps content
+// rendering if it is ever missing, since every icon here sits beside a label.
+function ICON(name) {
+    return (window.ICONS && window.ICONS[name]) || '';
+}
+
+// ============================================
 // API Configuration
 // ============================================
 var API_URL = '/api';
@@ -32,8 +42,8 @@ var rightsData = {
         legalCapacity: {
             status: 'forbidden',
             title: 'الأهلية القانونية',
-            icon: '⚖️',
-            statusLabel: '🔴 قاصر بالكامل',
+            icon: ICON('scales'),
+            statusLabel: 'قاصر بالكامل',
             description: 'لا تستطيع التوقيع على أي عقد رسمي. جميع تصرفاتها بموافقة ولي الأمر.',
             details: 'القاصر تحت 15 سنة لا يمكنها توقيع أي عقد رسمي. جميع التصرفات القانونية تتطلب موافقة ولي الأمر أو الوصي.',
             law: 'قانون رعاية القاصرين العراقي رقم 78'
@@ -41,8 +51,8 @@ var rightsData = {
         economicRights: {
             status: 'forbidden',
             title: 'الحقوق الاقتصادية',
-            icon: '💰',
-            statusLabel: '🔴 لا تملك نفسها',
+            icon: ICON('coins'),
+            statusLabel: 'لا تملك نفسها',
             description: 'لا حساب بنكي خاص. لا حق في التصرف بالمال إلا من خلال الوصي.',
             details: 'لا يمكن للفتاة في هذا العمر فتح حساب بنكي أو التصرف بأموالها بشكل مستقل.',
             law: 'القانون المدني العراقي '
@@ -50,8 +60,8 @@ var rightsData = {
         civilRights: {
             status: 'forbidden',
             title: 'الحقوق المدنية',
-            icon: '🛂',
-            statusLabel: '🔴 مقيدة الحركة',
+            icon: ICON('passport'),
+            statusLabel: 'مقيدة الحركة',
             description: 'لا جواز سفر بدون موافقة الأبوين معاً. لا سفر إلا بمحرم.',
             details: 'لا يمكن إصدار جواز سفر للقاصر إلا بموافقة كلا الوالدين. السفر يتطلب مرافقة محرم.',
             law: 'قانون الجوازات العراقي'
@@ -59,8 +69,8 @@ var rightsData = {
         marriage: {
             status: 'danger',
             title: 'الزواج (المفارقة الكبرى)',
-            icon: '💔',
-            statusLabel: '⚠️ منطقة الخطر الرمادية',
+            icon: ICON('heartbreak'),
+            statusLabel: 'منطقة الخطر الرمادية',
             description: 'الواقع: زواج ديني  - عقد أمام رجل دين (غير مسجل رسمياً)',
             details: 'تعيش في "ظل قانوني" بلا حقوق, تسجيل لاحق عند الحمل أو الولادة, "طفلة بالابتدائية تصير \'زوجة\' بعرف المجتمع!"',
             law: 'ثغرة في قانون الأحوال الشخصية'
@@ -70,8 +80,8 @@ var rightsData = {
         legalCapacity: {
             status: 'conditional',
             title: 'الأهلية القانونية',
-            icon: '⚖️',
-            statusLabel: '⚠️ قاصر بإشراف',
+            icon: ICON('scales'),
+            statusLabel: 'قاصر بإشراف',
             description: 'لا تملك القاصر صلاحية توقيع العقود الرسمية أو القانونية، بل ينوب عنها "الولي" في ذلك.',
             details: 'لا تملك القاصر صلاحية توقيع العقود الرسمية أو القانونية، بل ينوب عنها "الولي" في ذلك، وتخضع التصرفات المهمة لرقابة وإشراف (مديرية رعاية القاصرين) لضمان حماية حقوقها.',
             law: 'المادة (97) من القانون المدني العراقي رقم 40 لسنة 1951. قانون رعاية القاصرين رقم 78 لسنة 1980.'
@@ -79,8 +89,8 @@ var rightsData = {
         economicRights: {
             status: 'conditional',
             title: 'الحقوق الاقتصادية',
-            icon: '💰',
-            statusLabel: '⚠️ ملكية مقيدة',
+            icon: ICON('coins'),
+            statusLabel: 'ملكية مقيدة',
             description: 'حساب توفير بإشراف ولي الأمر. لا تستطيع سحب الأموال بحرية.',
             details: 'يمكن فتح حساب توفير بإشراف ولي الأمر، لكن لا يمكن السحب أو التصرف بالأموال بحرية.',
             law: 'القانون المدني العراقي'
@@ -88,8 +98,8 @@ var rightsData = {
         civilRights: {
             status: 'forbidden',
             title: 'الحقوق المدنية',
-            icon: '🛂',
-            statusLabel: '🔴 مقيدة الحركة',
+            icon: ICON('passport'),
+            statusLabel: 'مقيدة الحركة',
             description: 'لا جواز سفر بدون موافقة الأبوين معاً. لا سفر إلا بمحرم.',
             details: 'لا يمكن إصدار جواز سفر للقاصر إلا بموافقة كلا الوالدين. السفر يتطلب مرافقة محرم.',
             law: 'قانون الجوازات العراقي'
@@ -97,8 +107,8 @@ var rightsData = {
         marriage: {
             status: 'conditional',
             title: 'الزواج (المفارقة الكبرى)',
-            icon: '💔',
-            statusLabel: '⚠️ زواج بإذن قضائي (المادة 8)',
+            icon: ICON('heartbreak'),
+            statusLabel: 'زواج بإذن قضائي (المادة 8)',
             description: '"يجوز للقاضي أن يأذن بزواج من أكمل الخامسة عشرة إذا وجد ضرورة..."',
             details: 'المشكلة: موافقة الولي قد تكون إجباراً، والمصلحة تفسر بفضفاضية.',
             law: 'المادة 8 من قانون الأحوال الشخصية'
@@ -108,8 +118,8 @@ var rightsData = {
         legalCapacity: {
             status: 'allowed',
             title: 'الأهلية القانونية',
-            icon: '⚖️',
-            statusLabel: '🟢 مواطنة كاملة',
+            icon: ICON('scales'),
+            statusLabel: 'مواطنة كاملة',
             description: 'حرية التصرف القانوني الكامل.',
             details: 'عند بلوغ 18 سنة، تصبح الفتاة بالغة قانونيًا وتملك الأهلية الكاملة للتصرف.',
             law: 'القانون المدني العراقي'
@@ -117,8 +127,8 @@ var rightsData = {
         economicRights: {
             status: 'allowed',
             title: 'الحقوق الاقتصادية',
-            icon: '💰',
-            statusLabel: '🟢 حرة مالياً',
+            icon: ICON('coins'),
+            statusLabel: 'حرة مالياً',
             description: 'تملك، تبيع، وتشتري بحرية كاملة.',
             details: 'حرية التملك والتصرف المالي الكامل دون قيود.',
             law: 'القانون المدني العراقي'
@@ -126,8 +136,8 @@ var rightsData = {
         civilRights: {
             status: 'allowed',
             title: 'الحقوق المدنية',
-            icon: '�',
-            statusLabel: '🟢 حرة التنقل',
+            icon: ICON('school'),
+            statusLabel: 'حرة التنقل',
             description: 'حرية السفر واستصدار الوثائق.',
             details: 'حرية السفر واستخراج جواز السفر والوثائق بشكل مستقل.',
             law: 'الدستور العراقي'
@@ -135,8 +145,8 @@ var rightsData = {
         marriage: {
             status: 'allowed',
             title: 'الزواج',
-            icon: '💍',
-            statusLabel: '🟢 حرة في القرار',
+            icon: ICON('ring'),
+            statusLabel: 'حرة في القرار',
             description: 'تستطيع الزواج دون إذن أحد. قرارها الشخصي هو القانون.',
             details: 'حرية الزواج بموافقتها الشخصية دون الحاجة لإذن أي طرف آخر.',
             law: 'قانون الأحوال الشخصية'
@@ -146,19 +156,19 @@ var rightsData = {
 
 var impactData = {
     9: [
-        { type: 'danger', icon: '🚫', text: 'انقطاع التعليم المبكر' },
-        { type: 'danger', icon: '💔', text: 'فقدان الطفولة' },
-        { type: 'danger', icon: '⛓️', text: 'عدم القدرة على اتخاذ القرارات' }
+        { type: 'danger', icon: ICON('ban'), text: 'انقطاع التعليم المبكر' },
+        { type: 'danger', icon: ICON('heartbreak'), text: 'فقدان الطفولة' },
+        { type: 'danger', icon: ICON('chain'), text: 'عدم القدرة على اتخاذ القرارات' }
     ],
     15: [
-        { type: 'warning', icon: '⚠️', text: 'خطر الزواج المبكر' },
-        { type: 'warning', icon: '📚', text: 'انقطاع التعليم' },
-        { type: 'danger', icon: '🤰', text: 'الحمل المبكر' }
+        { type: 'warning', icon: ICON('alert'), text: 'خطر الزواج المبكر' },
+        { type: 'warning', icon: ICON('book'), text: 'انقطاع التعليم' },
+        { type: 'danger', icon: ICON('pregnant'), text: 'الحمل المبكر' }
     ],
     18: [
-        { type: 'info', icon: '✅', text: 'استقلالية قانونية كاملة' },
-        { type: 'info', icon: '🎓', text: 'حرية اتخاذ القرارات' },
-        { type: 'info', icon: '💪', text: 'حقوق اقتصادية كاملة' }
+        { type: 'info', icon: ICON('check'), text: 'استقلالية قانونية كاملة' },
+        { type: 'info', icon: ICON('graduation'), text: 'حرية اتخاذ القرارات' },
+        { type: 'info', icon: ICON('strength'), text: 'حقوق اقتصادية كاملة' }
     ]
 };
 
@@ -227,10 +237,10 @@ function showToast(message, type) {
     var toast = document.createElement('div');
     toast.className = 'toast ' + type;
     
-    var icon = 'ℹ️';
-    if (type === 'success') icon = '✅';
-    if (type === 'error') icon = '❌';
-    if (type === 'warning') icon = '⚠️';
+    var icon = ICON('info');
+    if (type === 'success') icon = ICON('check');
+    if (type === 'error') icon = ICON('cross');
+    if (type === 'warning') icon = ICON('alert');
     
     toast.innerHTML = '<span>' + icon + '</span><span>' + message + '</span>';
     container.appendChild(toast);
@@ -271,7 +281,7 @@ function toggleTheme() {
 function updateThemeIcon(isDark) {
     var icons = document.querySelectorAll('.theme-icon');
     for (var i = 0; i < icons.length; i++) {
-        icons[i].textContent = isDark ? '☀️' : '🌙';
+        icons[i].innerHTML = (window.ICONS && window.ICONS[isDark ? 'sun' : 'moon']) || '';
     }
 }
 
@@ -342,7 +352,7 @@ function toggleLike() {
     var likeBtn = document.querySelector('#likeBtn');
     if (likeBtn) {
         likeBtn.classList.add('liked');
-        likeBtn.querySelector('.heart-icon').textContent = '❤️';
+        likeBtn.querySelector('.heart-icon').innerHTML = ICON('heart');
     }
 }
 
@@ -582,7 +592,7 @@ function showDetails(key, age) {
     modalBody.innerHTML = '<h3 class="modal-title">' + right.icon + ' ' + title + '</h3>' +
         '<p class="modal-description">' + details + '</p>' +
         '<div class="modal-law">' +
-        '<div class="law-title">📜 ' + legalRefLabel + '</div>' +
+        '<div class="law-title">' + ICON('scroll') + ' ' + legalRefLabel + '</div>' +
         '<div class="law-text">' + law + '</div>' +
         '</div>';
     modal.classList.add('show');
@@ -612,7 +622,7 @@ window.goToMainExperience = goToMainExperience;
 // Share Functions
 // ============================================
 function shareTwitter() {
-    var text = window.i18n ? window.i18n.t('share.twitter_text', 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة') : 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر 💔\n\n#تحريرها #حماية_الطفولة';
+    var text = window.i18n ? window.i18n.t('share.twitter_text', 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر\n\n#تحريرها #حماية_الطفولة') : 'اكتشفي حقوق الطفلة في القانون ومخاطر الزواج المبكر\n\n#تحريرها #حماية_الطفولة';
     var url = window.location.href;
     window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
 }
@@ -658,15 +668,26 @@ var articles = [];
 // ============================================
 // Articles Functions (API)
 // ============================================
+// Opens the article named by an /article/<slug> URL, if we are on one.
+// This is deliberately NOT inside loadArticles: pages without an articles grid
+// (index.html is one) still have to honour a shared article link.
+function openDeepLinkedArticle() {
+    var path = window.location.pathname;
+    if (path.indexOf('/article/') !== 0) return false;
+    var slugOrId = path.split('/article/')[1];
+    if (!slugOrId) return false;
+    openArticle(cleanSlug(decodeURIComponent(slugOrId)), true);
+    return true;
+}
+
 function loadArticles(attempt) {
     attempt = attempt || 0;
     var grid = document.getElementById('articlesGrid');
     if (!grid) {
-        // This page has no articles grid (e.g. campaign page). Retry a few
-        // times in case of slow DOM, then stop quietly instead of looping forever.
-        if (attempt < 4) {
-            setTimeout(function () { loadArticles(attempt + 1); }, 500);
-        }
+        // This page has no articles grid (e.g. campaign page). A shared
+        // /article/<slug> link still has to open, and openArticle() fetches the
+        // article on its own when it is not in the local list.
+        openDeepLinkedArticle();
         return;
     }
 
@@ -681,17 +702,7 @@ function loadArticles(attempt) {
             console.log('✅ Articles loaded:', data.length);
             articles = data;
             renderArticles();
-
-            // Check for deep link on load
-            var path = window.location.pathname;
-            if (path.startsWith('/article/')) {
-                var slugOrId = path.split('/article/')[1];
-                if (slugOrId) {
-                    // Clean the slug to remove any domain/article prefix
-                    slugOrId = cleanSlug(decodeURIComponent(slugOrId));
-                    openArticle(slugOrId, true);
-                }
-            }
+            openDeepLinkedArticle();
         })
         .catch(function (err) {
             console.warn('⚠️ Articles API failed:', err);
@@ -756,7 +767,7 @@ function renderArticleCard(article) {
     var imagePosition = article.imagePosition !== undefined ? article.imagePosition : 50;
     var imageHtml = article.image
         ? '<img src="' + escapeHTML(article.image) + '" alt="' + escapeHTML(title) + '" class="article-image" style="object-position: center ' + imagePosition + '%;">'
-        : '<div class="article-image-placeholder"><span class="emoji-icon">📰</span></div>';
+        : '<div class="article-image-placeholder">' + ICON('news') + '</div>';
 
     var authorHtml = author ? ' • ' + escapeHTML(author) : '';
 
@@ -804,13 +815,13 @@ function openArticle(articleId, fromPopState) {
                     openArticle(data._id, fromPopState);
                 } else {
                     if (articleViewContent) {
-                        articleViewContent.innerHTML = '<div style="text-align: center; padding: 50px;"><p>❌ المقالة غير موجودة</p></div>';
+                        articleViewContent.innerHTML = '<div style="text-align: center; padding: 50px;"><p>' + ICON('cross') + ' المقالة غير موجودة</p></div>';
                     }
                 }
             })
             .catch(function() {
                 if (articleViewContent) {
-                    articleViewContent.innerHTML = '<div style="text-align: center; padding: 50px;"><p>❌ حدث خطأ في التحميل</p></div>';
+                    articleViewContent.innerHTML = '<div style="text-align: center; padding: 50px;"><p>' + ICON('cross') + ' حدث خطأ في التحميل</p></div>';
                 }
             });
         return;
@@ -915,8 +926,8 @@ function openArticle(articleId, fromPopState) {
         '<p>' + escapeHTML(authorBio) + '</p>' +
         '</div>' : '';
 
-    var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
-    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" data-delete-id="' + article._id + '"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
+    var authorHtml = author ? '<span>' + ICON('pen') + ' ' + escapeHTML(author) + '</span>' : '';
+    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" data-delete-id="' + article._id + '"><span class="action-icon">' + ICON('trash') + '</span><span>حذف</span></button>' : '';
 
     var breadcrumbHtml = '<div class="article-breadcrumb">' +
         '<span>' + (lang === 'en' ? 'Editorial' : 'قضايا ومقالات') + '</span>' +
@@ -928,7 +939,7 @@ function openArticle(articleId, fromPopState) {
         '<h4 class="share-title">' + (lang === 'en' ? 'Share this story' : 'شارك هذه القصة') + '</h4>' +
         '<div class="share-buttons-row">' +
         '<button class="share-btn-big copy" data-link-id="' + (article.slug || article._id) + '">' +
-        '<span class="btn-icon">🔗</span> <span id="copyLinkTextContent">' + (lang === 'en' ? 'Copy Link' : 'نسخ الرابط') + '</span>' +
+        '<span class="btn-icon">' + ICON('link') + '</span> <span id="copyLinkTextContent">' + (lang === 'en' ? 'Copy Link' : 'نسخ الرابط') + '</span>' +
         '</button>' +
         '</div>' +
         '</div>';
@@ -940,7 +951,7 @@ function openArticle(articleId, fromPopState) {
         '<h1 class="article-page-title" dir="auto" style="font-size: ' + titleFontSize + 'rem;">' + escapeHTML(title) + '</h1>' +
         '<div class="article-modal-meta">' +
         '<div class="author-meta-item">' +
-        '<span class="meta-icon">✍️</span>' +
+        '<span class="meta-icon">' + ICON('pen') + '</span>' +
         '<div class="author-details">' +
         '<span class="author-name">' + (author ? escapeHTML(author) : (lang === 'en' ? 'HerLiberation' : 'تحريرها')) + '</span>' +
         '<span class="article-date-inline">' + formattedDate + '</span>' +
@@ -1067,8 +1078,8 @@ function renderArticleContent(article) {
         '<p>' + escapeHTML(authorBio) + '</p>' +
         '</div>' : '';
 
-    var authorHtml = author ? '<span>✍️ ' + escapeHTML(author) + '</span>' : '';
-    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" data-delete-id="' + article._id + '"><span class="action-icon">🗑️</span><span>حذف</span></button>' : '';
+    var authorHtml = author ? '<span>' + ICON('pen') + ' ' + escapeHTML(author) + '</span>' : '';
+    var deleteBtn = isAdmin ? '<button class="article-action-btn danger" data-delete-id="' + article._id + '"><span class="action-icon">' + ICON('trash') + '</span><span>حذف</span></button>' : '';
 
     var breadcrumbHtml = '<div class="article-breadcrumb">' +
         '<span>' + (lang === 'en' ? 'Editorial' : 'قضايا ومقالات') + '</span>' +
@@ -1080,7 +1091,7 @@ function renderArticleContent(article) {
         '<h4 class="share-title">' + (lang === 'en' ? 'Share this story' : 'شارك هذه القصة') + '</h4>' +
         '<div class="share-buttons-row">' +
         '<button class="share-btn-big copy" data-link-id="' + (article.slug || article._id) + '">' +
-        '<span class="btn-icon">🔗</span> <span id="copyLinkTextContent">' + (lang === 'en' ? 'Copy Link' : 'نسخ الرابط') + '</span>' +
+        '<span class="btn-icon">' + ICON('link') + '</span> <span id="copyLinkTextContent">' + (lang === 'en' ? 'Copy Link' : 'نسخ الرابط') + '</span>' +
         '</button>' +
         '</div>' +
         '</div>';
@@ -1092,7 +1103,7 @@ function renderArticleContent(article) {
         '<h1 class="article-page-title" dir="auto" style="font-size: ' + titleFontSize + 'rem;">' + escapeHTML(title) + '</h1>' +
         '<div class="article-modal-meta">' +
         '<div class="author-meta-item">' +
-        '<span class="meta-icon">✍️</span>' +
+        '<span class="meta-icon">' + ICON('pen') + '</span>' +
         '<div class="author-details">' +
         '<span class="author-name">' + (author ? escapeHTML(author) : (lang === 'en' ? 'HerLiberation' : 'تحريرها')) + '</span>' +
         '<span class="article-date-inline">' + formattedDate + '</span>' +
@@ -1153,7 +1164,7 @@ function loadSuggestedArticles(currentId) {
 
                 var imageHtml = article.image ?
                     '<div class="article-image-container"><img src="' + escapeHTML(article.image) + '" class="article-image" loading="lazy"></div>' :
-                    '<div class="article-image-placeholder">📄</div>';
+                    '<div class="article-image-placeholder">' + ICON('document') + '</div>';
 
                 card.innerHTML = imageHtml +
                     '<div class="article-content-wrapper">' +
@@ -1211,7 +1222,7 @@ function deleteArticle(articleId) {
     var noText = lang === 'en' ? 'Cancel' : 'إلغاء';
     
     modalBody.innerHTML = '<div class="admin-login-form">' +
-        '<h3>⚠️ ' + confirmTitle + '</h3>' +
+        '<h3>' + ICON('alert') + ' ' + confirmTitle + '</h3>' +
         '<p>' + confirmDesc + '</p>' +
         '<div style="display: flex; gap: 10px; margin-top: 20px; justify-content: center; width: 100%;">' +
         '<button class="submit-btn danger admin-delete-confirm-btn" data-article-id="' + articleId + '" style="background:#ef4444; width: calc(50% - 5px);">' + yesText + '</button>' +
@@ -1232,14 +1243,14 @@ function showAdminLogin() {
 
     if (isAdmin) {
         modalBody.innerHTML = '<div class="admin-login-form">' +
-            '<h3>👋 مرحباً أيها المدير!</h3>' +
+            '<h3>مرحباً أيها المدير!</h3>' +
             '<p>أنت مسجل الدخول كمدير</p>' +
-            '<button class="submit-btn admin-write-btn">✍️ كتابة مقال جديد</button>' +
-            '<button class="cancel-btn admin-logout-btn">🚪 تسجيل الخروج</button>' +
+            '<button class="submit-btn admin-write-btn">' + ICON('pen') + ' كتابة مقال جديد</button>' +
+            '<button class="cancel-btn admin-logout-btn">' + ICON('exit') + ' تسجيل الخروج</button>' +
             '</div>';
     } else {
         modalBody.innerHTML = '<div class="admin-login-form">' +
-            '<h3>🔐 دخول لوحة الإدارة</h3>' +
+            '<h3>' + ICON('lock') + ' دخول لوحة الإدارة</h3>' +
             '<input type="password" id="adminPassword" placeholder="كلمة المرور" class="input-field">' +
             '<button class="submit-btn admin-login-submit">دخول</button>' +
             '<button class="cancel-btn admin-cancel-btn">إلغاء</button>' +
@@ -1257,10 +1268,10 @@ function loginAdmin() {
         isAdmin = true;
         localStorage.setItem('isAdmin', 'true');
         closeModal();
-        showToast('تم تسجيل الدخول بنجاح! ✅', 'success');
+        showToast('تم تسجيل الدخول بنجاح!', 'success');
         toggleAdminPanel();
     } else {
-        showToast('كلمة المرور غير صحيحة! ❌', 'error');
+        showToast('كلمة المرور غير صحيحة!', 'error');
     }
 }
 
@@ -1268,7 +1279,7 @@ function logoutAdmin() {
     isAdmin = false;
     localStorage.removeItem('isAdmin');
     closeModal();
-    showToast('تم تسجيل الخروج! 👋', 'info');
+    showToast('تم تسجيل الخروج!', 'info');
 }
 
 function toggleAdminPanel() {
@@ -1314,11 +1325,11 @@ function submitArticle(e) {
             document.getElementById('articleImage').value = '';
             var adminPanel = document.getElementById('adminPanel');
             if (adminPanel) adminPanel.classList.add('hidden');
-            showToast('تم نشر المقال بنجاح! ✅', 'success');
+            showToast('تم نشر المقال بنجاح!', 'success');
         })
         .catch(function (err) {
             console.error(err);
-            showToast('فشل نشر المقال ❌', 'error');
+            showToast('فشل نشر المقال', 'error');
         });
 }
 
@@ -1541,6 +1552,19 @@ function loadDeferredContent() {
     }
 }
 
+// The rights dashboard used to render only once the visitor dragged the age
+// slider (or switched language), so the campaign page opened with an empty gap
+// where its main content belongs. Render the initial state up front.
+function renderInitialDashboard() {
+    if (!document.getElementById('rightsContainer')) return;
+    var slider = document.getElementById('ageSlider');
+    if (slider) currentAge = parseInt(slider.value, 10) || currentAge;
+    updateRights();
+    updateTimeline();
+    updateImpacts();
+    if (typeof updateActiveTabButton === 'function') updateActiveTabButton(currentAge);
+}
+
 // ============================================
 // Initialize - Optimized for fast loading
 // ============================================
@@ -1561,6 +1585,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Critical: Initialize theme and UI immediately
     initTheme();
     initParticles();
+    renderInitialDashboard();
 
     // Defer non-critical API calls - Safari compatible
     if (typeof requestIdleCallback === 'function') {
@@ -1574,7 +1599,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (likeBtnInit) {
             likeBtnInit.classList.add('liked');
             var heartIcon = likeBtnInit.querySelector('.heart-icon');
-            if (heartIcon) heartIcon.textContent = '❤️';
+            if (heartIcon) heartIcon.innerHTML = ICON('heart');
         }
     }
 
@@ -1761,11 +1786,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (!res.ok) throw new Error('API Error');
                             closeModal();
                             loadArticles();
-                            showToast(lang === 'en' ? 'Article deleted successfully! ✅' : 'تم حذف المقال بنجاح! ✅', 'success');
+                            showToast(lang === 'en' ? 'Article deleted successfully!' : 'تم حذف المقال بنجاح!', 'success');
                         })
                         .catch(function (err) {
                             console.error(err);
-                            showToast(lang === 'en' ? 'Failed to delete article ❌' : 'فشل حذف المقال ❌', 'error');
+                            showToast(lang === 'en' ? 'Failed to delete article' : 'فشل حذف المقال', 'error');
                         });
                 }
             }
@@ -1787,10 +1812,10 @@ document.addEventListener('DOMContentLoaded', function () {
             var modal = document.getElementById('detailsModal');
             var modalBody = document.getElementById('modalBody');
             if (modal && modalBody) {
-                modalBody.innerHTML = '<h3 class="modal-title">📤 شارك الموقع</h3>' +
+                modalBody.innerHTML = '<h3 class="modal-title">' + ICON('upload') + ' شارك الموقع</h3>' +
                     '<div class="share-buttons">' +
                     '<button class="share-btn twitter modal-share-twitter">𝕏 تويتر</button>' +
-                    '<button class="share-btn copy modal-share-copy" id="copyLink">📋 نسخ الرابط</button>' +
+                    '<button class="share-btn copy modal-share-copy" id="copyLink">' + ICON('copy') + ' نسخ الرابط</button>' +
                     '</div>';
                 modal.classList.add('show');
             }

@@ -114,7 +114,7 @@
     function updateThemeIcon(isDark) {
         var icons = document.querySelectorAll('.theme-icon');
         for (var i = 0; i < icons.length; i++) {
-            icons[i].textContent = isDark ? '☀️' : '🌙';
+            icons[i].innerHTML = (window.ICONS && window.ICONS[isDark ? 'sun' : 'moon']) || '';
         }
     }
 

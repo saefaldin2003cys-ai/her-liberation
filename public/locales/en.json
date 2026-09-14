@@ -66,28 +66,28 @@
         "9": {
             "legalCapacity": {
                 "title": "Legal Capacity",
-                "statusLabel": "🔴 Fully Minor",
+                "statusLabel": "Fully Minor",
                 "description": "Cannot sign any official contract. All actions require guardian or custodian approval.",
                 "details": "A minor under 15 years cannot sign any official contract. All legal actions require approval from a guardian or custodian.",
                 "law": "<a href='https://alimar.moch.gov.iq/pdf/kaser.pdf' target='_blank'>Iraqi Minors Welfare Law No. 78</a>"
             },
             "economicRights": {
                 "title": "Economic Rights",
-                "statusLabel": "🔴 No Self-Ownership",
+                "statusLabel": "No Self-Ownership",
                 "description": "A savings account can be opened for a minor under guardian supervision, but she cannot withdraw or manage funds freely.",
                 "details": "A savings account can be opened for a minor under guardian supervision, but she cannot withdraw or manage funds freely, as management remains exclusively in the hands of the guardian.",
                 "law": "<a href='https://tasjeel.mot.gov.iq/newtasjeel/%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86%20%D8%A7%D9%84%D9%85%D8%B3%D8%A7%D9%87%D9%85%D8%A9/%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86%20%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A%2040%20%D9%84%D8%B3%D9%86%D8%A9%201951.pdf' target='_blank'>Articles (97 and 98) of Iraqi Civil Law.</a>"
             },
             "civilRights": {
                 "title": "Civil Rights",
-                "statusLabel": "🔴 Restricted Movement",
+                "statusLabel": "Restricted Movement",
                 "description": "No passport without both parents' approval. No travel without a guardian.",
                 "details": "A passport cannot be issued for a minor without both parents' approval. Travel requires accompaniment by a guardian.",
                 "law": "<a href='https://moj.gov.iq/upload/pdf/قانون%20الجوازات%20-%20Copy.pdf' target='_blank'>Iraqi Passport Law No. (32) of 2015 – Article 5, Iraqi Ministry of Justice</a>"
             },
             "marriage": {
                 "title": "Marriage (The Great Paradox)",
-                "statusLabel": "⚠️ Gray Danger Zone",
+                "statusLabel": "Gray Danger Zone",
                 "description": "Reality: Religious marriage - contract before a cleric (not officially registered)",
                 "details": "She lives in a 'legal shadow' without rights; her marriage is conducted outside the court, and its official registration is left to later stages such as pregnancy, childbirth, or dispute.\n\nAlthough this type of contract existed before the issuance of the 'Ja'fari Code' and is considered a violation of Personal Status Law No. 188 of 1959, the Code gave these practices wider legitimacy and weakened the criminalization of marriage outside the court by not specifying a minimum age for marriage and allowing the marriage of minors without judicial oversight.\n\nThus, a child in elementary school is labeled a 'wife' by custom, while being effectively deprived of the legal protection system related to capacity, age, and judicial guarantees.",
                 "law": "Personal Status Law No. 188 of 1959\n– Article (8): Regulation of marriage age and criminalization of marriage outside the court.\n\nAmendment Law No. 1 of 2025\n– Stipulation not to reduce the marriage age.\n\nThe Ja'fari Code\n– Article (2/Fifth): Sufficiency of the condition of puberty and reason without a specific age.\n– Article (18): Permitting the marriage of a minor by the father or paternal grandfather.\n\n<a href='https://al-aalem.com/opinion/%d9%85%d8%a7-%d8%ae%d8%b3%d8%b1%d8%aa%d9%87-%d8%a7%d9%84%d9%85%d8%b1%d8%a3%d8%a9-%d9%81%d9%8a-%d8%a7%d9%84%d9%85%d8%af%d9%88%d9%86%d8%a9-%d8%a7%d9%84%d8%ac%d8%b9%d9%81%d8%b1%d9%8a%d8%a9/' target='_blank'>Rahim Al-Ukaili: What Women Lost in the 'Ja'fari Code'</a>"
@@ -96,28 +96,28 @@
         "15": {
             "legalCapacity": {
                 "title": "Legal Capacity",
-                "statusLabel": "⚠️ Minor Under Supervision",
+                "statusLabel": "Minor Under Supervision",
                 "description": "A minor does not have the authority to sign official or legal contracts; the \"guardian\" acts on her behalf.",
                 "details": "A minor does not have the authority to sign official or legal contracts; the \"guardian\" acts on her behalf. Important transactions are subject to the oversight and supervision of (Minors Welfare Directorate) to ensure the protection of her rights.",
                 "law": "<a href='https://alimar.moch.gov.iq/pdf/kaser.pdf' target='_blank'>Article (97) of Iraqi Civil Law No. 40 of 1951. Minors Welfare Law No. 78 of 1980.</a>"
             },
             "economicRights": {
                 "title": "Economic Rights",
-                "statusLabel": "⚠️ Restricted Ownership",
+                "statusLabel": "Restricted Ownership",
                 "description": "A savings account can be opened for a minor under guardian supervision, but she cannot withdraw or manage funds freely.",
                 "details": "A savings account can be opened for a minor under guardian supervision, but she cannot withdraw or manage funds freely, as management remains exclusively in the hands of the guardian.",
                 "law": "<a href='https://tasjeel.mot.gov.iq/newtasjeel/%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86%20%D8%A7%D9%84%D9%85%D8%B3%D8%A7%D9%87%D9%85%D8%A9/%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86%20%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A%2040%20%D9%84%D8%B3%D9%86%D8%A9%201951.pdf' target='_blank'>Articles (97 and 98) of Iraqi Civil Law.</a>"
             },
             "civilRights": {
                 "title": "Civil Rights",
-                "statusLabel": "🔴 Restricted Movement",
+                "statusLabel": "Restricted Movement",
                 "description": "A passport cannot be issued for a minor or allow her to travel outside Iraq without written consent from the \"guardian\".",
                 "details": "A passport cannot be issued for a minor or allow her to travel outside Iraq without written consent from the \"guardian\" as she lacks the capacity to make this decision alone.",
                 "law": "<a href='https://moj.gov.iq/upload/pdf/قانون%20الجوازات%20-%20Copy.pdf' target='_blank'>Article (6) of Iraqi Passport Law No. 32 of 2015.</a>"
             },
             "marriage": {
                 "title": "Marriage (The Great Paradox)",
-                "statusLabel": "⚠️ Marriage with Judicial Permission (Article 8)",
+                "statusLabel": "Marriage with Judicial Permission (Article 8)",
                 "description": "\"The judge may authorize marriage for those who have completed fifteen years if necessary...\"",
                 "details": "The problem: Guardian consent may be coercive, and 'necessity' is interpreted loosely.\n\nDespite all the previous restrictions... if a minor gets married, the law suddenly considers her \"fully competent\"!\nThe marriage contract grants her the status of \"adulthood\" immediately, making her legally and financially responsible like adults, as if marriage gave her the mental maturity she lacked moments before.",
                 "law": "<a href='https://iraqipersonalstatuslaw.com/law/law.pdf' target='_blank'>Article 8 of Personal Status Law\nArticle (3 / Paragraph 2) of Personal Status Law No. 188 of 1959.</a>"
@@ -201,10 +201,10 @@
         "select_province": "Click on a province name to view the reality",
         "type_label": "Pattern:",
         "rate_label": "Child marriage rate (under 18)",
-        "consequences_title": "⚠️ What Does This Reality Mean for Girls?",
-        "consequence1": "🔴 Increased sexual and physical violence",
-        "consequence2": "🔴 Significant health risks during pregnancy and childbirth",
-        "consequence3": "🔴 Deprivation of education and sharp decline in future job opportunities"
+        "consequences_title": "What Does This Reality Mean for Girls?",
+        "consequence1": "Increased sexual and physical violence",
+        "consequence2": "Significant health risks during pregnancy and childbirth",
+        "consequence3": "Deprivation of education and sharp decline in future job opportunities"
     },
     "provinces": [
         {
@@ -441,7 +441,7 @@
     "tracks_page": {
         "title": "Our Programs",
         "description": "Educational programs and workshops designed to build skills and digital empowerment.",
-        "coming_soon": "Programs are under development... Stay tuned! 🚀",
+        "coming_soon": "Programs are under development... Stay tuned!",
         "track1_title": "Web Development",
         "track1_desc": "Learn to build modern, responsive websites using HTML, CSS, and JavaScript fundamentals.",
         "track2_title": "Digital Skills",
@@ -467,5 +467,27 @@
         "card2_desc": "We collaborate with civil society organizations and government institutions to strengthen childhood protection and enforce laws.",
         "card3_title": "Research & Documentation",
         "card3_desc": "We collect data and document real stories to provide strong evidence supporting legislative reform demands."
+    },
+    "home_figures": {
+        "title": "The reality we work on",
+        "lead": "Child marriage in Iraq is not a rare exception but a widespread practice. Many of these contracts are made outside the courts, so they never appear in official records and give the girl no protection in a dispute."
+    },
+    "home_law": {
+        "title": "What the law actually says",
+        "p1": "Article 8 of the Iraqi Personal Status Law sets the age of marriage at eighteen, then opens an exception allowing a judge to authorise marriage from the age of fifteen. That exception is the door most of what we document passes through.",
+        "p2": "The contradiction is that the same law will not let that girl sign a sales contract, open a bank account in her own name, or travel without her guardian. She is treated as a minor in every financial and administrative act, and as an adult in the marriage contract alone.",
+        "p3": "Move the age slider on the campaign page to see, year by year, which rights the law grants her and which it takes away.",
+        "cta": "See rights by age"
+    },
+    "home_map": {
+        "lead": "The rate varies sharply from one governorate to the next. The interactive map shows each governorate its rate, its prevailing pattern, and the story behind the number.",
+        "types": "Rural, urban, tribal",
+        "cta": "Open the interactive map"
+    },
+    "home_articles": {
+        "cta": "All articles"
+    },
+    "home_explore": {
+        "title": "Explore the platform"
     }
 }

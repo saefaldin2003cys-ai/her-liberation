@@ -6,6 +6,7 @@
     <title>تحريرها | المدونة</title>
     <script>
         (function(){
+document.documentElement.classList.add('js');
             var t=localStorage.getItem('theme');
             if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
                 document.documentElement.classList.add('dark-mode');
@@ -17,6 +18,8 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <script src="/js/icons.js"></script>
+    <a class="skip-link" href="#pageContent">تخطَّ إلى المحتوى</a>
     <header class="site-header">
         <nav class="site-nav" aria-label="Main navigation">
             <a href="/" class="nav-logo">
@@ -33,7 +36,7 @@
             </ul>
             <div class="nav-actions">
                 <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme">
-                    <span class="theme-icon">🌙</span>
+                    <span class="theme-icon"><svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg></span>
                 </button>
                 <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language">
                     <span class="lang-icon">EN</span>
@@ -41,7 +44,7 @@
                 <button class="nav-hamburger" aria-label="Menu" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
-            </div>
+</div>
         </nav>
     </header>
 
@@ -57,8 +60,8 @@
             <div class="articles-browse">
                 <div id="articlesGrid" class="articles-grid">
                     <p class="articles-loading" data-i18n="articles.loading">جاري تحميل المدونة...</p>
-                </div>
-            </div>
+</div>
+</div>
         </section>
 
         <!-- Article Detail Page (Independent Reader Panel — shown via JS) -->
@@ -69,17 +72,17 @@
                         <span class="back-icon">←</span>
                         <span data-i18n="article.back_to_blog">العودة للمدونة</span>
                     </button>
-                </div>
+</div>
                 <div id="articleViewContent">
                     <!-- Content injected dynamically via script.js -->
-                </div>
+</div>
                 <div class="suggested-articles-section">
-                    <h4 class="suggested-title" data-i18n="article.suggested_title">مقالات مقترحة للقارئ ✨</h4>
+                    <h4 class="suggested-title" data-i18n="article.suggested_title">مقالات مقترحة للقارئ</h4>
                     <div class="suggested-grid" id="suggestedArticlesGrid">
                         <!-- Cards injected dynamically via script.js -->
-                    </div>
-                </div>
-            </div>
+</div>
+</div>
+</div>
         </section>
     </main>
 
@@ -90,14 +93,14 @@
                 <a href="/about-us" data-i18n="nav.about">من نحن</a>
                 <a href="/blog" data-i18n="nav.blog">المدونة</a>
                 <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
-            </div>
+</div>
             <div class="footer-social">
                 <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
                 <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
                 <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
-            </div>
+</div>
             <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
-        </div>
+</div>
     </footer>
 
     <script src="/js/i18n.js"></script>

@@ -7,6 +7,7 @@
     <title>لوحة الإدارة | تحريرها</title>
     <script>
         (function(){
+document.documentElement.classList.add('js');
             var t=localStorage.getItem('theme');
             if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
                 document.documentElement.classList.add('dark-mode');
@@ -27,16 +28,16 @@
             --bg-primary: #0C0A1D;
             --bg-secondary: #1A1730;
             --bg-card: rgba(26, 23, 48, 0.9);
-            --accent-primary: #E91E8C;
-            --accent-secondary: #7C3AED;
-            --accent-gradient: linear-gradient(135deg, #E91E8C 0%, #7C3AED 100%);
+            --accent-primary: #2dd4bf;
+            --accent-secondary: #14b8a6;
+            --accent-gradient: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
             --text-primary: #F9FAFB;
             --text-secondary: #D1D5DB;
             --text-muted: #6B7280;
-            --border-color: rgba(244, 114, 182, 0.2);
+            --border-color: rgba(45, 212, 191, 0.20);
             --success: #10B981;
             --danger: #EF4444;
-            --radius-md: 12px;
+            --radius-md: 4px;
             --radius-lg: 20px;
         }
 
@@ -648,6 +649,8 @@
 </head>
 
 <body>
+    <script src="/js/icons.js"></script>
+    <a class="skip-link" href="#pageContent">تخطَّ إلى المحتوى</a>
     <header class="site-header">
         <nav class="site-nav" aria-label="Main navigation">
             <a href="/" class="nav-logo"><img src="/assets/images/1_20251127_202518.png" alt="HerLiberation"></a>
@@ -661,10 +664,10 @@
                 <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">التبرع</a></li>
             </ul>
             <div class="nav-actions">
-                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon"><svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg></span></button>
                 <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language"><span class="lang-icon">EN</span></button>
                 <button class="nav-hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
-            </div>
+</div>
         </nav>
     </header>
 
@@ -673,27 +676,27 @@
         <!-- Login Screen -->
         <div id="loginScreen" class="login-screen">
             <div class="login-card">
-                <div class="login-icon">🔐</div>
+                <div class="login-icon"><svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg></div>
                 <h1 class="login-title">لوحة الإدارة</h1>
                 <p class="login-subtitle">أدخل رمز الدخول للمتابعة</p>
                 <form id="loginForm">
                     <div class="form-group">
                         <input type="password" id="adminPassword" class="input-field" placeholder="رمز الدخول" required>
-                    </div>
+</div>
                     <div id="loginError" class="login-error">رمز الدخول غير صحيح</div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">دخول</button>
                 </form>
-            </div>
-        </div>
+</div>
+</div>
 
         <!-- Admin Dashboard -->
         <div id="adminDashboard" class="admin-dashboard">
             <header class="header">
-                <h1>🔐 لوحة الإدارة</h1>
+                <h1><svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg> لوحة الإدارة</h1>
                 <div class="header-actions">
                     <a href="/" class="back-link">← العودة للموقع</a>
                     <button class="logout-btn" onclick="logout()">خروج</button>
-                </div>
+</div>
             </header>
 
             <!-- Stats -->
@@ -701,31 +704,31 @@
                 <div class="stat-card">
                     <div class="stat-number" id="articlesCount">0</div>
                     <div class="stat-label">مقالات</div>
-                </div>
+</div>
                 <div class="stat-card">
                     <div class="stat-number" id="viewsCount">0</div>
                     <div class="stat-label">زيارات</div>
-                </div>
-            </div>
+</div>
+</div>
 
             <!-- Message -->
             <div id="message" class="message" style="display: none;"></div>
 
             <!-- New Article Form -->
             <div class="card">
-                <h3 class="card-title">✍️ كتابة مقال جديد</h3>
+                <h3 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-pen"></use></svg> كتابة مقال جديد</h3>
                 <form id="articleForm">
                     <!-- Title Fields -->
                     <div class="row" style="display: flex; gap: 1rem;">
                         <div class="form-group" style="flex: 1;">
                             <label for="titleAr">عنوان المقال (بالعربية) *</label>
                             <input type="text" id="titleAr" class="input-field" dir="rtl" required>
-                        </div>
+</div>
                         <div class="form-group" style="flex: 1;">
                             <label for="titleEn">Article Title (English)</label>
                             <input type="text" id="titleEn" class="input-field" dir="ltr">
-                        </div>
-                    </div>
+</div>
+</div>
 
                     <!-- Slug Field -->
                     <div class="form-group">
@@ -733,10 +736,10 @@
                         <p class="field-hint"
                             style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem;">مثال:
                             <code>child-marriage-iraq</code>. سيظهر كـ: her-liberation.org/article/child-marriage-iraq
-                        </p>
+</p>
                         <input type="text" id="articleSlug" class="input-field"
                             placeholder="atleast-3-words-with-dashes" dir="ltr">
-                    </div>
+</div>
 
                     <div class="form-group">
                         <label>حجم خط العنوان (Title Font Size)</label>
@@ -748,25 +751,25 @@
                             <span>A+</span>
                             <span id="titleFontSizeVal"
                                 style="font-weight: bold; color: var(--accent-primary); min-width: 50px; text-align: center;">3.5rem</span>
-                        </div>
+</div>
                         <script>
                             document.getElementById('titleFontSize').oninput = function () {
                                 document.getElementById('titleFontSizeVal').textContent = this.value + 'rem';
                             };
                         </script>
-                    </div>
+</div>
 
                     <!-- Author Fields -->
                     <div class="row" style="display: flex; gap: 1rem;">
                         <div class="form-group" style="flex: 1;">
                             <label for="authorAr">اسم الكاتب (بالعربية) *</label>
                             <input type="text" id="authorAr" class="input-field" dir="rtl" required>
-                        </div>
+</div>
                         <div class="form-group" style="flex: 1;">
                             <label for="authorEn">Author Name (English)</label>
                             <input type="text" id="authorEn" class="input-field" dir="ltr">
-                        </div>
-                    </div>
+</div>
+</div>
 
                     <!-- Author Bio -->
                     <div class="row" style="display: flex; gap: 1rem;">
@@ -774,72 +777,72 @@
                             <label for="authorBioAr">وصف الكاتب (بالعربية)</label>
                             <textarea id="authorBioAr" class="input-field" dir="rtl"
                                 placeholder="نبذة عن الكاتب..."></textarea>
-                        </div>
+</div>
                         <div class="form-group" style="flex: 1;">
                             <label for="authorBioEn">Author Bio (English)</label>
                             <textarea id="authorBioEn" class="input-field" dir="ltr"
                                 placeholder="Short bio..."></textarea>
-                        </div>
-                    </div>
+</div>
+</div>
 
                     <!-- Content Fields -->
                     <div class="form-group">
                         <label for="editorAr">محتوى المقال (بالعربية) *</label>
                         <div id="editorAr" class="quill-editor-container"></div>
-                    </div>
+</div>
                     <div class="form-group">
                         <label for="editorEn">Content (English)</label>
                         <div id="editorEn" class="quill-editor-container"></div>
-                    </div>
+</div>
 
                     <!-- Main Image (Original) -->
                     <div class="form-group">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                             <label style="margin-bottom: 0;">صورة المقال الرئيسية</label>
-                        </div>
+</div>
                         <div class="image-upload-options">
                             <div id="uploadTab" class="tab-content active">
                                 <div class="file-upload-wrapper">
                                     <input type="file" id="imageFile" accept="image/*" onchange="previewImage(this)">
                                     <label for="imageFile" class="file-upload-label">
-                                        <span class="upload-icon">📁</span>
+                                        <span class="upload-icon"><svg class="icon" aria-hidden="true"><use href="#i-folder"></use></svg></span>
                                         <span class="upload-text">اختر صورة أو اسحبها هنا</span>
                                     </label>
-                                </div>
+</div>
                                 <div id="imagePreview" class="image-preview" style="display: none;">
                                     <div class="image-preview-container">
-                                        <img id="previewImg" src="" alt="معاينة" style="object-position: center 50%;">
-                                    </div>
+                                        <img id="previewImg" src="" alt="معاينة" style="object-position: center 50%;" loading="lazy" decoding="async">
+</div>
                                     <div class="image-position-controls">
                                         <span class="position-label">موضع الصورة:</span>
                                         <div class="position-slider-wrapper">
-                                            <span>⬆️</span>
+                                            <span><svg class="icon" aria-hidden="true"><use href="#i-arrowUp"></use></svg></span>
                                             <input type="range" id="positionSlider" class="position-slider" min="0"
                                                 max="100" value="50" oninput="updateImagePosition(this.value)">
-                                            <span>⬇️</span>
+                                            <span><svg class="icon" aria-hidden="true"><use href="#i-arrowDown"></use></svg></span>
                                             <span id="positionValue" class="position-value">50%</span>
-                                        </div>
-                                    </div>
+</div>
+</div>
                                     <button type="button" class="remove-image" onclick="removeImage()" aria-label="Remove image">✕</button>
-                                </div>
+</div>
                                 <input type="hidden" id="imagePosition" value="50">
-                            </div>
-                        </div>
-                    </div>
+</div>
+</div>
+</div>
                     <button type="submit" class="btn btn-primary">نشر المقال</button>
                 </form>
-            </div>
+</div>
 
             <!-- Articles List -->
             <div class="card">
-                <h3 class="card-title">📚 المقالات المنشورة</h3>
+                <h3 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg> المقالات المنشورة</h3>
                 <div id="articlesList" class="articles-list">
                     <div class="empty-state">جاري التحميل...</div>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
     </main>
 
     <footer class="site-footer">
@@ -849,21 +852,21 @@
                 <a href="/about-us" data-i18n="nav.about">من نحن</a>
                 <a href="/blog" data-i18n="nav.blog">المدونة</a>
                 <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
-            </div>
+</div>
             <div class="footer-social">
                 <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
                 <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
                 <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
-            </div>
+</div>
             <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
-        </div>
+</div>
     </footer>
 
     <!-- Edit Article Modal -->
     <div id="editModal" class="edit-modal" style="display: none;">
         <div class="edit-modal-overlay" onclick="closeEditModal()"></div>
         <div class="edit-modal-content card">
-            <h3 class="card-title">✏️ تعديل المقال</h3>
+            <h3 class="card-title"><svg class="icon" aria-hidden="true"><use href="#i-pen"></use></svg> تعديل المقال</h3>
             <form id="editArticleForm">
                 <input type="hidden" id="editArticleId">
                 <!-- Title Fields -->
@@ -871,17 +874,17 @@
                     <div class="form-group" style="flex: 1;">
                         <label for="editTitleAr">عنوان المقال (بالعربية) *</label>
                         <input type="text" id="editTitleAr" class="input-field" dir="rtl" required>
-                    </div>
+</div>
                     <div class="form-group" style="flex: 1;">
                         <label for="editTitleEn">Article Title (English)</label>
                         <input type="text" id="editTitleEn" class="input-field" dir="ltr">
-                    </div>
-                </div>
+</div>
+</div>
                 <!-- Edit Slug -->
                 <div class="form-group">
                     <label for="editArticleSlug">الرابط الثابت (Slug)</label>
                     <input type="text" id="editArticleSlug" class="input-field" dir="ltr">
-                </div>
+</div>
                 <!-- Edit Title Font Size -->
                 <div class="form-group">
                     <label>حجم خط العنوان (Title Font Size)</label>
@@ -893,69 +896,69 @@
                         <span>A+</span>
                         <span id="editTitleFontSizeVal"
                             style="font-weight: bold; color: var(--accent-primary); min-width: 50px; text-align: center;">3.5rem</span>
-                    </div>
+</div>
                     <script>
                         document.getElementById('editTitleFontSize').oninput = function () {
                             document.getElementById('editTitleFontSizeVal').textContent = this.value + 'rem';
                         };
                     </script>
-                </div>
+</div>
                 <!-- Author Fields -->
                 <div class="row" style="display: flex; gap: 1rem;">
                     <div class="form-group" style="flex: 1;">
                         <label for="editAuthorAr">اسم الكاتب (بالعربية)</label>
                         <input type="text" id="editAuthorAr" class="input-field" dir="rtl">
-                    </div>
+</div>
                     <div class="form-group" style="flex: 1;">
                         <label for="editAuthorEn">Author Name (English)</label>
                         <input type="text" id="editAuthorEn" class="input-field" dir="ltr">
-                    </div>
-                </div>
+</div>
+</div>
                 <!-- Author Bio -->
                 <div class="row" style="display: flex; gap: 1rem;">
                     <div class="form-group" style="flex: 1;">
                         <label for="editAuthorBioAr">وصف الكاتب (بالعربية)</label>
                         <textarea id="editAuthorBioAr" class="input-field" dir="rtl"></textarea>
-                    </div>
+</div>
                     <div class="form-group" style="flex: 1;">
                         <label for="editAuthorBioEn">Author Bio (English)</label>
                         <textarea id="editAuthorBioEn" class="input-field" dir="ltr"></textarea>
-                    </div>
-                </div>
+</div>
+</div>
                 <!-- Content Fields -->
                 <div class="form-group">
                     <label for="editEditorAr">محتوى المقال (بالعربية) *</label>
                     <div id="editEditorAr" class="quill-editor-container"></div>
-                </div>
+</div>
                 <div class="form-group">
                     <label for="editEditorEn">Content (English)</label>
                     <div id="editEditorEn" class="quill-editor-container"></div>
-                </div>
+</div>
                 <!-- Image Upload -->
                 <div class="form-group">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                         <label style="margin-bottom: 0;">الصورة الرئيسية</label>
-                    </div>
+</div>
                     <div class="file-upload-wrapper">
                         <input type="file" id="editImageFile" accept="image/*" onchange="previewEditImage(this)">
                         <label for="editImageFile" class="file-upload-label">
-                            <span class="upload-icon">📁</span>
+                            <span class="upload-icon"><svg class="icon" aria-hidden="true"><use href="#i-folder"></use></svg></span>
                             <span class="upload-text">اختر صورة جديدة (أو اترك الحالية)</span>
                         </label>
-                    </div>
+</div>
                     <input type="hidden" id="editImageUrl" value="">
                     <div id="editImagePreview" style="margin-top: 0.5rem;"></div>
-                </div>
+</div>
                 <!-- Buttons -->
                 <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                    <button type="submit" class="btn btn-primary"><svg class="icon" aria-hidden="true"><use href="#i-save"></use></svg> حفظ التعديلات</button>
                     <button type="button" class="btn" style="background: var(--text-muted);"
                         onclick="closeEditModal()">إلغاء</button>
-                </div>
+</div>
             </form>
-        </div>
-    </div>
+</div>
+</div>
 
     <style>
         .edit-modal {
@@ -1180,19 +1183,19 @@
                         <div class="article-item">
                             <div class="article-thumbnail">
                                 ${article.image ?
-                            `<img src="${escapeHtml(article.image)}" alt="غلاف" onerror="this.parentElement.innerHTML='<span class=no-image>🖼️</span>'">` :
+                            `<img src="${escapeHtml(article.image)}" alt="غلاف" onerror="this.parentElement.innerHTML='<span class=no-image loading="lazy" decoding="async">🖼️</span>'">` :
                             '<span class="no-image">🖼️</span>'
                         }
-                            </div>
+</div>
                             <div class="article-info">
                                 <h4>${escapeHtml(article.title.ar || article.title)}</h4>
                                 <p>✍️ ${escapeHtml(article.author.ar || article.author)}</p>
-                            </div>
+</div>
                             <div class="article-actions">
                                 <button class="btn btn-primary btn-sm" onclick="editArticle('${article._id}')">✏️ تعديل</button>
                                 <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article._id}')">🗑️ حذف</button>
-                            </div>
-                        </div>
+</div>
+</div>
                     `).join('');
                 })
                 .catch(() => {
@@ -1382,7 +1385,7 @@
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     document.getElementById('editImagePreview').innerHTML = 
-                        `<img src="${e.target.result}" style="max-width: 200px; max-height: 150px; border-radius: 4px; border: 1px solid var(--border-color);">`;
+                        `<img src="${e.target.result}" style="max-width: 200px; max-height: 150px; border-radius: 4px; border: 1px solid var(--border-color);" loading="lazy" decoding="async">`;
                 };
                 reader.readAsDataURL(file);
             }
@@ -1438,19 +1441,19 @@
                         <div class="article-item">
                             <div class="article-thumbnail">
                                 ${article.image ?
-                            `<img src="${escapeHtml(article.image)}" alt="غلاف" onerror="this.parentElement.innerHTML='<span class=no-image>🖼️</span>'">` :
+                            `<img src="${escapeHtml(article.image)}" alt="غلاف" onerror="this.parentElement.innerHTML='<span class=no-image loading="lazy" decoding="async">🖼️</span>'">` :
                             '<span class="no-image">🖼️</span>'
                         }
-                            </div>
+</div>
                             <div class="article-info">
                                 <h4>${escapeHtml(article.title.ar || article.title)}</h4>
                                 <p>✍️ ${escapeHtml(article.author.ar || article.author)}</p>
-                            </div>
+</div>
                             <div class="article-actions">
                                 <button class="btn btn-primary btn-sm" onclick="editArticle('${article._id}')">✏️ تعديل</button>
                                 <button class="btn btn-danger btn-sm" onclick="deleteArticle('${article._id}')">🗑️ حذف</button>
-                            </div>
-                        </div>
+</div>
+</div>
                     `).join('');
                 })
                 .catch(() => {
@@ -1493,7 +1496,7 @@
             // Show image preview if exists
             const preview = document.getElementById('editImagePreview');
             if (article.image) {
-                preview.innerHTML = `<div style="position: relative; display: inline-block;"><img src="${escapeHtml(article.image)}" style="max-width: 200px; max-height: 150px; border-radius: 4px; border: 1px solid var(--border-color);"><div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">الصورة الحالية (اختر صورة جديدة للتغيير)</div></div>`;
+                preview.innerHTML = `<div style="position: relative; display: inline-block;"><img src="${escapeHtml(article.image)}" style="max-width: 200px; max-height: 150px; border-radius: 4px; border: 1px solid var(--border-color);" loading="lazy" decoding="async"><div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">الصورة الحالية (اختر صورة جديدة للتغيير)</div></div>`;
             } else {
                 preview.innerHTML = '';
             }
@@ -1592,7 +1595,7 @@
             const url = this.value.trim();
             const preview = document.getElementById('editImagePreview');
             if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image/'))) {
-                preview.innerHTML = `<img src="${escapeHtml(url)}" style="max-width: 200px; border-radius: 8px;" onerror="this.parentElement.innerHTML='<span style=color:red>صورة غير صالحة</span>'">`;
+                preview.innerHTML = `<img src="${escapeHtml(url)}" style="max-width: 200px; border-radius: 8px;" onerror="this.parentElement.innerHTML='<span style=color:red loading="lazy" decoding="async">صورة غير صالحة</span>'">`;
             } else {
                 preview.innerHTML = '';
             }

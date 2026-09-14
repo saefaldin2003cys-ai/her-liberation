@@ -6,6 +6,7 @@
     <title>تحريرها | الحملة</title>
     <script>
         (function(){
+document.documentElement.classList.add('js');
             var t=localStorage.getItem('theme');
             if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
                 document.documentElement.classList.add('dark-mode');
@@ -17,6 +18,8 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <script src="/js/icons.js"></script>
+    <a class="skip-link" href="#pageContent">تخطَّ إلى المحتوى</a>
     <!-- Navigation -->
     <header class="site-header">
         <nav class="site-nav" aria-label="Main navigation">
@@ -34,7 +37,7 @@
             </ul>
             <div class="nav-actions">
                 <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme">
-                    <span class="theme-icon">🌙</span>
+                    <span class="theme-icon"><svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg></span>
                 </button>
                 <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language">
                     <span class="lang-icon">EN</span>
@@ -42,7 +45,7 @@
                 <button class="nav-hamburger" aria-label="Menu" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
-            </div>
+</div>
         </nav>
     </header>
 
@@ -51,7 +54,7 @@
         <!-- Back to Campaigns -->
         <div class="campaign-back-wrap">
             <a href="/campaigns" class="campaign-back-link" data-i18n="campaigns_page.back">← العودة إلى الحملات</a>
-        </div>
+</div>
 
         <!-- Campaign Hero Section -->
         <section class="campaign-hero reveal-on-scroll">
@@ -60,11 +63,11 @@
                     <p class="campaign-hero-slogan" data-i18n="campaign.slogan_ar">قبل الـ18 عامًا: طفلة لا زوجة</p>
                     <h1 class="campaign-hero-title" data-i18n="hero.description">اكتشف كيف يحدد القانون حقوق الطفل بين 9 و18 سنة وكيف يمكن للزواج المبكر أن يسلبه هذه الحقوق</h1>
                     <p class="campaign-hero-sub" data-i18n="age_selector_extra.description">اكتشف كيف يحدد القانون العراقي حقوق الفتاة بناءً على سنها ومفارقة أهليتها للزواج المبكر.</p>
-                </div>
+</div>
                 <div class="campaign-hero-visual">
                     <img src="/assets/images/happy-schoolgirls.png" alt="Happy school girls" class="campaign-hero-img">
-                </div>
-            </div>
+</div>
+</div>
         </section>
 
         <!-- Dynamic Metrics Counters Section -->
@@ -75,22 +78,22 @@
                     <div class="metric-number-wrapper">28%</div>
                     <h3 class="metric-title" data-i18n="stats_page.percentage_text">نسبة زواج القاصرات</h3>
                     <p class="metric-desc" data-i18n="stats_page.source">الإحصاء الرسمي / اليونيسف</p>
-                </div>
+</div>
                 
                 <div class="metric-card glass-card">
                     <div class="metric-glow-dot"></div>
                     <div class="metric-number-wrapper">1/4</div>
                     <h3 class="metric-title" data-i18n="stats_page.detail1">1 من كل 4 فتيات</h3>
                     <p class="metric-desc" data-i18n="stats_page.detail1_desc">تتزوج وهي لا تزال طفلة دون السن القانوني</p>
-                </div>
+</div>
                 
                 <div class="metric-card glass-card">
                     <div class="metric-glow-dot"></div>
                     <div class="metric-number-wrapper">100%</div>
                     <h3 class="metric-title" data-i18n="stats_extra.deprivation_title">حرمان من الحقوق</h3>
                     <p class="metric-desc" data-i18n="stats_extra.deprivation_desc">حرمان من التعليم والتملك والاستقلالية القانونية</p>
-                </div>
-            </div>
+</div>
+</div>
         </section>
 
         <!-- Interactive Age Dashboard Selector -->
@@ -101,14 +104,14 @@
                     <span class="section-subtitle-text" data-i18n="navigation.rights">مقارنة الحقوق والأهلية</span>
                     <h2 class="dashboard-title-text" data-i18n="age_selector.title">اختر عمر الطفلة</h2>
                     <p class="dashboard-desc-text" data-i18n="age_selector_extra.description">اكتشف كيف يحدد القانون العراقي حقوق الفتاة بناءً على سنها ومفارقة أهليتها للزواج المبكر.</p>
-                </div>
+</div>
 
                 <!-- Tab Buttons -->
                 <div class="dashboard-tab-selectors">
                     <button class="tab-select-btn" data-i18n="age_selector_extra.years_9" onclick="document.getElementById('ageSlider').value=9; document.getElementById('ageSlider').dispatchEvent(new Event('input'))">9 سنوات</button>
                     <button class="tab-select-btn" data-i18n="age_selector_extra.years_15" onclick="document.getElementById('ageSlider').value=15; document.getElementById('ageSlider').dispatchEvent(new Event('input'))">15 سنة</button>
                     <button class="tab-select-btn" data-i18n="age_selector_extra.years_18" onclick="document.getElementById('ageSlider').value=18; document.getElementById('ageSlider').dispatchEvent(new Event('input'))">18 سنة</button>
-                </div>
+</div>
 
                 <!-- Range Slider -->
                 <div class="age-slider-box">
@@ -119,14 +122,14 @@
                             <span>12</span>
                             <span>15</span>
                             <span>18</span>
-                        </div>
-                    </div>
+</div>
+</div>
                     
                     <div class="age-visual-display">
                         <span class="age-current-num" id="ageNumber">9</span>
                         <span class="age-current-label" data-i18n="age_selector.years">سنة</span>
-                    </div>
-                </div>
+</div>
+</div>
 
                 <!-- Timeline indicators nodes -->
                 <div class="timeline-indicators-wrap">
@@ -136,38 +139,38 @@
                         <div class="timeline-node active" data-age="9-12" onclick="document.getElementById('ageSlider').value=9; document.getElementById('ageSlider').dispatchEvent(new Event('input'))">
                             <div class="timeline-node-circle"></div>
                             <span class="timeline-node-label" data-i18n="timeline.minor">قاصر</span>
-                        </div>
+</div>
                         
                         <div class="timeline-node" data-age="13-15" onclick="document.getElementById('ageSlider').value=14; document.getElementById('ageSlider').dispatchEvent(new Event('input'))">
                             <div class="timeline-node-circle"></div>
                             <span class="timeline-node-label" data-i18n="timeline.minor">قاصر</span>
-                        </div>
+</div>
                         
                         <div class="timeline-node" data-age="16-17" onclick="document.getElementById('ageSlider').value=16; document.getElementById('ageSlider').dispatchEvent(new Event('input'))">
                             <div class="timeline-node-circle"></div>
                             <span class="timeline-node-label" data-i18n="timeline.minor">قاصر</span>
-                        </div>
+</div>
                         
                         <div class="timeline-node" data-age="18" onclick="document.getElementById('ageSlider').value=18; document.getElementById('ageSlider').dispatchEvent(new Event('input'))">
                             <div class="timeline-node-circle"></div>
                             <span class="timeline-node-label" data-i18n="timeline.adult">بالغة</span>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
 
                 <!-- Rights dashboard cards grid -->
                 <div class="rights-dashboard-grid" id="rightsContainer">
                     <!-- Loaded dynamically via script.js -->
-                </div>
+</div>
 
                 <!-- Potential Impacts list -->
                 <div class="dashboard-impact-wrap">
                     <h3 class="dashboard-impact-title" data-i18n="impact_section.title">التأثيرات المحتملة</h3>
                     <div class="dashboard-impact-grid" id="impactGrid">
                         <!-- Loaded dynamically via script.js -->
-                    </div>
-                </div>
-            </div>
+</div>
+</div>
+</div>
         </section>
 
         <!-- Infinite supporters logo scroll -->
@@ -182,7 +185,7 @@
                     <div class="marquee-item"><span class="marquee-bullet"></span>المفوضية السامية لحقوق الإنسان</div>
                     <div class="marquee-item"><span class="marquee-bullet"></span>إنقاذ الطفولة Save the Children</div>
                     <div class="marquee-item"><span class="marquee-bullet"></span>لا لزواج القاصرات</div>
-                </div>
+</div>
                 <div class="marquee-content" aria-hidden="true">
                     <div class="marquee-item"><span class="marquee-bullet"></span>UNICEF Iraq</div>
                     <div class="marquee-item"><span class="marquee-bullet"></span>شبكة النساء العراقيات</div>
@@ -191,15 +194,15 @@
                     <div class="marquee-item"><span class="marquee-bullet"></span>المفوضية السامية لحقوق الإنسان</div>
                     <div class="marquee-item"><span class="marquee-bullet"></span>إنقاذ الطفولة Save the Children</div>
                     <div class="marquee-item"><span class="marquee-bullet"></span>لا لزواج القاصرات</div>
-                </div>
-            </div>
+</div>
+</div>
         </section>
 
         <!-- Province Stories Dashboard -->
         <section id="map-section" class="map-section">
             <div class="map-card glass-card impact-card reveal-on-scroll">
                 <header class="map-header">
-                    <span class="map-icon">📍</span>
+                    <span class="map-icon"><svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg></span>
                     <h2 class="section-title" data-i18n="map.title">واقع زواج القاصرات في المحافظات</h2>
                 </header>
 
@@ -209,7 +212,7 @@
                     <div class="iraq-map-wrap">
                         <div id="iraqMapMount"></div>
                         <p class="iraq-map-hint" data-i18n="map.select_province">اضغط على محافظة ملوّنة لعرض قصة واقعية</p>
-                    </div>
+</div>
 
                     <!-- Selected Province Details Card -->
                     <div id="provinceDetails" class="province-details impact-detail-card hidden">
@@ -218,32 +221,32 @@
                             <div class="province-rate-box">
                                 <span id="provinceRate" class="province-rate"></span>
                                 <span class="province-rate-label" data-i18n="map.rate_label">نسبة زواج القاصرات (دون 18)</span>
-                            </div>
-                        </div>
+</div>
+</div>
                         <!-- Decorative progress indicator (no copy) -->
                         <div class="impact-progress" aria-hidden="true"><span></span></div>
                         <div class="province-info">
                             <p><span class="label" data-i18n="map.type_label">النمط:</span> <span id="provinceType"></span></p>
                             <p id="provinceStory" class="province-story"></p>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
 
                 <!-- Empty State -->
                 <div id="mapEmptyState" class="map-empty-state" data-i18n="map.select_province">
                     اضغط على اسم محافظة لعرض الواقع والقصص الواقعية للفتيات
-                </div>
+</div>
 
                 <!-- Consequences warning list -->
                 <div id="mapConsequences" class="map-consequences hidden">
-                    <h4 class="consequences-title" data-i18n="map.consequences_title">⚠️ ما الذي يعنيه هذا الواقع للفتيات؟</h4>
+                    <h4 class="consequences-title" data-i18n="map.consequences_title"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg> ما الذي يعنيه هذا الواقع للفتيات؟</h4>
                     <ul class="consequences-list">
-                        <li data-i18n="map.consequence1">🔴 ارتفاع العنف الجنسي والجسدي</li>
-                        <li data-i18n="map.consequence2">🔴 مخاطر صحية كبيرة أثناء الحمل والولادة المبكرة</li>
-                        <li data-i18n="map.consequence3">🔴 حرمان من التعليم وتراجع حاد في فرص العمل مستقبلاً</li>
+                        <li data-i18n="map.consequence1"><svg class="icon" aria-hidden="true"><use href="#i-dot"></use></svg> ارتفاع العنف الجنسي والجسدي</li>
+                        <li data-i18n="map.consequence2"><svg class="icon" aria-hidden="true"><use href="#i-dot"></use></svg> مخاطر صحية كبيرة أثناء الحمل والولادة المبكرة</li>
+                        <li data-i18n="map.consequence3"><svg class="icon" aria-hidden="true"><use href="#i-dot"></use></svg> حرمان من التعليم وتراجع حاد في فرص العمل مستقبلاً</li>
                     </ul>
-                </div>
-            </div>
+</div>
+</div>
         </section>
 
         <!-- Testimonial Stories Slider -->
@@ -259,9 +262,9 @@
                             <div class="author-info-box">
                                 <h4 class="author-name" data-i18n="testimonials.author1_name">وردة</h4>
                                 <span class="author-title" data-i18n="testimonials.author1_title">تزوجت في سن 13 عاماً - محافظة ميسان</span>
-                            </div>
-                        </div>
-                    </div>
+</div>
+</div>
+</div>
                     
                     <div class="testimonial-slide hidden" id="slide-2">
                         <p class="testimonial-quote" data-i18n="testimonials.quote2">"الزواج المبكر ليس مجرد عقد اجتماعي، بل هو إلغاء كامل للطفولة والأهلية القانونية للفتاة. علينا إيقاف هذا النزيف وتعديل القوانين بشكل حازم."</p>
@@ -270,84 +273,84 @@
                             <div class="author-info-box">
                                 <h4 class="author-name" data-i18n="testimonials.author2_name">د. سارة العلي</h4>
                                 <span class="author-title" data-i18n="testimonials.author2_title">ناشطة حقوقية وباحثة اجتماعية - بغداد</span>
-                            </div>
-                        </div>
-                    </div>
+</div>
+</div>
+</div>
                     
-                </div>
+</div>
                 
                 <!-- Controls -->
                 <button class="slider-control-btn prev" onclick="window.prevTestimonial()" aria-label="Previous testimonial">→</button>
                 <button class="slider-control-btn next" onclick="window.nextTestimonial()" aria-label="Next testimonial">←</button>
-            </div>
+</div>
         </section>
 
         <!-- Poll referendum Section -->
         <section id="poll-section" class="poll-section">
             <div class="poll-container glass-card">
                 <div class="poll-header">
-                    <span class="poll-icon">📊</span>
+                    <span class="poll-icon"><svg class="icon" aria-hidden="true"><use href="#i-chart"></use></svg></span>
                     <h2 class="section-title" data-i18n="poll.title">استفتاء الحد الأدنى لسن الزواج</h2>
-                </div>
+</div>
 
                 <!-- Voting options -->
                 <div id="pollForm" class="poll-form">
                     <p class="poll-question" data-i18n="poll.question">هل توافق على أن يكون الحد الأدنى لسن الزواج 18 سنة دون أي استثناءات قضائية؟</p>
                     <div class="poll-options" id="pollOptions">
                         <button class="poll-option" data-vote="agree18">
-                            <span class="option-icon">✅</span>
+                            <span class="option-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span>
                             <span data-i18n="poll.agree">نعم، أوافق (+18)</span>
                         </button>
                         <button class="poll-option" data-vote="disagree">
-                            <span class="option-icon">❌</span>
+                            <span class="option-icon"><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg></span>
                             <span data-i18n="poll.disagree">لا، لا أوافق</span>
                         </button>
-                    </div>
-                </div>
+</div>
+</div>
 
                 <!-- Voting results results panel -->
                 <div id="pollResults" class="poll-results hidden">
                     <div class="poll-thank-you">
                         <span class="thank-icon">✓</span>
                         <span data-i18n="poll.thanks">شكراً لمشاركتنا رأيك!</span>
-                    </div>
+</div>
                     <p class="results-title" data-i18n="poll.results_title">نتائج التصويت الاستفتائي:</p>
 
                     <div class="poll-result-item">
                         <div class="result-label">
                             <span data-i18n="poll.agree">نعم، أوافق (+18)</span>
                             <span id="agreePercent" class="result-percent">0%</span>
-                        </div>
+</div>
                         <div class="result-bar">
                             <div id="agreeBar" class="result-fill agree"></div>
-                        </div>
-                    </div>
+</div>
+</div>
 
                     <div class="poll-result-item">
                         <div class="result-label">
                             <span data-i18n="poll.disagree">لا، لا أوافق</span>
                             <span id="disagreePercent" class="result-percent">0%</span>
-                        </div>
+</div>
                         <div class="result-bar">
                             <div id="disagreeBar" class="result-fill disagree"></div>
-                        </div>
-                    </div>
+</div>
+</div>
 
                     <!-- Vote count totals -->
                     <div class="poll-summary">
                         <div class="summary-item agree-summary">
-                            <span>✅</span>
+                            <span><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span>
                             <span class="summary-label" data-i18n="poll.agree_label">الموافقون</span>
                             <span id="agreeCount" class="summary-count">0</span>
-                        </div>
+</div>
                         <div class="summary-item disagree-summary">
-                            <span>❌</span>
+                            <span><svg class="icon" aria-hidden="true"><use href="#i-cross"></use></svg></span>
                             <span class="summary-label" data-i18n="poll.disagree_label">المعارضون</span>
                             <span id="disagreeCount" class="summary-count">0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+</div>
+</div>
+</div>
+</div>
         </section>
 
         <!-- Call to Action Section -->
@@ -364,11 +367,11 @@
                         <span>Share on X</span>
                     </button>
                     <button class="cta-btn copy-btn" id="copyLink">
-                        <span>🔗</span>
+                        <span><svg class="icon" aria-hidden="true"><use href="#i-link"></use></svg></span>
                         <span id="copyLinkText" data-i18n="cta.copy_link">نسخ الرابط</span>
                     </button>
-                </div>
-            </div>
+</div>
+</div>
         </section>
 
     </main>
@@ -378,8 +381,8 @@
         <div class="modal-content glass-card">
             <button id="modalClose" class="modal-close" aria-label="إغلاق">×</button>
             <div id="modalBody"></div>
-        </div>
-    </div>
+</div>
+</div>
 
     <footer class="site-footer">
         <div class="footer-content">
@@ -388,14 +391,14 @@
                 <a href="/about-us" data-i18n="nav.about">من نحن</a>
                 <a href="/blog" data-i18n="nav.blog">المدونة</a>
                 <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
-            </div>
+</div>
             <div class="footer-social">
                 <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
                 <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
                 <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
-            </div>
+</div>
             <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
-        </div>
+</div>
     </footer>
 
     <script src="/js/i18n.js"></script>

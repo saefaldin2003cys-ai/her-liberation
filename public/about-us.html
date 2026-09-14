@@ -9,6 +9,7 @@
     <!-- Theme flash prevention script (inline) -->
     <script>
         (function(){
+document.documentElement.classList.add('js');
             var t=localStorage.getItem('theme');
             if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
                 document.documentElement.classList.add('dark-mode');
@@ -26,6 +27,8 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <script src="/js/icons.js"></script>
+    <a class="skip-link" href="#pageContent">تخطَّ إلى المحتوى</a>
 
     <!-- Navigation (shared structure) -->
     <header class="site-header">
@@ -41,10 +44,10 @@
                 <li><a href="/donate" class="nav-link" data-page="donate" data-i18n="nav.donate">تبرع</a></li>
             </ul>
             <div class="nav-actions">
-                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon">🌙</span></button>
+                <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme"><span class="theme-icon"><svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg></span></button>
                 <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language"><span class="lang-icon">EN</span></button>
                 <button class="nav-hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
-            </div>
+</div>
         </nav>
     </header>
 
@@ -56,7 +59,7 @@
             <div class="about-hero-content">
                 <h1 class="about-hero-title" data-i18n="about_page.title">منظمة تحريرها</h1>
                 <p class="about-hero-description" data-i18n="about_page.description">رسالتنا وأهدافنا ونهجنا في العمل</p>
-            </div>
+</div>
         </section>
 
         <!-- Mission Statement Section (reuses .mission-section-premium design) -->
@@ -64,11 +67,11 @@
             <div class="mission-container">
                 <div class="mission-visual-grid reveal-on-scroll">
                     <div class="mission-img-card card-large">
-                        <img src="/assets/images/happy-schoolgirls.png" alt="Happy school girls running and smiling">
-                    </div>
+                        <img src="/assets/images/happy-schoolgirls.png" alt="Happy school girls running and smiling" loading="lazy" decoding="async">
+</div>
                   
                   
-                </div>
+</div>
 
                 <div class="mission-text-content reveal-on-scroll">
                     <span class="section-subtitle-text" data-i18n="mission.subtitle">رسالتنا وأهدافنا</span>
@@ -81,27 +84,27 @@
                             <div class="mission-block-text">
                                 <h4 data-i18n="mission.point1_title">التوعية القانونية</h4>
                                 <p data-i18n="mission.point1_desc">شرح وتبسيط نصوص القوانين وإظهار المفارقات التشريعية التي تسلب القاصرات حريتهن الأهلية.</p>
-                            </div>
-                        </div>
+</div>
+</div>
 
                         <div class="mission-block-item">
                             <div class="mission-block-num">02</div>
                             <div class="mission-block-text">
                                 <h4 data-i18n="mission.point2_title">قصص واقعية ونشر الأثر</h4>
                                 <p data-i18n="mission.point2_desc">توثيق الواقع المؤلم في المحافظات ونقل أصوات الضحايا لكسر حاجز الصمت المجتمعي.</p>
-                            </div>
-                        </div>
+</div>
+</div>
 
                         <div class="mission-block-item">
                             <div class="mission-block-num">03</div>
                             <div class="mission-block-text">
                                 <h4 data-i18n="mission.point3_title">الاستفتاء والمناصرة</h4>
                                 <p data-i18n="mission.point3_desc">إتاحة منصة تفاعلية للاستفتاء الشعبي لجمع وتوثيق آراء المواطنين الداعمة للحد الأدنى لسن الزواج.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
         </section>
 
         <!-- Team / Approach Section -->
@@ -110,28 +113,28 @@
                 <div class="about-approach-header reveal-on-scroll">
                     <span class="section-subtitle-text" data-i18n="about_page.approach_subtitle">نهجنا في العمل</span>
                     <h2 class="about-approach-title" data-i18n="about_page.approach_title">كيف نعمل من أجل التغيير</h2>
-                </div>
+</div>
 
                 <div class="about-cards-grid">
                     <div class="about-card reveal-on-scroll">
-                        <div class="about-card-icon">📢</div>
+                        <div class="about-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-megaphone"></use></svg></div>
                         <h3 class="about-card-title" data-i18n="about_page.card1_title">المناصرة الرقمية</h3>
                         <p class="about-card-desc" data-i18n="about_page.card1_desc">نستخدم المنصات الرقمية لنشر الوعي وتحفيز النقاش المجتمعي حول حقوق الطفلة والتشريعات القانونية.</p>
-                    </div>
+</div>
 
                     <div class="about-card reveal-on-scroll">
-                        <div class="about-card-icon">🤝</div>
+                        <div class="about-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-users"></use></svg></div>
                         <h3 class="about-card-title" data-i18n="about_page.card2_title">الشراكات المجتمعية</h3>
                         <p class="about-card-desc" data-i18n="about_page.card2_desc">نتعاون مع منظمات المجتمع المدني والمؤسسات الحكومية لتعزيز حماية الطفولة وتفعيل القوانين.</p>
-                    </div>
+</div>
 
                     <div class="about-card reveal-on-scroll">
-                        <div class="about-card-icon">📊</div>
+                        <div class="about-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-chart"></use></svg></div>
                         <h3 class="about-card-title" data-i18n="about_page.card3_title">البحث والتوثيق</h3>
                         <p class="about-card-desc" data-i18n="about_page.card3_desc">نجمع البيانات ونوثق القصص الواقعية لتقديم أدلة قوية تدعم مطالب الإصلاح التشريعي.</p>
-                    </div>
-                </div>
-            </div>
+</div>
+</div>
+</div>
         </section>
 
     </main>
@@ -144,14 +147,14 @@
                 <a href="/about-us" data-i18n="nav.about">من نحن</a>
                 <a href="/blog" data-i18n="nav.blog">المدونة</a>
                 <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
-            </div>
+</div>
             <div class="footer-social">
                 <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
                 <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
                 <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
-            </div>
+</div>
             <p class="footer-copyright" data-i18n="footer.copyright">© 2025 تحريرها. جميع الحقوق محفوظة.</p>
-        </div>
+</div>
     </footer>
 
     <!-- Shared Scripts -->

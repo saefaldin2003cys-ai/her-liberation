@@ -79,7 +79,7 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#E91E8C">
+    <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="تحريرها">
@@ -96,6 +96,7 @@
     <!-- Theme flash prevention (inline, synchronous) -->
     <script>
         (function(){
+document.documentElement.classList.add('js');
             var t=localStorage.getItem('theme');
             if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
                 document.documentElement.classList.add('dark-mode');
@@ -110,6 +111,8 @@
 </head>
 
 <body>
+    <script src="/js/icons.js"></script>
+    <a class="skip-link" href="#pageContent">تخطَّ إلى المحتوى</a>
     <!-- Article-mode router (handles /article/* paths) -->
     <script>
         if (window.location.pathname.startsWith('/article/')) {
@@ -148,7 +151,7 @@
             </ul>
             <div class="nav-actions">
                 <button id="themeToggle" class="nav-toggle-btn" aria-label="Toggle theme">
-                    <span class="theme-icon">🌙</span>
+                    <span class="theme-icon"><svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg></span>
                 </button>
                 <button id="languageToggle" class="nav-toggle-btn" aria-label="Toggle language">
                     <span class="lang-icon">EN</span>
@@ -156,7 +159,7 @@
                 <button class="nav-hamburger" aria-label="Menu" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
-            </div>
+</div>
         </nav>
     </header>
 
@@ -173,43 +176,140 @@
                     <div class="landing-hero-actions">
                         <a href="/campaigns" class="landing-hero-cta" data-i18n="home_hero.cta_primary">تعرّف على حملاتنا</a>
                         <a href="/about-us" class="landing-hero-cta-secondary" data-i18n="home_hero.cta_secondary">من نحن</a>
-                    </div>
-                </div>
+</div>
+</div>
                 <div class="landing-hero-visual">
-                    <img src="/assets/images/happy-schoolgirls.png" alt="Happy school girls" class="landing-hero-img">
+                    <!-- Art-direction slot. Replace the <source>/<img> pair with a
+                         documentary photograph when one is licensed: 3:2 landscape,
+                         subject in the inline-start third so the hero text never
+                         covers a face. The .has-photo class on .landing-hero-visual
+                         turns on the scrim that keeps overlaid text legible. -->
+                    <picture>
+                        <img src="/assets/images/happy-schoolgirls.png"
+                             alt="فتيات في سن المدرسة أمام مبنى مدرستهن"
+                             class="landing-hero-img" width="960" height="640"
+                             fetchpriority="high" decoding="async">
+                    </picture>
+</div>
+</div>
+        </section>
+
+        <!-- The scale of the problem, in the figures the campaign publishes -->
+        <section class="home-figures reveal-on-scroll" aria-labelledby="figuresTitle">
+            <div class="home-section-head">
+                <h2 id="figuresTitle" class="home-section-title" data-i18n="home_figures.title">الواقع الذي نعمل عليه</h2>
+                <p class="home-section-lead" data-i18n="home_figures.lead">زواج الأطفال في العراق ليس استثناءً نادراً، بل ممارسة واسعة تُعقد كثير من عقودها خارج المحكمة، فلا تظهر في السجلات الرسمية ولا تحمي الفتاة عند النزاع.</p>
+            </div>
+            <div class="home-figures-grid">
+                <div class="home-figure">
+                    <p class="home-figure-num">28%</p>
+                    <h3 class="home-figure-label" data-i18n="stats_page.percentage_text">نسبة زواج القاصرات</h3>
+                    <p class="home-figure-src" data-i18n="stats_page.source">الإحصاء الرسمي / اليونيسف</p>
+                </div>
+                <div class="home-figure">
+                    <p class="home-figure-num">1/4</p>
+                    <h3 class="home-figure-label" data-i18n="stats_page.detail1">1 من كل 4 فتيات</h3>
+                    <p class="home-figure-src" data-i18n="stats_page.detail1_desc">تتزوج وهي لا تزال طفلة دون السن القانوني</p>
+                </div>
+                <div class="home-figure">
+                    <p class="home-figure-num">100%</p>
+                    <h3 class="home-figure-label" data-i18n="stats_extra.deprivation_title">حرمان من الحقوق</h3>
+                    <p class="home-figure-src" data-i18n="stats_extra.deprivation_desc">حرمان من التعليم والتملك والاستقلالية القانونية</p>
                 </div>
             </div>
+        </section>
+
+        <!-- What the law actually says -->
+        <section class="home-law reveal-on-scroll" aria-labelledby="lawTitle">
+            <div class="home-law-body">
+                <h2 id="lawTitle" class="home-section-title" data-i18n="home_law.title">ما الذي يقوله القانون فعلاً</h2>
+                <p data-i18n="home_law.p1">تحدّد المادة الثامنة من قانون الأحوال الشخصية العراقي سنّ الزواج بثمانية عشر عاماً، ثم تفتح استثناءً يسمح للقاضي بالإذن لمن أتمّ الخامسة عشرة. هذا الاستثناء هو الباب الذي يمرّ منه أغلب ما نوثّقه.</p>
+                <p data-i18n="home_law.p2">والمفارقة أن القانون نفسه لا يسمح لهذه الفتاة بتوقيع عقد بيع، ولا بفتح حساب مصرفي باسمها، ولا بالسفر دون إذن وليّها. تُعامَل قاصرة في كل تصرّف مالي وإداري، وراشدة في عقد الزواج وحده.</p>
+                <p data-i18n="home_law.p3">حرّك شريط العمر في صفحة الحملة لترى، سنةً بسنة، أي الحقوق يمنحها لها القانون وأيها يسلبه منها.</p>
+                <a class="home-inline-cta" href="/campaigns/before-18" data-i18n="home_law.cta">استعرض الحقوق حسب العمر</a>
+            </div>
+        </section>
+
+        <!-- Mission -->
+        <section class="mission-section-premium home-mission reveal-on-scroll" aria-labelledby="missionTitle">
+            <div class="mission-container">
+                <p class="home-section-eyebrow" data-i18n="mission.subtitle">رسالتنا وأهدافنا</p>
+                <h2 id="missionTitle" class="home-section-title" data-i18n="mission.title">نحن في مهمة لحماية مستقبل الطفولة</h2>
+                <p class="home-section-lead" data-i18n="mission.description">نسعى من خلال حملة تحريرها إلى حشد الدعم والمناصرة لإصلاح الثغرات القانونية التي تسمح بزواج الأطفال والفتيات دون سن 18 عاماً في العراق، وتثقيف المجتمع لضمان حقوق الطفلة كاملة.</p>
+                <div class="mission-block-list">
+                    <div class="mission-block-item">
+                        <h3 data-i18n="mission.point1_title">التوعية القانونية</h3>
+                        <p data-i18n="mission.point1_desc">شرح وتبسيط نصوص القوانين وإظهار المفارقات التشريعية التي تسلب القاصرات حريتهن الأهلية.</p>
+                    </div>
+                    <div class="mission-block-item">
+                        <h3 data-i18n="mission.point2_title">قصص واقعية ونشر الأثر</h3>
+                        <p data-i18n="mission.point2_desc">توثيق الواقع المؤلم في المحافظات ونقل أصوات الضحايا لكسر حاجز الصمت المجتمعي.</p>
+                    </div>
+                    <div class="mission-block-item">
+                        <h3 data-i18n="mission.point3_title">الاستفتاء والمناصرة</h3>
+                        <p data-i18n="mission.point3_desc">إتاحة منصة تفاعلية للاستفتاء الشعبي لجمع وتوثيق آراء المواطنين الداعمة للحد الأدنى لسن الزواج.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map teaser -->
+        <section id="map-section" class="home-map reveal-on-scroll" aria-labelledby="mapTitle">
+            <h2 id="mapTitle" class="home-section-title" data-i18n="map.title">واقع زواج القاصرات في المحافظات</h2>
+            <p class="home-section-lead" data-i18n="home_map.lead">النسبة تتفاوت بشدة بين محافظة وأخرى. الخريطة التفاعلية تعرض لكل محافظة نسبتها ونمطها السائد والقصة التي تقف خلف الرقم.</p>
+            <p class="home-map-hint" data-i18n="map.select_province">اضغط على أي محافظة لعرض الواقع</p>
+            <h3 class="home-map-sub" data-i18n="map.consequences_title">ما الذي يعنيه هذا الواقع للفتيات؟</h3>
+            <ul class="map-consequences home-map-list">
+                <li data-i18n="map.consequence1">ارتفاع العنف الجنسي والجسدي</li>
+                <li data-i18n="map.consequence2">مخاطر صحية كبيرة أثناء الحمل والولادة المبكرة</li>
+                <li data-i18n="map.consequence3">حرمان من التعليم وتراجع حاد في فرص العمل مستقبلاً</li>
+            </ul>
+            <p class="home-map-meta">
+                <span class="home-map-key" data-i18n="map.rate_label">نسبة زواج القاصرات (دون 18)</span>
+                <span class="home-map-key"><span data-i18n="map.type_label">النمط:</span> <span data-i18n="home_map.types">ريفي، حضري، عشائري</span></span>
+            </p>
+            <a class="home-inline-cta" href="/campaigns/before-18#map-section" data-i18n="home_map.cta">افتح الخريطة التفاعلية</a>
+        </section>
+
+        <!-- Latest articles -->
+        <section id="articles-section" class="home-articles reveal-on-scroll" aria-labelledby="articlesTitle">
+            <h2 id="articlesTitle" class="home-section-title" data-i18n="articles.title">المدونة والحقائق التوعوية</h2>
+            <p class="home-section-lead" data-i18n="articles.subtitle">مقالات وحقائق توعوية حول حقوق الطفولة وحماية الفتيات.</p>
+            <div id="articlesGrid" class="articles-grid home-articles-grid">
+                <p class="articles-loading" data-i18n="articles.loading">جاري تحميل المدونة...</p>
+            </div>
+            <a class="home-inline-cta" href="/blog" data-i18n="home_articles.cta">كل المقالات</a>
         </section>
 
         <!-- Preview Navigation Cards -->
         <section class="landing-cards reveal-on-scroll">
             <div class="landing-cards-grid">
                 <a href="/campaigns" class="landing-card landing-card-campaign">
-                    <span class="landing-card-icon">📢</span>
+                    <span class="landing-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-megaphone"></use></svg></span>
                     <h3 class="landing-card-title" data-i18n="nav.campaign">الحملات</h3>
                     <p class="landing-card-desc" data-i18n="campaign.slogan_ar">قبل الـ18 عامًا: طفلة لا زوجة</p>
                 </a>
                 <a href="/blog" class="landing-card">
-                    <span class="landing-card-icon">📝</span>
+                    <span class="landing-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-document"></use></svg></span>
                     <h3 class="landing-card-title" data-i18n="nav.blog">المدونة</h3>
-                    <p class="landing-card-desc" data-i18n="articles.title">المدونة والحقائق التوعوية ✨</p>
+                    <p class="landing-card-desc" data-i18n="articles.title">المدونة والحقائق التوعوية</p>
                 </a>
                 <a href="/programs" class="landing-card">
-                    <span class="landing-card-icon">🎓</span>
+                    <span class="landing-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-graduation"></use></svg></span>
                     <h3 class="landing-card-title" data-i18n="nav.tracks">البرامج</h3>
                     <p class="landing-card-desc" data-i18n="tracks_page.description">برامج تعليمية وورش عمل لبناء المهارات</p>
                 </a>
                 <a href="/about-us" class="landing-card">
-                    <span class="landing-card-icon">💡</span>
+                    <span class="landing-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-lightbulb"></use></svg></span>
                     <h3 class="landing-card-title" data-i18n="nav.about">من نحن</h3>
                     <p class="landing-card-desc" data-i18n="mission.subtitle">رسالتنا وأهدافنا</p>
                 </a>
                 <a href="/donate" class="landing-card landing-card-donate">
-                    <span class="landing-card-icon">❤️</span>
+                    <span class="landing-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg></span>
                     <h3 class="landing-card-title" data-i18n="nav.donate">تبرع</h3>
                     <p class="landing-card-desc" data-i18n="donate_page.description">مساهمتك تساعد في حماية الطفولة وتمكين المجتمعات</p>
                 </a>
-            </div>
+</div>
         </section>
 
     </main>
@@ -222,17 +322,17 @@
                     <span class="back-icon">←</span>
                     <span data-i18n="article.back_to_blog">العودة للمدونة</span>
                 </button>
-            </div>
+</div>
             <div id="articleViewContent">
                 <!-- Content injected dynamically via script.js -->
-            </div>
+</div>
             <div class="suggested-articles-section">
-                <h4 class="suggested-title" data-i18n="article.suggested_title">مقالات مقترحة للقارئ ✨</h4>
+                <h4 class="suggested-title" data-i18n="article.suggested_title">مقالات مقترحة للقارئ</h4>
                 <div class="suggested-grid" id="suggestedArticlesGrid">
                     <!-- Cards injected dynamically via script.js -->
-                </div>
-            </div>
-        </div>
+</div>
+</div>
+</div>
     </section>
 
     <!-- Shared Footer -->
@@ -243,14 +343,14 @@
                 <a href="/about-us" data-i18n="nav.about">من نحن</a>
                 <a href="/blog" data-i18n="nav.blog">المدونة</a>
                 <a href="/campaigns" data-i18n="nav.campaign">الحملات</a>
-            </div>
+</div>
             <div class="footer-social">
                 <a href="https://www.facebook.com/profile.php?id=61584357966361" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
                 <a href="https://x.com/Herliberation1" aria-label="Twitter" target="_blank" rel="noopener">X</a>
                 <a href="https://www.instagram.com/herliberation1/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
-            </div>
+</div>
             <p class="footer-copyright" data-i18n="footer.copyright">© 2025 HerLiberation</p>
-        </div>
+</div>
     </footer>
 
     <!-- Shared Scripts -->
