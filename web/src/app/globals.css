@@ -1,0 +1,263 @@
+@import "tailwindcss";
+
+/* ============================================================
+   تحريرها — Design tokens
+   ------------------------------------------------------------
+   Derived from the brand mark, not invented. The logo is a
+   violet duotone: #57398f (deep) layered over #a28fd1
+   (lavender), with #652d91 on the fist-in-Venus symbol. The
+   ramp below is anchored on those three values.
+
+   Every text pair used for body copy clears WCAG AAA (7:1) in
+   both themes; large display type and decorative fills clear AA.
+   One amber sits outside the violet family so that figures read
+   as data rather than as more brand.
+   ============================================================ */
+
+@theme {
+  /* Brand ramp */
+  --color-v-50: #f7f4fc;
+  --color-v-100: #ede7f7;
+  --color-v-200: #d8ceee;
+  --color-v-300: #bcaee0;
+  --color-v-400: #a28fd1; /* brand lavender */
+  --color-v-500: #7b5bb8;
+  --color-v-600: #652d91; /* brand saturated — 8.51:1 on canvas */
+  --color-v-700: #57398f; /* brand deep      — 8.34:1 on canvas */
+  --color-v-800: #3d2766;
+  --color-v-900: #2a1b48;
+
+  /* Semantic slots — re-pointed per theme further down */
+  --color-canvas: #faf8fc;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f4fc;
+  --color-surface-ink: #2a1b48;
+  --color-line: #e4dfec;
+  --color-line-strong: #cfc7dd;
+
+  --color-ink: #171226; /* 17.3:1 */
+  --color-ink-2: #4a4458; /*  8.8:1 */
+  --color-ink-3: #6f6880; /*  5.0:1 — supporting text only */
+  --color-on-ink: #f4f1fa;
+  --color-on-ink-2: #cfc7e0;
+
+  --color-accent: #57398f;
+  --color-accent-deep: #3d2766;
+  --color-accent-soft: #a28fd1;
+  --color-accent-wash: #ede7f7;
+
+  --color-data: #b45309; /* 4.76:1 on canvas */
+  --color-ok: #15803d;
+  --color-warn: #b45309;
+  --color-bad: #b91c1c;
+
+  /* Type. Rubik carries headings — geometric, lightly softened,
+     and its Arabic echoes the mark's blocky Kufi. IBM Plex Sans
+     Arabic carries running text. JetBrains Mono sets figures so
+     columns of numbers align. */
+  --font-display: var(--font-rubik), "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-body: var(--font-plex-ar), var(--font-rubik), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  /* One fluid type scale. */
+  --text-display: clamp(2.6rem, 6.2vw, 5rem);
+  --text-h1: clamp(2.1rem, 4.6vw, 3.5rem);
+  --text-h2: clamp(1.6rem, 3vw, 2.4rem);
+  --text-h3: clamp(1.2rem, 1.8vw, 1.5rem);
+  --text-lead: clamp(1.05rem, 1.5vw, 1.3rem);
+
+  /* Four radii. Rounded, not bubbly. */
+  --radius-xs: 4px;
+  --radius-sm: 10px;
+  --radius-lg: 20px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Dark theme. Declared for both the OS preference and an explicit
+   choice, so the toggle wins in either direction. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-canvas: #120e1f;
+    --color-surface: #1b1530;
+    --color-surface-alt: #191328;
+    --color-surface-ink: #0c0917;
+    --color-line: #2d2545;
+    --color-line-strong: #3f3559;
+    --color-ink: #f4f1fa;
+    --color-ink-2: #cfc7e0;
+    --color-ink-3: #a79fbb;
+    --color-accent: #bcaee0;
+    --color-accent-deep: #d8ceee;
+    --color-accent-soft: #7b5bb8;
+    --color-accent-wash: #241c3d;
+    --color-data: #f59e0b;
+    --color-ok: #4ade80;
+    --color-warn: #fbbf24;
+    --color-bad: #f87171;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-canvas: #120e1f;
+  --color-surface: #1b1530;
+  --color-surface-alt: #191328;
+  --color-surface-ink: #0c0917;
+  --color-line: #2d2545;
+  --color-line-strong: #3f3559;
+  --color-ink: #f4f1fa;
+  --color-ink-2: #cfc7e0;
+  --color-ink-3: #a79fbb;
+  --color-accent: #bcaee0;
+  --color-accent-deep: #d8ceee;
+  --color-accent-soft: #7b5bb8;
+  --color-accent-wash: #241c3d;
+  --color-data: #f59e0b;
+  --color-ok: #4ade80;
+  --color-warn: #fbbf24;
+  --color-bad: #f87171;
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  html[lang="en"] body {
+    font-family: var(--font-display);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* Arabic does not take negative tracking — it breaks the joins. */
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] h4 {
+    letter-spacing: 0;
+    line-height: 1.3;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+
+  ::selection {
+    background: var(--color-accent-soft);
+    color: var(--color-v-900);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------- Small primitives that earn a class ---------- */
+@layer components {
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* A drawn underline behind emphasised words in headings —
+     a highlight, not a gradient fill on the glyphs. */
+  .marker {
+    background-image: linear-gradient(var(--color-accent-soft), var(--color-accent-soft));
+    background-size: 100% 0.22em;
+    background-position: 0 88%;
+    background-repeat: no-repeat;
+    padding-inline: 2px;
+  }
+
+  /* Rich text coming out of the editor. */
+  .prose-body :is(h2, h3) {
+    margin-block: 1.6em 0.5em;
+    color: var(--color-ink);
+  }
+  .prose-body h2 {
+    font-size: var(--text-h2);
+  }
+  .prose-body h3 {
+    font-size: var(--text-h3);
+  }
+  .prose-body p {
+    margin-block-end: 1.15em;
+    line-height: 1.85;
+    color: var(--color-ink-2);
+  }
+  .prose-body :is(ul, ol) {
+    margin-block-end: 1.15em;
+    padding-inline-start: 1.4em;
+    color: var(--color-ink-2);
+  }
+  .prose-body ul {
+    list-style: disc;
+  }
+  .prose-body ol {
+    list-style: decimal;
+  }
+  .prose-body li {
+    margin-block-end: 0.4em;
+  }
+  .prose-body a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose-body blockquote {
+    border-inline-start: 3px solid var(--color-accent);
+    padding-inline-start: 1.2em;
+    margin-block: 1.4em;
+    font-size: var(--text-h3);
+    line-height: 1.5;
+    color: var(--color-ink);
+  }
+  .prose-body img {
+    border-radius: var(--radius-lg);
+    margin-block: 1.6em;
+  }
+  .prose-body strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+}

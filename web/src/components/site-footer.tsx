@@ -1,0 +1,115 @@
+import Image from "next/image";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+
+const SOCIAL = [
+  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61584357966361" },
+  { label: "X", href: "https://x.com/Herliberation1" },
+  { label: "Instagram", href: "https://www.instagram.com/herliberation1/" },
+  { label: "TikTok", href: "https://www.tiktok.com/@herliberation1" },
+];
+
+export async function SiteFooter() {
+  const t = await getTranslations("nav");
+  const tf = await getTranslations("footer");
+  const locale = await getLocale();
+  const ar = locale === "ar";
+
+  return (
+    <footer className="bg-surface-ink py-16 text-on-ink-2">
+      <div className="mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-14">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+          <div>
+            <div className="mb-4 flex items-center gap-3">
+              <Image
+                src="/brand/logo.png"
+                alt=""
+                width={44}
+                height={44}
+                className="h-11 w-auto"
+              />
+              <span className="font-display text-lg font-bold text-on-ink">
+                {ar ? "تحريرها" : "HerLiberation"}
+              </span>
+            </div>
+            <p className="max-w-[34ch] text-sm">
+              {ar
+                ? "منصة وطنية عراقية للمناصرة والتوعية، تعمل على حماية حقوق الطفولة ورفع الحد الأدنى لسن الزواج."
+                : "An Iraqi advocacy and awareness platform working to protect children’s rights and raise the minimum age of marriage."}
+            </p>
+          </div>
+
+          <FooterCol title={ar ? "المنصة" : "Platform"}>
+            <FooterLink href="/">{t("home")}</FooterLink>
+            <FooterLink href="/campaigns">{t("campaign")}</FooterLink>
+            <FooterLink href="/blog">{t("blog")}</FooterLink>
+            <FooterLink href="/programs">{t("tracks")}</FooterLink>
+          </FooterCol>
+
+          <FooterCol title={ar ? "المنظمة" : "Organisation"}>
+            <FooterLink href="/about">{t("about")}</FooterLink>
+            <FooterLink href="/contact">{t("contact")}</FooterLink>
+            <FooterLink href="/donate">{t("donate")}</FooterLink>
+            <FooterLink href="/credits">
+              {ar ? "المصادر والحقوق" : "Credits"}
+            </FooterLink>
+          </FooterCol>
+
+          <FooterCol title={tf("follow_us")}>
+            {SOCIAL.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm transition-colors hover:text-on-ink"
+              >
+                {s.label}
+              </a>
+            ))}
+          </FooterCol>
+        </div>
+
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-v-800 pt-6 text-xs">
+          <p>{tf("copyright")}</p>
+          <Link href="/credits" className="font-mono transition-colors hover:text-on-ink">
+            {ar
+              ? "الصور والبيانات: مصادر مفتوحة الترخيص"
+              : "Photography and data: openly licensed sources"}
+          </Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function FooterCol({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <h4 className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.14em] text-v-300">
+        {title}
+      </h4>
+      <div className="flex flex-col gap-2">{children}</div>
+    </div>
+  );
+}
+
+function FooterLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link href={href} className="text-sm transition-colors hover:text-on-ink">
+      {children}
+    </Link>
+  );
+}
