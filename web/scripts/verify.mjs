@@ -1,18 +1,25 @@
 /**
  * End-to-end smoke test.
  *
- *   npm run verify          against the dev server (start it first)
- *   npm run verify -- 3001  against another port
+ *   npm run verify                                  the dev server (start it first)
+ *   npm run verify -- 3001                          another port
+ *   npm run verify -- https://your-domain.com       the deployed site
  *
  * Checks, in order: environment, database, then every page and API route on a
  * running server — asserting each one actually contains what it should, not
  * merely that it returned 200. A page that renders an error message still
  * returns 200, so status codes alone prove nothing.
+ *
+ * Against a deployed URL the local environment section is skipped: .env.local
+ * is this machine's file and says nothing about what Vercel was given. The
+ * database section still runs, because it is the same cluster the deployment
+ * talks to.
  */
 import { readFileSync } from "node:fs";
 
-const PORT = process.argv[2] || "3000";
-const BASE = `http://localhost:${PORT}`;
+const arg = process.argv[2] || "3000";
+const REMOTE = /^https?:\/\//.test(arg);
+const BASE = (REMOTE ? arg : `http://localhost:${arg}`).replace(/\/+$/, "");
 
 let pass = 0;
 let fail = 0;
@@ -33,7 +40,6 @@ function heading(t) {
 }
 
 /* ---------- 1. environment ---------- */
-heading("Environment");
 let env = {};
 try {
   env = Object.fromEntries(
@@ -45,20 +51,29 @@ try {
         return [l.slice(0, i).trim(), l.slice(i + 1).trim()];
       }),
   );
-  ok(".env.local found");
 } catch {
-  bad(".env.local missing", "copy .env.example to .env.local");
+  /* reported below, and only when it matters */
 }
 
-for (const key of ["MONGODB_URI", "AUTH_SECRET", "ADMIN_PASSWORD_HASH"]) {
-  if (env[key]) ok(key + " set");
-  else bad(key + " missing");
-}
-if (env.AUTH_SECRET && env.AUTH_SECRET.length < 32) {
-  bad("AUTH_SECRET too short", `${env.AUTH_SECRET.length} chars, needs 32+`);
-}
-for (const key of ["CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"]) {
-  if (!env[key]) console.log(`  · ${key} not set — image upload will be disabled`);
+if (REMOTE) {
+  heading(`Target  ${BASE}`);
+  console.log("  · deployed site — skipping the local environment checks,");
+  console.log("    since .env.local is not what the host was given");
+} else {
+  heading("Environment");
+  if (Object.keys(env).length) ok(".env.local found");
+  else bad(".env.local missing", "copy .env.example to .env.local");
+
+  for (const key of ["MONGODB_URI", "AUTH_SECRET", "ADMIN_PASSWORD_HASH"]) {
+    if (env[key]) ok(key + " set");
+    else bad(key + " missing");
+  }
+  if (env.AUTH_SECRET && env.AUTH_SECRET.length < 32) {
+    bad("AUTH_SECRET too short", `${env.AUTH_SECRET.length} chars, needs 32+`);
+  }
+  for (const key of ["CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"]) {
+    if (!env[key]) console.log(`  · ${key} not set — image upload will be disabled`);
+  }
 }
 
 /* ---------- 2. database ---------- */
@@ -123,7 +138,10 @@ try {
   await fetch(BASE + "/ar");
 } catch {
   serverUp = false;
-  bad("server not reachable", `start it with: npm run dev`);
+  bad(
+    "server not reachable",
+    REMOTE ? "check the domain and that the deployment finished" : "start it with: npm run dev",
+  );
 }
 
 if (serverUp) {

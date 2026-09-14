@@ -147,36 +147,67 @@ npm run verify   # في أخرى
 
 ## ٥. النشر على Vercel
 
-1. ارفع المستودع إلى GitHub
-2. [vercel.com](https://vercel.com) → **Add New Project** → اختر المستودع
-3. **Root Directory: `web`** — مهم، فالمشروع في مجلد فرعي
-4. **Environment Variables** — أضف نفس مفاتيح `.env.local`:
+### أ. المستودع
+
+الكود في مجلد فرعي، وهذه أهم نقطة في الإعداد كلّه.
+
+1. [vercel.com](https://vercel.com) → **Add New** → **Project**
+2. اختر مستودع `her-liberation`
+3. **Root Directory** → **Edit** → اختر **`web`**
+
+بدون هذه الخطوة يبحث Vercel عن `package.json` في جذر المستودع فلا يجده، ويفشل البناء برسالة لا تشير إلى السبب. الباقي يكتشفه وحده: Framework = Next.js، الأمر `next build`، المخرجات `.next`.
+
+### ب. المتغيّرات
+
+في **Environment Variables** يقبل Vercel لصق كتلة `.env` كاملة — الصق الخمسة دفعة واحدة بدل إدخالها واحداً واحداً.
 
 | المفتاح | ملاحظة |
 |---|---|
-| `MONGODB_URI` | استخدم صيغة `mongodb+srv` هنا |
+| `MONGODB_URI` | **صيغة `mongodb+srv` حصراً** — انظر التحذير أدناه |
 | `MONGODB_DB` | `herliberation` |
-| `AUTH_SECRET` | ولّد واحداً جديداً للإنتاج، لا تعد استخدام المحلي |
-| `ADMIN_PASSWORD_HASH` | الـhash لا كلمة المرور |
-| `CLOUDINARY_*` | الثلاثة |
-| `NEXT_PUBLIC_SITE_URL` | `https://your-domain.com` |
+| `AUTH_SECRET` | **ولّد واحداً جديداً**: `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"` |
+| `ADMIN_PASSWORD_HASH` | الـhash لا كلمة المرور. `npm run set-password` يطبعه |
+| `NEXT_PUBLIC_SITE_URL` | نطاقك. أي مفتاح يبدأ بـ`NEXT_PUBLIC_` يصل إلى المتصفح — لا تضع فيه سرّاً أبداً |
+| `CLOUDINARY_*` | الثلاثة، حين تفتح الحساب |
 
-5. **Deploy**
+> **لا تضع الرابط المباشر `mongodb://` على Vercel.**
+>
+> `npm run db:direct` يولّد رابطاً يسرد عقد العنقود صراحةً — `ac-xxxx-shard-00-00...`. وُجد لسبب واحد: شبكتك المحلية تجيب استعلامات SRV بتقطّع. لكن Atlas يغيّر أسماء هذه العقد عند ترقية الطبقة أو نقل المنطقة، فالرابط يصلح اليوم وينكسر بعد أشهر بخطأ DNS لا يدلّ على سببه.
+>
+> `mongodb+srv` يتتبّع العنقود مهما تحرّك. أبقِ المباشر محلياً وحده. صيغة SRV محفوظة كتعليق في `.env.local` على سطر `# MONGODB_URI_SRV=`.
 
-### ربط نطاق Cloudflare
+ثم **Deploy**. البناء دقيقتان تقريباً.
 
-Vercel → Project → **Settings** → **Domains** → أضف نطاقك، وسيعطيك سجلات DNS.
+### ج. Atlas
 
-في Cloudflare → **DNS**:
+`0.0.0.0/0` في **Network Access** ليس اختياراً هنا: عناوين Vercel الصادرة غير ثابتة، ولا قائمة لها لتضعها. بدونه ينجح البناء ويظهر الموقع، ثم تكون المدونة فارغة والعدّادات أصفاراً — لأن الصفحات تُبنى بلا قاعدة ولا ترمي خطأً.
+
+القاعدة محميّة بالمصادقة لا بالـIP. اجعل مستخدم القاعدة `readWrite` على `herliberation` وحدها لا "any database".
+
+### د. ربط نطاق Cloudflare
+
+Vercel → Project → **Settings** → **Domains** → أضف نطاقك. سيعطيك سجلّين.
+
+في Cloudflare → **DNS** → **Records**:
 
 | النوع | الاسم | القيمة | Proxy |
 |---|---|---|---|
-| CNAME | `www` | `cname.vercel-dns.com` | **DNS only** (سحابة رمادية) |
-| A | `@` | العنوان الذي يعطيه Vercel | **DNS only** |
+| A | `@` | `76.76.21.21` (أو ما يعطيك Vercel) | **DNS only** ☁️ رمادية |
+| CNAME | `www` | `cname.vercel-dns.com` | **DNS only** ☁️ رمادية |
 
-> اجعله **DNS only** لا Proxied. تفعيل بروكسي Cloudflare فوق Vercel يضيف طبقة CDN ثانية تُربك إصدار شهادة TLS وتخزين ISR. Vercel يوفّر الـCDN والشهادة أصلاً.
+> السحابة **رمادية لا برتقالية**. البرتقالية تمرّر الطلبات عبر بروكسي Cloudflare، فتُصبح طبقة CDN فوق طبقة CDN: Vercel يعجز عن التحقق من ملكية النطاق لإصدار شهادة TLS، وتخزين ISR يتعطّل، والزوار يرون شهادة Cloudflare لا شهادتك. Vercel يوفّر الـCDN والشهادة أصلاً — نطاقك على Cloudflare يبقى عندك، وهذا كل ما تحتاجه منه.
 
-بعد ربط النطاق حدّث `NEXT_PUBLIC_SITE_URL` وأعد النشر ليصحّ الـcanonical وOpen Graph.
+بعد أن يتحقق النطاق (دقائق)، حدّث `NEXT_PUBLIC_SITE_URL` إلى العنوان الحقيقي وأعد النشر — وإلا بقيت روابط canonical وبطاقات المشاركة تشير إلى `localhost`.
+
+### هـ. تحقّق من الموقع المنشور
+
+```bash
+npm run verify -- https://your-domain.com
+```
+
+نفس فحوص الصفحات والـAPI، على المنشور بدل المحلي. فحوص `.env.local` تُتخطّى — ملفك المحلي لا يقول شيئاً عمّا أعطيتَه لـVercel.
+
+ثم افتح `/ar/admin` وسجّل الدخول. إن رُفضت كلمة المرور فـ`ADMIN_PASSWORD_HASH` لم يُنسخ كاملاً — الـhash يحتوي `$` وبعض الصدفات تبتلعها عند النسخ من سطر أوامر.
 
 ---
 
