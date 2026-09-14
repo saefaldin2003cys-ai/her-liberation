@@ -12,13 +12,14 @@ Next.js rebuild of the campaign site.
 | Database | MongoDB Atlas (free M0) via the official driver, Node runtime |
 | Images | Cloudinary (free tier) |
 | Editor | Tiptap, bilingual with per-language text direction |
-| Hosting | Vercel Hobby (free); Cloudflare provides DNS for the domain |
+| Hosting | Render web service; Cloudflare proxies the domain in front of it |
 
 MongoDB cannot be reached from the Cloudflare Workers runtime — the driver
 needs `net.Socket`/`tls.TLSSocket`, and the Atlas Data API was retired in
 September 2025. Route handlers therefore run on Node (`export const runtime =
-"nodejs"`), which is why the app is hosted on Vercel rather than on Cloudflare
-Pages. Cloudflare still fronts the domain.
+"nodejs"`), which rules out Cloudflare Pages and calls for an ordinary Node
+host. The site already had one: Render, where the previous version ran, so the
+new app replaces it in the same service and the domain never moves.
 
 ## Running locally
 
