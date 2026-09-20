@@ -4,19 +4,20 @@ import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icon";
 import { Section, Wrap, Eyebrow, Figure } from "@/components/primitives";
 import { IraqMap } from "@/components/iraq-map";
+import { SupportersMarquee } from "@/components/supporters-marquee";
 import { listArticles, type Article } from "@/lib/articles";
 import { htmlToText } from "@/lib/sanitize";
 import { isDbConfigured } from "@/lib/mongodb";
+import { getSiteImages } from "@/lib/site-content";
+import {
+  normalizeImageSetting,
+  DEFAULT_SITE_IMAGES,
+  getImageAspectClass,
+  getImageFitClass,
+  getImagePositionClass,
+} from "@/lib/site-content-types";
 
 export const revalidate = 60;
-
-const SUPPORTERS = [
-  "UNICEF Iraq",
-  "شبكة النساء العراقيات",
-  "Human Rights Watch",
-  "رعاية القاصرين",
-  "لا لزواج القاصرات",
-];
 
 /**
  * The organisation's home page.
@@ -36,6 +37,19 @@ export default async function HomePage({
 
   const t = await getTranslations();
   const ar = locale === "ar";
+  const siteImages = await getSiteImages();
+  const heroImage = normalizeImageSetting(
+    siteImages.homeHero,
+    DEFAULT_SITE_IMAGES.homeHero,
+  );
+  const testimonyImage = normalizeImageSetting(
+    siteImages.homeTestimony,
+    DEFAULT_SITE_IMAGES.homeTestimony,
+  );
+  const campaignImage = normalizeImageSetting(
+    siteImages.campaignBefore18,
+    DEFAULT_SITE_IMAGES.campaignBefore18,
+  );
 
   let articles: Article[] = [];
   if (isDbConfigured) {
@@ -75,19 +89,30 @@ export default async function HomePage({
               </div>
             </div>
 
-            {/* Art-direction slot: swap in a documentary photograph at 3:2. */}
-            <div className="relative aspect-3/2 overflow-hidden rounded-lg bg-v-100">
+            {/* Art-direction slot: adapt to configured aspect ratio and fit. */}
+            <div
+              className={`relative w-full overflow-hidden rounded-lg bg-v-100 ${getImageAspectClass(
+                heroImage.aspect,
+              )} ${
+                heroImage.aspect === "4/5" || heroImage.aspect === "1/1"
+                  ? "max-w-[460px] mx-auto lg:ms-auto"
+                  : ""
+              }`}
+            >
               <Image
-                src="/img/baghdad-mustansiriya.jpg"
+                src={heroImage.url}
                 alt={
                   ar
-                    ? "صحن المدرسة المستنصرية في بغداد وانعكاسها في الماء"
-                    : "The courtyard of the Mustansiriya Madrasa in Baghdad, reflected in water"
+                    ? "صورة الواجهة الرئيسية"
+                    : "Hero image"
                 }
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 540px"
-                className="object-cover"
+                className={`${getImageFitClass(heroImage.fit)} ${getImagePositionClass(
+                  heroImage.position,
+                )}`}
+                unoptimized={heroImage.url.startsWith("/api/images")}
               />
             </div>
           </div>
@@ -129,13 +154,24 @@ export default async function HomePage({
       <Section className="bg-surface-ink text-on-ink">
         <Wrap>
           <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-v-900">
+            <div
+              className={`relative overflow-hidden rounded-lg bg-v-900 ${getImageAspectClass(
+                testimonyImage.aspect,
+              )} ${
+                testimonyImage.aspect === "4/5" || testimonyImage.aspect === "1/1"
+                  ? "max-w-[460px] mx-auto"
+                  : ""
+              }`}
+            >
               <Image
-                src="/img/kirkuk-classroom.jpg"
+                src={testimonyImage.url}
                 alt=""
                 fill
                 sizes="(max-width: 1024px) 100vw, 420px"
-                className="object-cover"
+                className={`${getImageFitClass(
+                  testimonyImage.fit,
+                )} ${getImagePositionClass(testimonyImage.position)}`}
+                unoptimized={testimonyImage.url.startsWith("/api/images")}
               />
             </div>
 
@@ -234,13 +270,22 @@ export default async function HomePage({
           </div>
 
           <article className="grid items-center gap-8 overflow-hidden rounded-lg border border-line bg-surface lg:grid-cols-[0.85fr_1.15fr]">
-            <div className="relative aspect-4/3 lg:aspect-auto lg:h-full lg:min-h-[280px]">
+            <div
+              className={`relative overflow-hidden ${
+                campaignImage.aspect === "3/2"
+                  ? "aspect-[3/2] lg:aspect-auto lg:h-full lg:min-h-[280px]"
+                  : getImageAspectClass(campaignImage.aspect)
+              }`}
+            >
               <Image
-                src="/img/mustansiriya-portal.jpg"
+                src={campaignImage.url}
                 alt=""
                 fill
                 sizes="(max-width: 1024px) 100vw, 420px"
-                className="object-cover"
+                className={`${getImageFitClass(
+                  campaignImage.fit,
+                )} ${getImagePositionClass(campaignImage.position)}`}
+                unoptimized={campaignImage.url.startsWith("/api/images")}
               />
             </div>
             <div className="p-6 sm:p-9">
@@ -374,24 +419,8 @@ export default async function HomePage({
         </Section>
       )}
 
-      {/* ---------- Supporters ---------- */}
-      <Section className="py-10! sm:py-12!">
-        <Wrap>
-          <h2 className="mb-5 font-mono text-xs uppercase tracking-[0.14em] text-ink-3">
-            {t("supporters.title")}
-          </h2>
-          <ul className="flex flex-wrap items-center gap-x-8 gap-y-3">
-            {SUPPORTERS.map((s) => (
-              <li
-                key={s}
-                className="font-display text-sm font-semibold text-ink-3"
-              >
-                {s}
-              </li>
-            ))}
-          </ul>
-        </Wrap>
-      </Section>
+      {/* ---------- Supporters Marquee ---------- */}
+      <SupportersMarquee />
 
       {/* ---------- CTA ---------- */}
       <Section className="bg-surface-ink text-on-ink">

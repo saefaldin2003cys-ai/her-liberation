@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Icon } from "./icon";
 import {
   AGE_MAX,
@@ -27,6 +27,8 @@ import {
  */
 export function RightsDashboard() {
   const t = useTranslations();
+  const locale = useLocale();
+  const isRtl = locale === "ar";
   const [age, setAge] = useState(9);
   const [selected, setSelected] = useState<RightKey | null>(null);
 
@@ -71,12 +73,30 @@ export function RightsDashboard() {
             step={1}
             value={age}
             onChange={(e) => setAgeAndKeep(Number(e.target.value))}
-            className="h-2 w-full cursor-pointer appearance-none rounded-full outline-none [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-surface [&::-moz-range-thumb]:bg-accent [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-surface [&::-webkit-slider-thumb]:bg-accent"
+            className="h-2 w-full cursor-pointer appearance-none rounded-full outline-none py-1 [&::-moz-range-thumb]:h-7 [&::-moz-range-thumb]:w-7 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-surface [&::-moz-range-thumb]:bg-accent [&::-moz-range-thumb]:shadow-md [&::-webkit-slider-thumb]:h-7 [&::-webkit-slider-thumb]:w-7 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-surface [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-md"
             style={{
-              background: `linear-gradient(to right, var(--color-accent) ${pct}%, var(--color-line) ${pct}%)`,
+              background: isRtl
+                ? `linear-gradient(to left, var(--color-accent) ${pct}%, var(--color-line) ${pct}%)`
+                : `linear-gradient(to right, var(--color-accent) ${pct}%, var(--color-line) ${pct}%)`,
             }}
           />
         </label>
+
+        {/* Scale Ticks / Key Milestones */}
+        <div className="relative mt-2 h-5 select-none font-mono text-xs font-medium text-ink-3">
+          <span className={`absolute ${isRtl ? "right-0" : "left-0"}`}>
+            {t("age_selector_extra.years_9")}
+          </span>
+          <span
+            className="absolute -translate-x-1/2 rtl:translate-x-1/2"
+            style={{ [isRtl ? "right" : "left"]: "66.67%" }}
+          >
+            {t("age_selector_extra.years_15")}
+          </span>
+          <span className={`absolute ${isRtl ? "left-0" : "right-0"}`}>
+            {t("age_selector_extra.years_18")}
+          </span>
+        </div>
 
         {/* The three brackets the law actually recognises. */}
         <div className="mt-5 flex flex-wrap gap-2">
@@ -144,8 +164,35 @@ export function RightsDashboard() {
                       : "border-accent text-accent hover:border-ink hover:text-ink",
                   ].join(" ")}
                 >
-                  {t("rights.view_details")}
+                  {isActive ? (
+                    <>
+                      <Icon name="close" className="me-1 inline h-3 w-3" />
+                      {locale === "ar" ? "إخفاء التفاصيل" : "Hide details"}
+                    </>
+                  ) : (
+                    t("rights.view_details")
+                  )}
                 </button>
+
+                {/* Mobile Inline Accordion: expands directly below the card on mobile */}
+                {isActive && (
+                  <div className="mt-4 border-t border-line pt-4 lg:hidden">
+                    <p className="text-sm leading-relaxed text-ink-2">
+                      {t(`rights_data.${bracket}.${key}.details` as never)}
+                    </p>
+                    <p className="mt-4 font-mono text-xs uppercase tracking-[0.12em] text-ink-3">
+                      {t("rights.legal_reference")}
+                    </p>
+                    <div
+                      className="mt-1 border-t border-line pt-2 text-sm leading-relaxed text-ink-2 [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2"
+                      dangerouslySetInnerHTML={{
+                        __html: t.raw(
+                          `rights_data.${bracket}.${key}.law`,
+                        ) as string,
+                      }}
+                    />
+                  </div>
+                )}
               </article>
             );
           })}
@@ -154,7 +201,7 @@ export function RightsDashboard() {
         <aside
           id="right-detail"
           aria-live="polite"
-          className="rounded-lg border border-line bg-surface p-6 lg:sticky lg:top-28"
+          className="hidden rounded-lg border border-line bg-surface p-6 lg:block lg:sticky lg:top-28"
         >
           {!active && (
             <p className="text-ink-3">{t("rights.select_prompt")}</p>

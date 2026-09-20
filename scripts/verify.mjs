@@ -149,9 +149,9 @@ if (serverUp) {
   const pages = [
     ["/ar", "حكايا المرأة", "home (ar)"],
     ["/en", "women", "home (en)"],
-    ["/ar/campaigns", "حملاتنا", "campaigns index"],
+    ["/ar/campaigns", "حملات", "campaigns index"],
     ["/ar/campaigns/before-18", "اختر عمر", "campaign"],
-    ["/ar/blog", "مدونتنا", "blog"],
+    ["/ar/blog", "مقالات", "blog"],
     ["/ar/about", "رسالتنا", "about"],
     ["/ar/contact", "التواصل", "contact"],
     ["/ar/donate", "ادعم", "donate"],

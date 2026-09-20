@@ -19,7 +19,7 @@ export const ArticleInput = z.object({
   /** HTML produced by the editor. Sanitised on write, never trusted on read. */
   content: z.object({ ar: z.string().min(1), en: z.string().optional() }),
   excerpt: Bilingual.optional(),
-  coverImage: z.string().url().or(z.literal("")).optional(),
+  coverImage: z.string().url().or(z.string().startsWith("/")).or(z.literal("")).optional(),
   slug: z
     .string()
     .regex(/^[a-z0-9؀-ۿ]+(?:-[a-z0-9؀-ۿ]+)*$/, "invalid slug")

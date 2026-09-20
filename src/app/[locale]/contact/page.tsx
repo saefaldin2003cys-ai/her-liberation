@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Section, Wrap, PageHeader } from "@/components/primitives";
+import { Section, Wrap } from "@/components/primitives";
 import { Icon, type IconName } from "@/components/icon";
 import { BrandIcon, type BrandName } from "@/components/brand-icon";
 import { routing } from "@/i18n/routing";
@@ -80,19 +80,65 @@ export default async function ContactPage({
 
   return (
     <>
-      <PageHeader
-        eyebrow={
-          <>
-            <Icon name="mail" className="h-3.5 w-3.5" />
-            {t("info_title")}
-          </>
-        }
-        title={t("title")}
-        lead={t("description")}
-      />
-
-      <Section>
+      {/* Top Manifesto Section */}
+      <Section className="pb-4 pt-12 sm:pt-16">
         <Wrap>
+          <div className="mx-auto max-w-[62ch] text-center">
+            <h1 className="mb-2 text-h1 font-bold text-ink">
+              {t("manifesto_title_1")}
+            </h1>
+            <p className="mb-4 font-display text-h2 font-medium text-accent">
+              {t("manifesto_title_2")}
+            </p>
+            <p className="mx-auto text-lead leading-relaxed text-ink-2">
+              {t("manifesto_desc")}
+            </p>
+            <div className="mt-8 flex justify-center">
+              <a
+                href="#contact-methods"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3.5 text-sm font-semibold text-surface shadow-xs transition-colors hover:bg-accent-deep"
+              >
+                {t("manifesto_btn_community")}
+              </a>
+            </div>
+          </div>
+        </Wrap>
+      </Section>
+
+      {/* Partnerships Section */}
+      <Section className="bg-surface-alt">
+        <Wrap>
+          <div className="mb-10 max-w-[62ch]">
+            <h2 className="mb-3 text-h2">{t("partnerships_title")}</h2>
+            <p className="text-lead leading-relaxed text-ink-2">
+              {t("partnerships_desc")}
+            </p>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {PARTNERS.map((p) => (
+              <div key={p.key}>
+                <Icon name={p.icon} className="mb-3 h-6 w-6 text-accent" />
+                <h3 className="mb-2 font-display font-semibold text-ink">
+                  {t(`${p.key}_title` as never)}
+                </h3>
+                <p className="text-sm leading-relaxed text-ink-2">
+                  {t(`${p.key}_desc` as never)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Wrap>
+      </Section>
+
+      {/* Contact Methods / Channels */}
+      <Section id="contact-methods">
+        <Wrap>
+          <div className="mb-10 max-w-[62ch]">
+            <h2 className="mb-3 text-h2">{t("title")}</h2>
+            <p className="text-lead leading-relaxed text-ink-2">
+              {t("description")}
+            </p>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CHANNELS.map((c) => (
               <a
@@ -123,48 +169,6 @@ export default async function ContactPage({
                 </span>
               </a>
             ))}
-          </div>
-        </Wrap>
-      </Section>
-
-      <Section className="bg-surface-alt">
-        <Wrap>
-          <div className="mb-10 max-w-[62ch]">
-            <h2 className="mb-3 text-h2">{t("partnerships_title")}</h2>
-            <p className="text-lead leading-relaxed text-ink-2">
-              {t("partnerships_desc")}
-            </p>
-          </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {PARTNERS.map((p) => (
-              <div key={p.key}>
-                <Icon name={p.icon} className="mb-3 h-6 w-6 text-accent" />
-                <h3 className="mb-2 font-display font-semibold text-ink">
-                  {t(`${p.key}_title` as never)}
-                </h3>
-                <p className="text-sm leading-relaxed text-ink-2">
-                  {t(`${p.key}_desc` as never)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Wrap>
-      </Section>
-
-      <Section>
-        <Wrap>
-          <div className="mx-auto max-w-[56ch] text-center">
-            <h2 className="mb-4 text-h2">{t("collaborate_title")}</h2>
-            <p className="mx-auto text-lead leading-relaxed text-ink-2">
-              {t("collaborate_desc")}
-            </p>
-            <a
-              href={`mailto:${EMAIL}`}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-surface transition-colors hover:bg-accent-deep"
-            >
-              <Icon name="mail" className="h-4 w-4" />
-              {t("collaborate_btn")}
-            </a>
           </div>
         </Wrap>
       </Section>

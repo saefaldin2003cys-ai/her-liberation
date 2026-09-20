@@ -6,8 +6,11 @@ import { Rubik, IBM_Plex_Sans_Arabic, JetBrains_Mono } from "next/font/google";
 
 import { routing, DIRECTION, type Locale } from "@/i18n/routing";
 import { SITE_URL, INDEXABLE } from "@/lib/site";
+import { getSiteImages } from "@/lib/site-content";
+import { normalizeImageSetting, DEFAULT_SITE_IMAGES } from "@/lib/site-content-types";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ThemeScript } from "@/components/theme-script";
 import "../globals.css";
 
 /* Display face — geometric, lightly softened, with Arabic that echoes the
@@ -79,16 +82,6 @@ export async function generateMetadata({
   };
 }
 
-/* Applied before first paint so the page never flashes the wrong theme. */
-const themeScript = `
-(function(){try{
-  var t=localStorage.getItem('theme');
-  if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
-  document.documentElement.setAttribute('data-theme',t);
-}catch(e){}
-document.documentElement.classList.add('js');})();
-`;
-
 export default async function LocaleLayout({
   children,
   params,
@@ -100,6 +93,9 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
+  const siteImages = await getSiteImages();
+  const logo = normalizeImageSetting(siteImages.logo, DEFAULT_SITE_IMAGES.logo);
+
   return (
     <html
       lang={locale}
@@ -108,7 +104,7 @@ export default async function LocaleLayout({
       className={`${rubik.variable} ${plexArabic.variable} ${jetbrains.variable}`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <ThemeScript />
       </head>
       <body className="min-h-screen bg-canvas text-ink antialiased">
         <NextIntlClientProvider>
@@ -118,9 +114,9 @@ export default async function LocaleLayout({
           >
             {locale === "ar" ? "تخطَّ إلى المحتوى" : "Skip to content"}
           </a>
-          <SiteHeader />
+          <SiteHeader logoUrl={logo.url} />
           <main id="main">{children}</main>
-          <SiteFooter />
+          <SiteFooter logoUrl={logo.url} />
         </NextIntlClientProvider>
       </body>
     </html>

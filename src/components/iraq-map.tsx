@@ -32,6 +32,60 @@ export function IraqMap() {
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
       <figure className="m-0">
+        {/* Mobile Governorate Quick Selector */}
+        <div className="mb-4 lg:hidden">
+          <label
+            htmlFor="mobile-gov-select"
+            className="mb-2 block text-xs font-semibold text-ink-3"
+          >
+            {t("mobile_select_prompt")}
+          </label>
+          <div className="relative">
+            <select
+              id="mobile-gov-select"
+              value={selected?.id ?? ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                const found =
+                  IRAQ_MAP.regions.find((r) => r.id === val) ?? null;
+                setSelected(found);
+                if (found) {
+                  const el = document.getElementById("province-details");
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                  }
+                }
+              }}
+              className="w-full appearance-none rounded-lg border border-line bg-surface px-4 py-3 pe-10 text-sm font-medium text-ink shadow-xs outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent"
+            >
+              <option value="">{t("choose_province")}</option>
+              {IRAQ_MAP.regions.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {label(g)}{" "}
+                  {PROVINCE_DATA[g.name]
+                    ? `(${PROVINCE_DATA[g.name].rate}%)`
+                    : `(${t("no_data")})`}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3 text-ink-3">
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
         <svg
           viewBox={`0 0 ${IRAQ_MAP.width} ${IRAQ_MAP.height}`}
           className="h-auto w-full overflow-visible"
@@ -129,7 +183,7 @@ export function IraqMap() {
         </figcaption>
       </figure>
 
-      <aside className="lg:sticky lg:top-28">
+      <aside id="province-details" className="lg:sticky lg:top-28">
         <div className="rounded-lg border border-line bg-surface p-6">
           {!selected && <p className="text-ink-3">{t("select_province")}</p>}
 

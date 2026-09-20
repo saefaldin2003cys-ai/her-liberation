@@ -10,12 +10,14 @@ import type { ReactNode } from "react";
 export function Section({
   children,
   className = "",
+  id,
 }: {
   children: ReactNode;
   className?: string;
+  id?: string;
 }) {
   return (
-    <section className={`py-12 sm:py-16 lg:py-20 ${className}`}>
+    <section id={id} className={`py-12 sm:py-16 lg:py-20 ${className}`}>
       {children}
     </section>
   );

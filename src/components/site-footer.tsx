@@ -9,7 +9,7 @@ const SOCIAL = [
   { label: "TikTok", href: "https://www.tiktok.com/@herliberation1" },
 ];
 
-export async function SiteFooter() {
+export async function SiteFooter({ logoUrl }: { logoUrl?: string }) {
   const t = await getTranslations("nav");
   const tf = await getTranslations("footer");
   const locale = await getLocale();
@@ -20,19 +20,17 @@ export async function SiteFooter() {
       <div className="mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-14">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div>
-            <div className="mb-4 flex items-center gap-3">
+            <div className="mb-4 flex items-center">
               <Image
-                src="/brand/logo.png"
-                alt=""
-                width={44}
-                height={44}
-                className="h-11 w-auto"
+                src={logoUrl || "/brand/logo.png"}
+                alt={ar ? "شعار تحريرها" : "HerLiberation Logo"}
+                width={240}
+                height={80}
+                className="h-16 sm:h-20 w-auto object-contain"
+                unoptimized={logoUrl?.startsWith("/api/images")}
               />
-              <span className="font-display text-lg font-bold text-on-ink">
-                {ar ? "تحريرها" : "HerLiberation"}
-              </span>
             </div>
-            <p className="max-w-[34ch] text-sm">
+            <p className="max-w-[34ch] text-sm leading-relaxed">
               {ar
                 ? "منصة وطنية عراقية للمناصرة والتوعية، تعمل على حماية حقوق الطفولة ورفع الحد الأدنى لسن الزواج."
                 : "An Iraqi advocacy and awareness platform working to protect children’s rights and raise the minimum age of marriage."}
@@ -46,7 +44,7 @@ export async function SiteFooter() {
             <FooterLink href="/programs">{t("tracks")}</FooterLink>
           </FooterCol>
 
-          <FooterCol title={ar ? "المنظمة" : "Organisation"}>
+          <FooterCol title={ar ? "عن المنصة" : "About"}>
             <FooterLink href="/about">{t("about")}</FooterLink>
             <FooterLink href="/contact">{t("contact")}</FooterLink>
             <FooterLink href="/donate">{t("donate")}</FooterLink>
@@ -70,13 +68,8 @@ export async function SiteFooter() {
           </FooterCol>
         </div>
 
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-v-800 pt-6 text-xs">
+        <div className="mt-12 border-t border-v-800 pt-6 text-center text-xs">
           <p>{tf("copyright")}</p>
-          <Link href="/credits" className="font-mono transition-colors hover:text-on-ink">
-            {ar
-              ? "الصور والبيانات: مصادر مفتوحة الترخيص"
-              : "Photography and data: openly licensed sources"}
-          </Link>
         </div>
       </div>
     </footer>

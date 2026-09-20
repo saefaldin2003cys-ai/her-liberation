@@ -5,6 +5,14 @@ import { Link } from "@/i18n/navigation";
 import { Section, Wrap, PageHeader } from "@/components/primitives";
 import { Icon } from "@/components/icon";
 import { routing } from "@/i18n/routing";
+import { getSiteImages } from "@/lib/site-content";
+import {
+  normalizeImageSetting,
+  DEFAULT_SITE_IMAGES,
+  getImageAspectClass,
+  getImageFitClass,
+  getImagePositionClass,
+} from "@/lib/site-content-types";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -36,6 +44,11 @@ export default async function CampaignsPage({
   setRequestLocale(locale);
   const t = await getTranslations();
   const ar = locale === "ar";
+  const siteImages = await getSiteImages();
+  const campaignImage = normalizeImageSetting(
+    siteImages.campaignsHero || siteImages.campaignBefore18,
+    DEFAULT_SITE_IMAGES.campaignBefore18,
+  );
 
   return (
     <>
@@ -53,14 +66,22 @@ export default async function CampaignsPage({
       <Section>
         <Wrap>
           <article className="grid items-center gap-8 overflow-hidden rounded-lg border border-line bg-surface lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="relative aspect-4/3 lg:aspect-auto lg:h-full lg:min-h-[340px]">
-              {/* Art-direction slot — replace with a documentary photograph. */}
+            <div
+              className={`relative overflow-hidden ${
+                campaignImage.aspect === "3/2"
+                  ? "aspect-4/3 lg:aspect-auto lg:h-full lg:min-h-[340px]"
+                  : getImageAspectClass(campaignImage.aspect)
+              }`}
+            >
               <Image
-                src="/img/mustansiriya-portal.jpg"
-                alt=""
+                src={campaignImage.url}
+                alt={ar ? t("campaign.slogan_ar") : t("campaign.slogan_en")}
                 fill
                 sizes="(max-width: 1024px) 100vw, 480px"
-                className="object-cover"
+                className={`${getImageFitClass(
+                  campaignImage.fit,
+                )} ${getImagePositionClass(campaignImage.position)}`}
+                unoptimized={campaignImage.url.startsWith("/api/images")}
               />
             </div>
 

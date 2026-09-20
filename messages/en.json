@@ -14,8 +14,8 @@
         "slogan_en": "Under 18: A Child, Not a Wife"
     },
     "campaigns_page": {
-        "title": "Our Campaigns",
-        "description": "The advocacy and awareness campaigns we launch to protect children's rights and empower communities.",
+        "title": "Campaigns",
+        "description": "We put women's issues at the forefront, shedding light on what touches their lives and rights. Through our campaigns, we open spaces for awareness, accountability, and change.",
         "status_active": "Active Campaign",
         "view_campaign": "View Campaign →",
         "back": "← Back to Campaigns"
@@ -23,7 +23,7 @@
     "home_hero": {
         "tagline": "HerLiberation Platform",
         "title": "Here women's stories are told — in her silence and in her scream, in the burdens she carries, and in the laws that close around her",
-        "description": "A national advocacy and awareness platform working to protect children's rights and empower communities through campaigns, educational content, and programs.",
+        "description": "An Iraqi feminist platform for advocacy and empowerment, dedicated to the rights of women and girls.",
         "cta_primary": "Explore Our Campaigns",
         "cta_secondary": "About Us"
     },
@@ -200,6 +200,8 @@
     "map": {
         "title": "Map of Pain Across Provinces",
         "select_province": "Click on a province name to view the reality",
+        "mobile_select_prompt": "Or select a governorate directly:",
+        "choose_province": "Select a governorate...",
         "type_label": "Pattern:",
         "rate_label": "Child marriage rate (under 18)",
         "consequences_title": "What Does This Reality Mean for Girls?",
@@ -321,10 +323,10 @@
         }
     ],
     "articles": {
-        "title": "Our Blog",
-        "subtitle": "Articles and awareness facts on children's rights and protecting girls.",
-        "loading": "Loading blog...",
-        "no_articles": "No articles currently available",
+        "title": "Articles",
+        "subtitle": "Articles and awareness materials addressing women's issues and rights, sparking dialogue around their realities and experiences.",
+        "loading": "Loading articles...",
+        "no_articles": "Articles are currently in preparation... Stay tuned for new publications soon.",
         "read_more": "Read More",
         "likes": "Likes"
     },
@@ -338,7 +340,7 @@
     "nav": {
         "home": "Home",
         "about": "About Us",
-        "blog": "Blog",
+        "blog": "Articles",
         "donate": "Donate",
         "contact": "Contact",
         "tracks": "Programs",
@@ -400,11 +402,11 @@
         "author2_title": "Human rights activist and social researcher - Baghdad"
     },
     "article": {
-        "back_to_blog": "Back to Blog",
+        "back_to_blog": "Back to Articles",
         "suggested_title": "Suggested articles for you"
     },
     "donate_page": {
-        "title": "Support Our Organization",
+        "title": "Support Our Platform",
         "description": "Your contribution helps protect childhood and empower communities.",
         "purposes_title": "How Your Donation Makes a Difference",
         "purpose1_title": "Education & Awareness",
@@ -441,12 +443,25 @@
         "collaborate_title": "How We Collaborate",
         "collaborate_desc": "Reach out via email or social media to discuss collaboration opportunities. We are open to new ideas and joint initiatives.",
         "collaborate_btn": "Send Us a Message",
+        "manifesto_title_1": "Women's voices are not marginal.",
+        "manifesto_title_2": "They are part of shaping the future.",
+        "manifesto_desc": "At Tahreeha, we believe that changing women's reality begins with taking their experiences seriously, and giving their voices the space they have long been denied.",
+        "manifesto_pillar_write": "We write for her.",
+        "manifesto_pillar_research": "We research for her.",
+        "manifesto_pillar_fight": "We fight for her freedom.",
+        "manifesto_btn_community": "Join Our Community",
+        "manifesto_btn_contact": "Contact Us",
         "tiktok_title": "TikTok",
         "threads_title": "Threads"
     },
     "tracks_page": {
         "title": "Our Programs",
-        "description": "Educational programs and workshops designed to build skills and digital empowerment.",
+        "description": "Development programs and initiatives aimed at empowering women and girls and building skills.",
+        "featured_badge": "Applications Open",
+        "spotlight_title": "From the Shelf to the Spotlight Program",
+        "spotlight_desc": "HerLiberation Platform launches the 'From the Shelf to the Spotlight' initiative, a comprehensive development path aimed at moving emerging projects of women entrepreneurs in Baghdad from latent potentials on shelves into real, successful experiences in the spotlight.",
+        "spotlight_apply": "Apply to the Program",
+        "other_tracks_title": "Upcoming Tracks & Trainings",
         "coming_soon": "Programs are under development... Stay tuned!",
         "track1_title": "Web Development",
         "track1_desc": "Learn to build modern, responsive websites using HTML, CSS, and JavaScript fundamentals.",
@@ -463,16 +478,23 @@
         "back_home": "Back to Home"
     },
     "about_page": {
-        "title": "HerLiberation Organization",
-        "description": "Our mission, goals, and our approach to work",
+        "eyebrow": "About Us",
+        "title": "HerLiberation Platform",
+        "description": "HerLiberation is a non-profit feminist platform founded by a group of women who believe that achieving equality and justice for women begins with empowering them to express their voices and actively participate in their communities.",
+        "mission_vision_title": "Our Mission & Vision",
+        "mission_title": "Advocacy & Empowerment",
+        "mission_desc": "We advocate for women's rights by launching digital advocacy campaigns, implementing programs and initiatives aimed at empowering women and girls, and raising awareness of issues affecting their lives and rights.",
+        "vision_title": "Our Vision for a Fairer Society",
+        "vision_desc": "We strive to contribute to advancing the status of Iraqi women and building a more just society, where women's rights and freedoms are respected, and where they have equal opportunities to participate and make decisions.",
         "approach_subtitle": "Our Approach",
         "approach_title": "How We Work for Change",
-        "card1_title": "Digital Advocacy",
-        "card1_desc": "We use digital platforms to spread awareness and spark community dialogue about children's rights and legislation.",
-        "card2_title": "Community Partnerships",
-        "card2_desc": "We collaborate with civil society organizations and government institutions to strengthen childhood protection and enforce laws.",
-        "card3_title": "Research & Documentation",
-        "card3_desc": "We collect data and document real stories to provide strong evidence supporting legislative reform demands."
+        "card1_title": "Digital Advocacy & Campaigns",
+        "card1_desc": "We launch digital campaigns that raise awareness of women's issues, highlight their rights, and seek to change discourses and practices affecting their lives.",
+        "card2_title": "Education & Empowerment",
+        "card2_desc": "We develop educational and training programs that equip women and girls with knowledge and skills to help them participate, voice their issues, and drive change.",
+        "card3_title": "Investigative Journalism",
+        "card3_desc": "We use investigative journalism to research and document issues affecting women, amplifying voices and experiences often marginalized or overlooked.",
+        "quote": "We believe that change does not come from a single voice, but through women who speak up, organize, share knowledge, and work together for a fairer reality."
     },
     "home_figures": {
         "title": "The reality we work on",

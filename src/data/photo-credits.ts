@@ -70,6 +70,18 @@ export const PHOTO_CREDITS: Record<string, PhotoCredit> = {
       en: "The carved portal of the Mustansiriya Madrasa in Baghdad, with its Kufic inscription.",
     },
   },
+  "/img/campaign-before-18.jpg": {
+    src: "/img/campaign-before-18.jpg",
+    title: "حق التعليم والطفولة",
+    author: "HerLiberation",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+    sourceUrl: "https://her-liberation.org",
+    note: {
+      ar: "صورة وثائقية ترمز لحق الطفلة في التعليم وبناء مستقبلها.",
+      en: "A documentary photo symbolizing a girl's right to education and building her future.",
+    },
+  },
 };
 
 /** Short credit line, e.g. for a caption under an image. */

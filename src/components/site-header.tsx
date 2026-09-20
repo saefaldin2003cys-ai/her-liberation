@@ -17,7 +17,7 @@ const NAV = [
   { href: "/contact", key: "contact" },
 ] as const;
 
-export function SiteHeader() {
+export function SiteHeader({ logoUrl }: { logoUrl?: string }) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const pathname = usePathname();
@@ -29,18 +29,20 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-canvas/85 backdrop-blur-md">
       <div className="mx-auto flex h-18 w-full max-w-[1240px] items-center gap-6 px-5 sm:px-8 lg:px-14">
-        <Link href="/" className="flex flex-none items-center gap-3">
+        <Link
+          href="/"
+          aria-label={locale === "ar" ? "تحريرها - الصفحة الرئيسية" : "HerLiberation - Home"}
+          className="flex flex-none items-center py-1 transition-opacity hover:opacity-90"
+        >
           <Image
-            src="/brand/logo.png"
-            alt=""
-            width={40}
-            height={40}
-            className="h-10 w-auto"
+            src={logoUrl || "/brand/logo.png"}
+            alt={locale === "ar" ? "شعار تحريرها" : "HerLiberation Logo"}
+            width={160}
+            height={52}
+            className="h-12 sm:h-13 w-auto object-contain"
             priority
+            unoptimized={logoUrl?.startsWith("/api/images")}
           />
-          <span className="font-display text-[1.05rem] font-bold tracking-tight text-ink">
-            {locale === "ar" ? "تحريرها" : "HerLiberation"}
-          </span>
         </Link>
 
         <nav

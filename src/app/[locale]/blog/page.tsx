@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Section, Wrap } from "@/components/primitives";
+import { Icon } from "@/components/icon";
 import { listArticles, type Article } from "@/lib/articles";
 import { htmlToText } from "@/lib/sanitize";
 import { isDbConfigured } from "@/lib/mongodb";
@@ -51,18 +52,20 @@ export default async function BlogPage({
           </p>
         </div>
 
-        {failed && (
-          <div className="rounded-lg border border-dashed border-line p-10 text-center">
-            <p className="text-ink-2">
+        {(failed || articles.length === 0) && (
+          <div className="rounded-lg border border-dashed border-line p-12 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent-wash text-accent">
+              <Icon name="book" className="h-7 w-7" />
+            </div>
+            <h3 className="mb-2 text-h3 font-semibold text-ink">
+              {t("no_articles")}
+            </h3>
+            <p className="mx-auto max-w-[45ch] text-sm leading-relaxed text-ink-2">
               {ar
-                ? "قاعدة البيانات غير متصلة. أضف MONGODB_URI في ملف .env.local."
-                : "The database is not connected. Add MONGODB_URI to .env.local."}
+                ? "نعمل على إعداد أبحاث ومقالات نوعية توثّق قضايا وتجارب النساء في العراق. تابعونا قريباً."
+                : "We are preparing research and articles documenting women's experiences and issues in Iraq. Follow us for updates."}
             </p>
           </div>
-        )}
-
-        {!failed && articles.length === 0 && (
-          <p className="text-ink-3">{t("no_articles")}</p>
         )}
 
         {articles.length > 0 && (

@@ -4,10 +4,19 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Section, Wrap, Eyebrow, Figure } from "@/components/primitives";
 import { RightsDashboard } from "@/components/rights-dashboard";
 import { IraqMap } from "@/components/iraq-map";
+import { SupportersMarquee } from "@/components/supporters-marquee";
 import { Poll } from "@/components/poll";
 import { ShareRow } from "@/components/share-row";
 import { Icon } from "@/components/icon";
 import { routing } from "@/i18n/routing";
+import { getSiteImages } from "@/lib/site-content";
+import {
+  normalizeImageSetting,
+  DEFAULT_SITE_IMAGES,
+  getImageAspectClass,
+  getImageFitClass,
+  getImagePositionClass,
+} from "@/lib/site-content-types";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -26,14 +35,6 @@ export async function generateMetadata({
   };
 }
 
-const SUPPORTERS = [
-  "UNICEF Iraq",
-  "شبكة النساء العراقيات",
-  "Human Rights Watch",
-  "رعاية القاصرين",
-  "لا لزواج القاصرات",
-];
-
 export default async function CampaignPage({
   params,
 }: {
@@ -43,6 +44,11 @@ export default async function CampaignPage({
   setRequestLocale(locale);
   const t = await getTranslations();
   const ar = locale === "ar";
+  const siteImages = await getSiteImages();
+  const campaignImage = normalizeImageSetting(
+    siteImages.campaignBefore18,
+    DEFAULT_SITE_IMAGES.campaignBefore18,
+  );
 
   return (
     <>
@@ -60,19 +66,29 @@ export default async function CampaignPage({
                 {t("hero_extra.visual_quote")}
               </p>
             </div>
-            <div className="relative aspect-3/2 overflow-hidden rounded-lg bg-v-100">
-              {/* Art-direction slot — replace with a documentary photograph. */}
+            <div
+              className={`relative overflow-hidden rounded-lg bg-v-100 shadow-sm ${getImageAspectClass(
+                campaignImage.aspect,
+              )} ${
+                campaignImage.aspect === "4/5" || campaignImage.aspect === "1/1"
+                  ? "max-w-[480px] mx-auto lg:ms-auto"
+                  : ""
+              }`}
+            >
               <Image
-                src="/img/baghdad-mustansiriya.jpg"
+                src={campaignImage.url}
                 alt={
                   ar
-                    ? "صحن المدرسة المستنصرية في بغداد وانعكاسها في الماء"
-                    : "The courtyard of the Mustansiriya Madrasa in Baghdad, reflected in water"
+                    ? "حقيبة ودفاتر مدرسية لطفلة عراقية ترمز لحق التعليم والطفولة"
+                    : "An Iraqi girl's school backpack and notebooks symbolizing childhood and education"
                 }
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 560px"
-                className="object-cover"
+                className={`${getImageFitClass(
+                  campaignImage.fit,
+                )} ${getImagePositionClass(campaignImage.position)}`}
+                unoptimized={campaignImage.url.startsWith("/api/images")}
               />
             </div>
           </div>
@@ -144,24 +160,8 @@ export default async function CampaignPage({
         </Wrap>
       </Section>
 
-      {/* ---------- Supporters ---------- */}
-      <Section>
-        <Wrap>
-          <h2 className="mb-6 font-mono text-xs uppercase tracking-[0.14em] text-ink-3">
-            {t("supporters.title")}
-          </h2>
-          <ul className="flex flex-wrap items-center gap-x-8 gap-y-3">
-            {SUPPORTERS.map((s) => (
-              <li
-                key={s}
-                className="font-display text-sm font-semibold text-ink-3"
-              >
-                {s}
-              </li>
-            ))}
-          </ul>
-        </Wrap>
-      </Section>
+      {/* ---------- Supporters Marquee ---------- */}
+      <SupportersMarquee />
 
       {/* ---------- Share ---------- */}
       <Section className="bg-surface-ink text-on-ink">
