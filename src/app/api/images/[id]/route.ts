@@ -34,9 +34,14 @@ export async function GET(
     }
     const buffer = Buffer.concat(chunks);
 
+    const contentType =
+      (file.metadata?.contentType as string) ||
+      ((file as any).contentType as string) ||
+      "image/jpeg";
+
     return new NextResponse(buffer, {
       headers: {
-        "Content-Type": (file.contentType as string) || "image/jpeg",
+        "Content-Type": contentType,
         "Content-Length": String(buffer.length),
         "Cache-Control": "public, max-age=31536000, immutable",
       },

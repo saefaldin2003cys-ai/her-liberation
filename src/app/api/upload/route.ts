@@ -87,8 +87,8 @@ export async function POST(req: NextRequest) {
     const bucket = new GridFSBucket(db, { bucketName: "images" });
     const filename = file.name || `image-${Date.now()}`;
     const uploadStream = bucket.openUploadStream(filename, {
-      contentType: file.type,
       metadata: {
+        contentType: file.type,
         size: file.size,
         uploadedAt: new Date(),
       },
