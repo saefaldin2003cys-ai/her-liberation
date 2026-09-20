@@ -65,11 +65,13 @@ export default async function CampaignsPage({
         <Wrap>
           <article className="grid items-center gap-8 overflow-hidden rounded-lg border border-line bg-surface lg:grid-cols-[0.9fr_1.1fr]">
             <div
-              className={`relative overflow-hidden ${
-                campaignImage.aspect === "3/2"
-                  ? "aspect-4/3 lg:aspect-auto lg:h-full lg:min-h-[340px]"
-                  : getImageAspectClass(campaignImage.aspect)
-              }`}
+              className="relative w-full min-h-[300px] overflow-hidden"
+              style={{
+                aspectRatio:
+                  campaignImage.aspect && campaignImage.aspect !== "auto"
+                    ? campaignImage.aspect.replace("/", " / ")
+                    : "4 / 3",
+              }}
             >
               <Image
                 src={campaignImage.url}

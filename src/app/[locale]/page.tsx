@@ -91,13 +91,13 @@ export default async function HomePage({
 
             {/* Art-direction slot: adapt to configured aspect ratio and fit. */}
             <div
-              className={`relative w-full overflow-hidden rounded-lg bg-v-100 ${getImageAspectClass(
-                heroImage.aspect,
-              )} ${
-                heroImage.aspect === "4/5" || heroImage.aspect === "1/1"
-                  ? "max-w-[460px] mx-auto lg:ms-auto"
-                  : ""
-              }`}
+              className="relative w-full min-h-[300px] overflow-hidden rounded-lg bg-v-100 max-w-[460px] mx-auto lg:ms-auto"
+              style={{
+                aspectRatio:
+                  heroImage.aspect && heroImage.aspect !== "auto"
+                    ? heroImage.aspect.replace("/", " / ")
+                    : "4 / 5",
+              }}
             >
               <Image
                 src={heroImage.url}
@@ -155,13 +155,13 @@ export default async function HomePage({
         <Wrap>
           <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
             <div
-              className={`relative overflow-hidden rounded-lg bg-v-900 ${getImageAspectClass(
-                testimonyImage.aspect,
-              )} ${
-                testimonyImage.aspect === "4/5" || testimonyImage.aspect === "1/1"
-                  ? "max-w-[460px] mx-auto"
-                  : ""
-              }`}
+              className="relative w-full min-h-[260px] overflow-hidden rounded-lg bg-v-900 max-w-[460px] mx-auto"
+              style={{
+                aspectRatio:
+                  testimonyImage.aspect && testimonyImage.aspect !== "auto"
+                    ? testimonyImage.aspect.replace("/", " / ")
+                    : "3 / 2",
+              }}
             >
               <Image
                 src={testimonyImage.url}
@@ -271,11 +271,13 @@ export default async function HomePage({
 
           <article className="grid items-center gap-8 overflow-hidden rounded-lg border border-line bg-surface lg:grid-cols-[0.85fr_1.15fr]">
             <div
-              className={`relative overflow-hidden ${
-                campaignImage.aspect === "3/2"
-                  ? "aspect-[3/2] lg:aspect-auto lg:h-full lg:min-h-[280px]"
-                  : getImageAspectClass(campaignImage.aspect)
-              }`}
+              className="relative w-full min-h-[280px] overflow-hidden"
+              style={{
+                aspectRatio:
+                  campaignImage.aspect && campaignImage.aspect !== "auto"
+                    ? campaignImage.aspect.replace("/", " / ")
+                    : "4 / 3",
+              }}
             >
               <Image
                 src={campaignImage.url}

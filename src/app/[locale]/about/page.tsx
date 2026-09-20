@@ -53,19 +53,19 @@ export default async function AboutPage({
               </p>
             </div>
             <div
-              className={`relative overflow-hidden rounded-lg bg-v-100 shadow-sm ${getImageAspectClass(
-                aboutHero.aspect,
-              )} ${
-                aboutHero.aspect === "4/5" || aboutHero.aspect === "1/1"
-                  ? "max-w-[460px] mx-auto lg:ms-auto"
-                  : ""
-              }`}
+              className="relative w-full min-h-[300px] overflow-hidden rounded-lg bg-v-100 shadow-sm max-w-[460px] mx-auto lg:ms-auto"
+              style={{
+                aspectRatio:
+                  aboutHero.aspect && aboutHero.aspect !== "auto"
+                    ? aboutHero.aspect.replace("/", " / ")
+                    : "4 / 5",
+              }}
             >
               <Image
                 src={aboutHero.url}
-                alt=""
+                alt={t("title")}
                 fill
-                sizes="(max-width: 1024px) 100vw, 440px"
+                sizes="(max-width: 1024px) 100vw, 460px"
                 className={`${getImageFitClass(
                   aboutHero.fit,
                 )} ${getImagePositionClass(aboutHero.position)}`}
