@@ -9,7 +9,7 @@ import { getArticle, listArticles } from "@/lib/articles";
 import { htmlToText } from "@/lib/sanitize";
 import { isDbConfigured } from "@/lib/mongodb";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 /** Pre-render the published articles; anything newer renders on demand. */
 export async function generateStaticParams() {

@@ -5,9 +5,7 @@ import { Section, Wrap, PageHeader } from "@/components/primitives";
 import { Icon, type IconName } from "@/components/icon";
 import { routing } from "@/i18n/routing";
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

@@ -17,7 +17,7 @@ import {
   getImagePositionClass,
 } from "@/lib/site-content-types";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 /**
  * The organisation's home page.

@@ -8,7 +8,7 @@ import { listArticles, type Article } from "@/lib/articles";
 import { htmlToText } from "@/lib/sanitize";
 import { isDbConfigured } from "@/lib/mongodb";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

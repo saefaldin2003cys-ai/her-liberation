@@ -34,6 +34,10 @@ export async function GET(
     }
     const buffer = Buffer.concat(chunks);
 
+    if (buffer.length === 0) {
+      return new NextResponse("Empty image", { status: 404 });
+    }
+
     const contentType =
       (file.metadata?.contentType as string) ||
       ((file as any).contentType as string) ||
