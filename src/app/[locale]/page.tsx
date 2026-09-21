@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icon";
 import { Section, Wrap, Eyebrow, Figure } from "@/components/primitives";
 import { IraqMap } from "@/components/iraq-map";
-import { SupportersMarquee } from "@/components/supporters-marquee";
 import { listArticles, type Article } from "@/lib/articles";
 import { htmlToText } from "@/lib/sanitize";
 import { isDbConfigured } from "@/lib/mongodb";
@@ -420,9 +419,6 @@ export default async function HomePage({
           </Wrap>
         </Section>
       )}
-
-      {/* ---------- Supporters Marquee ---------- */}
-      <SupportersMarquee />
 
       {/* ---------- CTA ---------- */}
       <Section className="bg-surface-ink text-on-ink">

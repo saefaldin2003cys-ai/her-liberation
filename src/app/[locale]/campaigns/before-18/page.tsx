@@ -4,7 +4,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Section, Wrap, Eyebrow, Figure } from "@/components/primitives";
 import { RightsDashboard } from "@/components/rights-dashboard";
 import { IraqMap } from "@/components/iraq-map";
-import { SupportersMarquee } from "@/components/supporters-marquee";
 import { Poll } from "@/components/poll";
 import { ShareRow } from "@/components/share-row";
 import { Icon } from "@/components/icon";
@@ -157,9 +156,6 @@ export default async function CampaignPage({
           <Poll />
         </Wrap>
       </Section>
-
-      {/* ---------- Supporters Marquee ---------- */}
-      <SupportersMarquee />
 
       {/* ---------- Share ---------- */}
       <Section className="bg-surface-ink text-on-ink">
