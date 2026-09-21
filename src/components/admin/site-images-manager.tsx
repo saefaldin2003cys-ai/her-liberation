@@ -12,6 +12,7 @@ import {
   type SiteImages,
   type ImageSetting,
 } from "@/lib/site-content-types";
+import { compressImageClient } from "@/lib/client-image-compress";
 import type { Article } from "@/lib/articles";
 
 type ImageCardDef = {
@@ -175,24 +176,42 @@ export function SiteImagesManager() {
     }
 
     try {
+      // Compress image client-side to prevent network timeouts and body size limits
+      const compressedFile = await compressImageClient(file);
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", compressedFile);
+
       const res = await fetch("/api/upload", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "فشل رفع الصورة");
 
-      setImages((prev) => ({
-        ...prev,
-        [key]: {
-          ...prev[key],
-          url: data.url,
-          aspect: detectedAspect,
-          position: detectedPosition,
-        },
-      }));
+      const updatedSetting: ImageSetting = {
+        ...images[key],
+        url: data.url,
+        aspect: detectedAspect,
+        position: detectedPosition,
+      };
+
+      const updatedImages = {
+        ...images,
+        [key]: updatedSetting,
+      };
+
+      setImages(updatedImages);
+
+      // Auto-save to database immediately so the image is not lost
+      const saveRes = await fetch("/api/site-content", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ images: updatedImages }),
+      });
+      if (!saveRes.ok) {
+        throw new Error("تم رفع الصورة ولكن تعذر الحفظ التلقائي في قاعدة البيانات");
+      }
+
       setMessage({
         kind: "ok",
-        text: `تم رفع الصورة بنجاح وتعيين الأبعاد التلقائية (${detectedAspect})! يمكنك تعديل الأبعاد والموضع يدوياً أدناه ثم الضغط على «حفظ التغييرات».`,
+        text: `تم رفع الصورة وحفظها بنجاح بتناسب تلقائي (${detectedAspect})! يمكنك تعديل الأبعاد والموضع يدوياً أدناه في أي وقت.`,
       });
     } catch (err) {
       setMessage({ kind: "err", text: (err as Error).message });
@@ -212,8 +231,9 @@ export function SiteImagesManager() {
     setMessage({ kind: "ok", text: "جارٍ رفع وحفظ صورة غلاف المقال…" });
 
     try {
+      const compressedFile = await compressImageClient(file);
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", compressedFile);
       const upRes = await fetch("/api/upload", { method: "POST", body: fd });
       const upData = await upRes.json();
       if (!upRes.ok) throw new Error(upData.error ?? "فشل رفع الصورة");

@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import { RichEditor } from "./rich-editor";
 import { Icon } from "@/components/icon";
+import { compressImageClient } from "@/lib/client-image-compress";
 import type { Article } from "@/lib/articles";
 
 type Draft = {
@@ -64,8 +65,9 @@ export function ArticleForm({
 
     setMessage({ kind: "ok", text: "جارٍ رفع الصورة…" });
     try {
+      const compressedFile = await compressImageClient(file);
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", compressedFile);
       const res = await fetch("/api/upload", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Upload failed");
