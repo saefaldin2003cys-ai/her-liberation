@@ -32,8 +32,8 @@ export async function SiteFooter({ logoUrl }: { logoUrl?: string }) {
             </div>
             <p className="max-w-[34ch] text-sm leading-relaxed">
               {ar
-                ? "منصة وطنية عراقية للمناصرة والتوعية، تعمل على حماية حقوق الطفولة ورفع الحد الأدنى لسن الزواج."
-                : "An Iraqi advocacy and awareness platform working to protect children’s rights and raise the minimum age of marriage."}
+                ? "منصة نسوية عراقية للمناصرة والتوعية، تعمل على حماية حقوق المرأة ورفع الحد الأدنى لسن الزواج."
+                : "An Iraqi feminist advocacy and awareness platform working to protect women’s rights and raise the minimum age of marriage."}
             </p>
           </div>
 
